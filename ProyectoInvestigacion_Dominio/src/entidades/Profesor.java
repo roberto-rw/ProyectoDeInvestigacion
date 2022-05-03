@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
  * @author jegav
  */
 public class Profesor {
-    private ObjectId id;
+    private ObjectId _id;
     private String nombre;
     private String apellidoMaterno;
     private String apellidoPaterno;
@@ -32,7 +32,7 @@ public class Profesor {
     }
 
     public Profesor(ObjectId id, String nombre, String apellidoMaterno, String apellidoPaterno, String despacho, String telefono) {
-        this.id = id;
+        this._id = id;
         this.nombre = nombre;
         this.apellidoMaterno = apellidoMaterno;
         this.apellidoPaterno = apellidoPaterno;
@@ -41,11 +41,11 @@ public class Profesor {
     }
 
     public ObjectId getId() {
-        return id;
+        return _id;
     }
 
     public void setId(ObjectId id) {
-        this.id = id;
+        this._id = id;
     }
 
     public String getNombre() {
@@ -106,7 +106,7 @@ public class Profesor {
             return false;
         }
         final Profesor other = (Profesor) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this._id, other._id)) {
             return false;
         }
         return true;
