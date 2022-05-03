@@ -5,6 +5,8 @@
  */
 package entidades;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 
@@ -19,6 +21,8 @@ public class Profesor {
     private String apellidoPaterno;
     private String despacho;
     private String telefono;
+    private List<ObjectId> idsProyectos;
+    private List<ObjectId> idsLineasInvestigacion;
 
     public Profesor() {
     }
@@ -88,6 +92,28 @@ public class Profesor {
         this.telefono = telefono;
     }
 
+    public List<ObjectId> getIdsProyectos() {
+        return idsProyectos;
+    }
+
+    public void addProyecto(ObjectId idProyecto) {
+        if(idsProyectos == null){
+            idsProyectos = new ArrayList();
+        }
+        idsProyectos.add(idProyecto);
+    }
+
+    public List<ObjectId> getIdsLineasInvestigacion() {
+        return idsLineasInvestigacion;
+    }
+
+    public void addLineaInvestigacion(ObjectId idLineaInvestigacion) {
+        if(this.idsLineasInvestigacion == null){
+            this.idsLineasInvestigacion = new ArrayList();
+        }
+        this.idsLineasInvestigacion.add(idLineaInvestigacion);
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

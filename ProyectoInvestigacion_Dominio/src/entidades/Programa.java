@@ -5,7 +5,6 @@
  */
 package entidades;
 
-import java.util.List;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 
@@ -13,26 +12,20 @@ import org.bson.types.ObjectId;
  *
  * @author jegav
  */
-public class LineaInvestigacion {
+public class Programa {
     private ObjectId _id;
-    private String codigo;
     private String nombre;
-    private List<String> conjuntoDescriptores;
 
-    public LineaInvestigacion() {
+    public Programa() {
     }
 
-    public LineaInvestigacion(String codigo, String nombre, List<String> conjuntoDescriptores) {
-        this.codigo = codigo;
+    public Programa(String nombre) {
         this.nombre = nombre;
-        this.conjuntoDescriptores = conjuntoDescriptores;
     }
 
-    public LineaInvestigacion(ObjectId _id, String codigo, String nombre, List<String> conjuntoDescriptores) {
+    public Programa(ObjectId _id, String nombre) {
         this._id = _id;
-        this.codigo = codigo;
         this.nombre = nombre;
-        this.conjuntoDescriptores = conjuntoDescriptores;
     }
     
 
@@ -44,14 +37,6 @@ public class LineaInvestigacion {
         this._id = _id;
     }
 
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -60,17 +45,9 @@ public class LineaInvestigacion {
         this.nombre = nombre;
     }
 
-    public List<String> getConjuntoDescriptores() {
-        return conjuntoDescriptores;
-    }
-
-    public void setConjuntoDescriptores(List<String> conjuntoDescriptores) {
-        this.conjuntoDescriptores = conjuntoDescriptores;
-    }
-
     @Override
     public int hashCode() {
-        int hash = 5;
+        int hash = 7;
         return hash;
     }
 
@@ -85,7 +62,7 @@ public class LineaInvestigacion {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final LineaInvestigacion other = (LineaInvestigacion) obj;
+        final Programa other = (Programa) obj;
         if (!Objects.equals(this._id, other._id)) {
             return false;
         }
@@ -94,7 +71,10 @@ public class LineaInvestigacion {
 
     @Override
     public String toString() {
-        return "LineaInvestigacion{" + "_id=" + _id + ", codigo=" + codigo + ", nombre=" + nombre + ", conjuntoDescriptores=" + conjuntoDescriptores + '}';
+        return nombre;
     }
-
+    
+    
+    
+    
 }
