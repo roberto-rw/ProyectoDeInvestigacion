@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
  * @author jegav
  */
 public class PeriodoSupervision {
-    private ObjectId idSupervisor; //Debe ser un Doctor
+    private ObjectId idSupervisor; //Debe ser un Doctor de la coleccion Profesores
     private Date fechaInicio;
     private Date fechaFin;
 

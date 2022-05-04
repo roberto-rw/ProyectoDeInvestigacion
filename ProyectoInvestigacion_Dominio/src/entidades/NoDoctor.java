@@ -15,7 +15,7 @@ import org.bson.types.ObjectId;
  */
 public class NoDoctor extends Profesor {
 
-    private List<PeriodoSupervision> supervisiones;
+    private List<PeriodoSupervision> supervisiones; //Supervisores que ha tenido el NoDoctor
     
     public NoDoctor() {
     }

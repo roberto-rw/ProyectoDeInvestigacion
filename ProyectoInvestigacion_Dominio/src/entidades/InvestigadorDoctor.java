@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
  *
  * @author jegav
  */
-public class InvestigadorDoctor extends Doctor {
+public class InvestigadorDoctor extends Doctor { //Esta Clase va dentro de la clase Profesor
     private String tipo;
 
     public InvestigadorDoctor() {
@@ -27,6 +27,9 @@ public class InvestigadorDoctor extends Doctor {
         super(id, nombre, apellidoMaterno, apellidoPaterno, despacho, telefono);
         this.tipo = "InvestigadorDoctor";
     }
-    
+
+    public String getTipo() {
+        return tipo;
+    }
     
 }

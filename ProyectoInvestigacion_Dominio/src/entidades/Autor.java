@@ -14,7 +14,6 @@ import org.bson.types.ObjectId;
 public class Autor {
     
     private ObjectId idProfesor;
-    private ObjectId idPublicacion;
     private Integer orden;
 
     public Autor() {

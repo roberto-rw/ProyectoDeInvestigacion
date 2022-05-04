@@ -22,7 +22,7 @@ public class Profesor {
     private String despacho;
     private String telefono;
     private List<ObjectId> idsProyectos;
-    private List<ObjectId> idsLineasInvestigacion;
+    private List<ObjectId> idsLineasInvestigacion; //Representa ProfesorInvestigacion
 
     public Profesor() {
     }

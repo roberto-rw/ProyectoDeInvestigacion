@@ -13,7 +13,6 @@ import org.bson.types.ObjectId;
  * @author jegav
  */
 public class DetalleProyectoProfesor {
-    private ObjectId idProyecto;
     private ObjectId idProfesor;
     private Date fechaInicio;
     private Date fechaFin;
@@ -21,19 +20,10 @@ public class DetalleProyectoProfesor {
     public DetalleProyectoProfesor() {
     }
 
-    public DetalleProyectoProfesor(ObjectId idProyecto, ObjectId idProfesor, Date fechaInicio, Date fechaFin) {
-        this.idProyecto = idProyecto;
+    public DetalleProyectoProfesor(ObjectId idProfesor, Date fechaInicio, Date fechaFin) {
         this.idProfesor = idProfesor;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
-    }
-
-    public ObjectId getIdProyecto() {
-        return idProyecto;
-    }
-
-    public void setIdProyecto(ObjectId idProyecto) {
-        this.idProyecto = idProyecto;
     }
 
     public ObjectId getIdProfesor() {
@@ -62,10 +52,7 @@ public class DetalleProyectoProfesor {
 
     @Override
     public String toString() {
-        return "DetalleProyectoProfesor{" + "idProyecto=" + idProyecto + ", idProfesor=" + idProfesor + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + '}';
+        return "DetalleProyectoProfesor{" + "idProfesor=" + idProfesor + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + '}';
     }
-    
-    
-    
     
 }

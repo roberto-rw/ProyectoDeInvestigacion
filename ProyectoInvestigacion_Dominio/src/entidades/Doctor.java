@@ -11,7 +11,7 @@ import org.bson.types.ObjectId;
  *
  * @author jegav
  */
-public class Doctor extends Profesor {
+public class Doctor extends Profesor { //Esta clase va dentro de la coleccion Profesor
     
     private String tipo;
 
