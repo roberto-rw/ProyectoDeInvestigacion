@@ -19,9 +19,8 @@ public class Autor {
     public Autor() {
     }
 
-    public Autor(ObjectId idProfesor, ObjectId idPublicacion, Integer orden) {
+    public Autor(ObjectId idProfesor, Integer orden) {
         this.idProfesor = idProfesor;
-        this.idPublicacion = idPublicacion;
         this.orden = orden;
     }
 
@@ -31,14 +30,6 @@ public class Autor {
 
     public void setIdProfesor(ObjectId idProfesor) {
         this.idProfesor = idProfesor;
-    }
-
-    public ObjectId getIdPublicacion() {
-        return idPublicacion;
-    }
-
-    public void setIdPublicacion(ObjectId idPublicacion) {
-        this.idPublicacion = idPublicacion;
     }
 
     public Integer getOrden() {
