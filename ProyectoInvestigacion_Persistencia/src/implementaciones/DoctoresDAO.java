@@ -11,7 +11,6 @@ import dtos.ProfesorLineaInvestigacionDTO;
 import entidades.Doctor;
 import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
-import entidades.Profesor;
 import interfaces.IConexionBD;
 import java.util.List;
 import org.bson.types.ObjectId;
