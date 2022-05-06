@@ -106,9 +106,6 @@ public class DoctoresDAO implements IDoctoresDAO {
                 .append("despacho", doctor.getDespacho())
                 .append("telefono", doctor.getTelefono())
                 .append("idsLineasInvestigacion", doctor.getIdsLineasInvestigacion());
-        
-        System.out.println(doctor.getNombre());
-        System.out.println(doctor.getId());
         this.getColeccion().updateOne(filtro, new Document("$set", cambios));
         
         return true;
