@@ -70,10 +70,10 @@ public class DoctoresDAO implements IDoctoresDAO {
     }
 
     @Override
-    public List<LineaInvestigacion> consultarLineasInvestigacion(ObjectId idProfesor) {
+    public List<LineaInvestigacion> consultarLineasInvestigacion(ObjectId idDoctor) {
         
         List<Document> etapas = new ArrayList();
-        etapas.add(new Document("$match", new Document("_id", idProfesor)));
+        etapas.add(new Document("$match", new Document("_id", idDoctor)));
         etapas.add(
                 new Document("$lookup", 
                         new Document()
@@ -105,7 +105,8 @@ public class DoctoresDAO implements IDoctoresDAO {
                 .append("apellidoMaterno", doctor.getApellidoMaterno())
                 .append("apellidoPaterno", doctor.getApellidoPaterno())
                 .append("despacho", doctor.getDespacho())
-                .append("telefono", doctor.getTelefono());
+                .append("telefono", doctor.getTelefono())
+                .append("idsLineasInvestigacion", doctor.getIdsLineasInvestigacion());
         
         System.out.println(doctor.getNombre());
         System.out.println(doctor.getId());
