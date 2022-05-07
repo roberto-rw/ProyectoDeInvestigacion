@@ -5,6 +5,7 @@
         <group>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             <file>file:/C:/Users/jegav/OneDrive/Documentos/ProyectoDeInvestigacion/ProyectoInvestigacion_Dominio/src/entidades/PublicacionRevista.java</file>
             <file>file:/C:/Users/jegav/OneDrive/Documentos/ProyectoDeInvestigacion/ProyectoInvestigacion_Dominio/src/entidades/Publicacion.java</file>
             <file>file:/C:/Users/jegav/OneDrive/Documentos/ProyectoDeInvestigacion/ProyectoInvestigacion_Dominio/src/entidades/PublicacionCongreso.java</file>
@@ -16,6 +17,11 @@
             <file>file:/D:/Documentos%20HDD/Cuarto%20semestre/Bases%20de%20Datos%20Avanzadas/Proyecto%20Final/ProyectoInvestigacion_Dominio/src/dtos/ProfesorProyectoDTO.java</file>
             <file>file:/D:/Documentos%20HDD/Cuarto%20semestre/Bases%20de%20Datos%20Avanzadas/Proyecto%20Final/ProyectoInvestigacion_Dominio/src/entidades/Profesor.java</file>
 >>>>>>> 18354ec (Se resolvieron conflictos)
+=======
+            <file>file:/D:/Documentos%20HDD/Cuarto%20semestre/Bases%20de%20Datos%20Avanzadas/Proyecto%20Final/ProyectoInvestigacion_Dominio/src/entidades/Proyecto.java</file>
+            <file>file:/D:/Documentos%20HDD/Cuarto%20semestre/Bases%20de%20Datos%20Avanzadas/Proyecto%20Final/ProyectoInvestigacion_Dominio/src/dtos/ProfesorProyectoDTO.java</file>
+            <file>file:/D:/Documentos%20HDD/Cuarto%20semestre/Bases%20de%20Datos%20Avanzadas/Proyecto%20Final/ProyectoInvestigacion_Dominio/src/entidades/Profesor.java</file>
+>>>>>>> a7b7a98 (Se añadió IProyectoDAO)
         </group>
     </open-files>
 </project-private>
