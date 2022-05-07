@@ -28,6 +28,9 @@ public class Proyecto {
     private InvestigadorDoctor investigadorPrincipal;
     private List<ObjectId> idsLineasInvestigacion; //Representa ProyectoLineadeInvestigacion
     private List<DetalleProyectoProfesor> detalles;
+    private List<Publicacion> publicaciones;
+
+    
 
     public Proyecto() {
     }
@@ -165,11 +168,26 @@ public class Proyecto {
         this.detalles.add(detalle);
     }
 
-    public List<DetalleProyectoProfesor> getDetalles(List<DetalleProyectoProfesor> detalles) {
+    public List<DetalleProyectoProfesor> getDetalles() {
         return this.detalles;
     }
 
-    
+    public void setIdsLineasInvestigacion(List<ObjectId> idsLineasInvestigacion) {
+        this.idsLineasInvestigacion = idsLineasInvestigacion;
+    }
+
+    public void setDetalles(List<DetalleProyectoProfesor> detalles) {
+        this.detalles = detalles;
+    }
+
+    public void setPublicaciones(List<Publicacion> publicaciones) {
+        this.publicaciones = publicaciones;
+    }
+
+
+    public List<Publicacion> getPublicaciones() {
+        return publicaciones;
+    }
     
     
     

@@ -21,7 +21,6 @@ public class Profesor {
     private String apellidoPaterno;
     private String despacho;
     private String telefono;
-    //private List<ObjectId> idsProyectos;
     private List<ObjectId> idsLineasInvestigacion; //Representa ProfesorInvestigacion
 
     public Profesor() {
@@ -92,16 +91,6 @@ public class Profesor {
         this.telefono = telefono;
     }
 
-    /*public List<ObjectId> getIdsProyectos() {
-        return idsProyectos;
-    }
-
-    public void addProyecto(ObjectId idProyecto) {
-        if(idsProyectos == null){
-            idsProyectos = new ArrayList();
-        }
-        idsProyectos.add(idProyecto);
-    }*/
 
     public List<ObjectId> getIdsLineasInvestigacion() {
         return idsLineasInvestigacion;

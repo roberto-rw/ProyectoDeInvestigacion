@@ -22,6 +22,7 @@ public interface IDoctoresDAO {
     public boolean agregarInvestigadorDoctor(InvestigadorDoctor investigadorDoctor);
     public boolean eliminar(ObjectId idDoctor);
     public Doctor consultar(ObjectId idDoctor);
+    public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigadorDoctor);
     public List<Doctor> consultarTodos();
     public List<LineaInvestigacion> consultarLineasInvestigacion(ObjectId idDoctor);
 }
