@@ -3,28 +3,22 @@ package implementaciones;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-<<<<<<< HEAD
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import dtos.ProfesorLineaInvestigacionDTO;
 import entidades.DetalleProyectoProfesor;
 import entidades.LineaInvestigacion;
-=======
 import entidades.LineaInvestigacion;
 import entidades.Profesor;
->>>>>>> a7b7a98 (Se añadió IProyectoDAO)
 import entidades.Proyecto;
 import entidades.Publicacion;
 import interfaces.IConexionBD;
 import interfaces.IProyectoDAO;
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-=======
 import java.util.List;
->>>>>>> a7b7a98 (Se añadió IProyectoDAO)
 import org.bson.types.ObjectId;
 
 
@@ -42,19 +36,16 @@ public class ProyectoDAO implements IProyectoDAO{
         return baseDatos.getCollection("proyectos", Proyecto.class);
     }
     
-    @Override
-<<<<<<< HEAD
-    public boolean agregar(Proyecto proyecto) {        
-=======
+    @Override      
     public boolean agregar(Proyecto proyecto) {
->>>>>>> a7b7a98 (Se añadió IProyectoDAO)
+
         this.getCollection().insertOne(proyecto);
         return true;
     }
 
     @Override
     public boolean actualizar(Proyecto proyecto) {
-<<<<<<< HEAD
+
         Document filtro = new Document("_id", proyecto.getId());
         Document cambios = new Document()
                 .append("codigoReferencia", proyecto.getCodigoReferencia())
@@ -69,33 +60,27 @@ public class ProyectoDAO implements IProyectoDAO{
         this.getCollection().updateOne(filtro, new Document("$set", cambios));
         
         return true;
-=======
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
->>>>>>> a7b7a98 (Se añadió IProyectoDAO)
+
     }
 
     @Override
     public boolean eliminar(ObjectId idProyecto) {
-<<<<<<< HEAD
+
         this.getCollection().deleteOne(new Document("_id", idProyecto));
         return true;
-=======
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
->>>>>>> a7b7a98 (Se añadió IProyectoDAO)
+
     }
 
     @Override
     public List<Proyecto> consultarTodos() {
-<<<<<<< HEAD
+
         return this.getCollection().find().into(new ArrayList());
-=======
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
->>>>>>> a7b7a98 (Se añadió IProyectoDAO)
+
     }
 
     @Override
     public Proyecto consultar(ObjectId idProyecto) {
-<<<<<<< HEAD
+
         List<Proyecto> proyectos = this.getCollection().find(new Document("_id", idProyecto)).into(new ArrayList());
         if(proyectos.isEmpty()){
             return null;
@@ -134,11 +119,11 @@ public class ProyectoDAO implements IProyectoDAO{
     @Override
     public boolean agregarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId idProyecto) {
           
-        Bson filtro = Filters.eq(idProyecto);
-        Bson updates = Updates.set("detalles", integrantes);
-        this.getCollection().findOneAndUpdate(filtro, updates);
+//        Bson filtro = Filters.eq(idProyecto);
+//        Bson updates = Updates.set("detalles", integrantes);
+//        this.getCollection().findOneAndUpdate(filtro, updates);
              
-//        this.getCollection().updateOne(new Document("_id",idProyecto), new Document("$set", new Document("detalles", integrantes)));
+        this.getCollection().updateOne(new Document("_id",idProyecto), new Document("$set", new Document("detalles", integrantes)));
         
         return true;
     }
@@ -170,34 +155,11 @@ public class ProyectoDAO implements IProyectoDAO{
         
         return true;
     }
-    
-=======
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
-    @Override
-    public boolean agregarLineaInvestigacion(LineaInvestigacion lineaInvestigacion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean agregarProfesores(Profesor profesor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
->>>>>>> a7b7a98 (Se añadió IProyectoDAO)
     @Override
     public boolean agregarPublicacion(Publicacion publicacion) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-<<<<<<< HEAD
 
-    
 
-    
-
-    
-=======
->>>>>>> a7b7a98 (Se añadió IProyectoDAO)
-    
 }
