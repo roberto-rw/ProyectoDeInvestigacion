@@ -1,14 +1,14 @@
 
-package implementaciones;
+package implementacionesDAO;
 
 import com.mongodb.client.MongoDatabase;
-import interfaces.IConexionBD;
+import interfacesDAO.IConexionBD;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import interfaces.IConexionBD;
+import interfacesDAO.IConexionBD;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import org.bson.codecs.configuration.CodecRegistry;

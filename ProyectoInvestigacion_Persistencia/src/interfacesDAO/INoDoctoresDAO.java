@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package interfaces;
+package interfacesDAO;
 
 import dtos.PeriodoSupervisionDTO;
 import entidades.NoDoctor;
@@ -26,4 +26,5 @@ public interface INoDoctoresDAO {
     public List<NoDoctor> consultarTodos();
     public List<LineaInvestigacion> consultarLineasInvestigacion(ObjectId idNoDoctor);
     public List<PeriodoSupervisionDTO> consultarSupervisiones(ObjectId idNoDoctor);
+    public InvestigadorNoDoctor consultarInvestigador(ObjectId idInvestigador);
 }

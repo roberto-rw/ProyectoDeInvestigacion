@@ -1,4 +1,4 @@
-package interfaces;
+package interfacesDAO;
 
 import dtos.AutorDTO;
 import entidades.LineaInvestigacion;

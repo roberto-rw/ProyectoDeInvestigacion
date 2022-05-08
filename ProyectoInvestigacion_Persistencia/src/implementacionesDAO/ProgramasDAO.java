@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package implementaciones;
+package implementacionesDAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import entidades.Doctor;
 import entidades.Programa;
-import interfaces.IConexionBD;
-import interfaces.IProgramasDAO;
+import interfacesDAO.IConexionBD;
+import interfacesDAO.IProgramasDAO;
 import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;

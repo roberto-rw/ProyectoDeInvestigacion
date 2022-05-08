@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package implementaciones;
+package implementacionesDAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -12,8 +12,8 @@ import dtos.ProfesorLineaInvestigacionDTO;
 import entidades.InvestigadorNoDoctor;
 import entidades.LineaInvestigacion;
 import entidades.NoDoctor;
-import interfaces.IConexionBD;
-import interfaces.INoDoctoresDAO;
+import interfacesDAO.IConexionBD;
+import interfacesDAO.INoDoctoresDAO;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
@@ -147,6 +147,17 @@ public class NoDoctoresDAO implements INoDoctoresDAO {
         
         return supervisiones;
         
+    }
+
+    @Override
+    public InvestigadorNoDoctor consultarInvestigador(ObjectId idInvestigador) {
+        List<InvestigadorNoDoctor> noDoctores = baseDatos.getCollection("noDoctores", InvestigadorNoDoctor.class).find(new Document()
+                                                                                                .append("_id", idInvestigador)
+                                                                                                .append("tipo", "InvestigadorNoDoctor")).into(new ArrayList());
+        if(noDoctores.isEmpty()){
+            return null;
+        }
+        return noDoctores.get(0);
     }
 
 

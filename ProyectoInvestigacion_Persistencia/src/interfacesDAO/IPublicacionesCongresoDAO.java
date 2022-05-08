@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package interfaces;
+package interfacesDAO;
 
 import dtos.AutorDTO;
 import entidades.Proyecto;
@@ -15,7 +15,7 @@ import org.bson.types.ObjectId;
  *
  * @author jegav
  */
-public interface IPublicacionesCongreso {
+public interface IPublicacionesCongresoDAO {
     public boolean agregar(PublicacionCongreso publicacionCongreso);
     public boolean actualizar(PublicacionCongreso publicacionCongreso);
     public boolean eliminar(ObjectId idPublicacionCongreso);

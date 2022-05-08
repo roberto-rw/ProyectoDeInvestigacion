@@ -3,18 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package implementaciones;
+package implementacionesDAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import dtos.ProfesorLineaInvestigacionDTO;
 import entidades.Doctor;
 import entidades.InvestigadorDoctor;
+import entidades.InvestigadorNoDoctor;
 import entidades.LineaInvestigacion;
-import interfaces.IConexionBD;
+import interfacesDAO.IConexionBD;
 import java.util.List;
 import org.bson.types.ObjectId;
-import interfaces.IDoctoresDAO;
+import interfacesDAO.IDoctoresDAO;
 import java.util.ArrayList;
 import org.bson.Document;
 
@@ -112,8 +113,10 @@ public class DoctoresDAO implements IDoctoresDAO {
     }
 
     @Override
-    public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigadorDoctor) {
-        List<InvestigadorDoctor> doctores = baseDatos.getCollection("doctores",InvestigadorDoctor.class).find(new Document("_id", idInvestigadorDoctor)).into(new ArrayList());
+    public InvestigadorDoctor consultarInvestigador(ObjectId idInvestigador) {
+        List<InvestigadorDoctor> doctores =  baseDatos.getCollection("doctores", InvestigadorDoctor.class).find(new Document()
+                                                                                                .append("_id", idInvestigador)
+                                                                                                .append("tipo", "InvestigadorDoctor")).into(new ArrayList());
         if(doctores.isEmpty()){
             return null;
         }

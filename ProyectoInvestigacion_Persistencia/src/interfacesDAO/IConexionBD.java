@@ -1,5 +1,5 @@
 
-package interfaces;
+package interfacesDAO;
 
 import com.mongodb.client.MongoDatabase;
 

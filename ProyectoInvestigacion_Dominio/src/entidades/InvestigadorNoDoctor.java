@@ -16,17 +16,17 @@ public class InvestigadorNoDoctor extends NoDoctor { //Va dentro de la colecció
     private String tipo;
 
     public InvestigadorNoDoctor() {
-        this.tipo = "Investigador";
+        this.tipo = "InvestigadorNoDoctor";
     }
 
     public InvestigadorNoDoctor(String nombre, String apellidoMaterno, String apellidoPaterno, String despacho, String telefono) {
         super(nombre, apellidoMaterno, apellidoPaterno, despacho, telefono);
-        this.tipo = "Investigador";
+        this.tipo = "InvestigadorNoDoctor";
     }
 
     public InvestigadorNoDoctor(ObjectId id, String nombre, String apellidoMaterno, String apellidoPaterno, String despacho, String telefono) {
         super(id, nombre, apellidoMaterno, apellidoPaterno, despacho, telefono);
-        this.tipo = "Investigador";
+        this.tipo = "InvestigadorNoDoctor";
     }
 
     public String getTipo() {

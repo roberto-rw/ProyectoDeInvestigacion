@@ -1,11 +1,11 @@
-package implementaciones;
+package implementacionesDAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import dtos.AutorDTO;
 import entidades.LineaInvestigacion;
-import interfaces.IConexionBD;
-import interfaces.ILineaInvestigacionDAO;
+import interfacesDAO.IConexionBD;
+import interfacesDAO.ILineaInvestigacionDAO;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
@@ -26,7 +26,7 @@ public class LineaInvestigacionDAO implements ILineaInvestigacionDAO{
     }
     
     private MongoCollection<LineaInvestigacion> getColeccion(){
-        return baseDatos.getCollection("lineaInvestigacion", LineaInvestigacion.class);
+        return baseDatos.getCollection("lineasInvestigacion", LineaInvestigacion.class);
     }
     
     @Override
@@ -41,8 +41,7 @@ public class LineaInvestigacionDAO implements ILineaInvestigacionDAO{
         Document cambios = new Document()
                 .append("codigo", lineaInvestigacion.getCodigo())
                 .append("nombre", lineaInvestigacion.getNombre())
-                .append("idLineaInvestigacion", lineaInvestigacion.getId())
-                .append("autores", lineaInvestigacion.getConjuntoDescriptores());
+                .append("conjuntoDescriptores", lineaInvestigacion.getConjuntoDescriptores());
                 
         this.getColeccion().updateOne(filtro, new Document("$set", cambios));
         

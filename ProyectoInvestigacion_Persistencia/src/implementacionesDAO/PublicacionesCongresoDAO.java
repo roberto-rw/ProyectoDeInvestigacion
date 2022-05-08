@@ -3,89 +3,89 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package implementaciones;
+package implementacionesDAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import dtos.AutorDTO;
 import dtos.PublicacionProyectoDTO;
 import entidades.Proyecto;
-import entidades.PublicacionRevista;
-import interfaces.IConexionBD;
-import interfaces.IPublicacionesRevistaDAO;
+import entidades.PublicacionCongreso;
+import interfacesDAO.IConexionBD;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import interfacesDAO.IPublicacionesCongresoDAO;
 
 /**
  *
  * @author jegav
  */
-public class PublicacionesRevistaDAO implements IPublicacionesRevistaDAO {
+public class PublicacionesCongresoDAO implements IPublicacionesCongresoDAO{
+    
     
     private IConexionBD conexion;
     private MongoDatabase baseDatos;
 
-    public PublicacionesRevistaDAO(IConexionBD conexion) {
+    public PublicacionesCongresoDAO(IConexionBD conexion) {
         this.conexion = conexion;
         this.baseDatos = this.conexion.crearConexion();
     }
     
-    private MongoCollection<PublicacionRevista> getColeccion(){
-        return baseDatos.getCollection("publicacionesRevista", PublicacionRevista.class);
+    private MongoCollection<PublicacionCongreso> getColeccion(){
+        return baseDatos.getCollection("publicacionesCongreso", PublicacionCongreso.class);
     }
-    
 
     @Override
-    public boolean agregar(PublicacionRevista publicacionRevista) {
-        this.getColeccion().insertOne(publicacionRevista);
+    public boolean agregar(PublicacionCongreso publicacionCongreso) {
+       this.getColeccion().insertOne(publicacionCongreso);
         return true;
     }
 
     @Override
-    public boolean actualizar(PublicacionRevista publicacionRevista) {
-        Document filtro = new Document("_id", publicacionRevista.getId());
+    public boolean actualizar(PublicacionCongreso publicacionCongreso) {
+        Document filtro = new Document("_id", publicacionCongreso.getId());
         Document cambios = new Document()
-                .append("numeroSecuencia", publicacionRevista.getNumeroSecuencia())
-                .append("titulo", publicacionRevista.getTitulo())
-                .append("idProyecto", publicacionRevista.getIdProyecto())
-                .append("autores", publicacionRevista.getAutores())
-                .append("nombreRevista", publicacionRevista.getNombreRevista())
-                .append("editorial", publicacionRevista.getEditorial())
-                .append("volumen", publicacionRevista.getVolumen())
-                .append("numero", publicacionRevista.getNumero())
-                .append("pagInicio", publicacionRevista.getPagInicio())
-                .append("pagFin", publicacionRevista.getPagFin());
+                .append("numeroSecuencia", publicacionCongreso.getNumeroSecuencia())
+                .append("titulo", publicacionCongreso.getTitulo())
+                .append("idProyecto", publicacionCongreso.getIdProyecto())
+                .append("autores", publicacionCongreso.getAutores())
+                .append("nombreCongreso", publicacionCongreso.getNombreCongreso())
+                .append("fechaInicio", publicacionCongreso.getFechaInicio())
+                .append("fechaFin", publicacionCongreso.getFechaFin())
+                .append("lugarCelebracion", publicacionCongreso.getLugarCelebracion())
+                .append("pais", publicacionCongreso.getPais())
+                .append("editorial", publicacionCongreso.getEditorial());
         this.getColeccion().updateOne(filtro, new Document("$set", cambios));
         
         return true;
     }
 
     @Override
-    public boolean eliminar(ObjectId idPublicacionRevista) {
-        this.getColeccion().deleteOne(new Document("_id", idPublicacionRevista));
+    public boolean eliminar(ObjectId idPublicacionCongreso) {
+        this.getColeccion().deleteOne(new Document("_id", idPublicacionCongreso));
         return true;
     }
 
     @Override
-    public PublicacionRevista consultar(ObjectId idPublicacionRevista) {
-        List<PublicacionRevista> publicacionRevista = this.getColeccion().find(new Document("_id", idPublicacionRevista)).into(new ArrayList());
-        if(publicacionRevista.isEmpty()){
+    public PublicacionCongreso consultar(ObjectId idPublicacionCongreso) {
+        List<PublicacionCongreso> publicacionCongreso = this.getColeccion().find(new Document("_id", idPublicacionCongreso)).into(new ArrayList());
+        if(publicacionCongreso.isEmpty()){
             return null;
         }
-        return publicacionRevista.get(0);
+        return publicacionCongreso.get(0);
     }
 
     @Override
-    public List<PublicacionRevista> consultarTodos() {
+    public List<PublicacionCongreso> consultarTodos() {
         return this.getColeccion().find().into(new ArrayList());
     }
 
     @Override
-    public Proyecto consultarProyecto(ObjectId idPublicacionRevista) {
+    public Proyecto consultarProyecto(ObjectId idPublicacionCongreso) {
         List<Document> etapas = new ArrayList();
-        etapas.add(new Document("$match", new Document("_id", idPublicacionRevista)));
+        etapas.add(new Document("$match", new Document("_id", idPublicacionCongreso)));
         //etapas.add(new Document("$unwind", new Document("path", "$supervisiones")));
         etapas.add(
                 new Document("$lookup", 
@@ -102,7 +102,7 @@ public class PublicacionesRevistaDAO implements IPublicacionesRevistaDAO {
                 .append("proyecto", 1)
         ));
         
-        List<PublicacionProyectoDTO> proyecto = baseDatos.getCollection("publicacionesRevista", PublicacionProyectoDTO.class).aggregate(etapas).into(new ArrayList());
+        List<PublicacionProyectoDTO> proyecto = baseDatos.getCollection("publicacionesCongreso", PublicacionProyectoDTO.class).aggregate(etapas).into(new ArrayList());
 
        
         if(proyecto.isEmpty()){
@@ -113,9 +113,9 @@ public class PublicacionesRevistaDAO implements IPublicacionesRevistaDAO {
     }
 
     @Override
-    public List<AutorDTO> consultarAutores(ObjectId idPublicacionRevista) {
+    public List<AutorDTO> consultarAutores(ObjectId idPublicacionCongreso) {
         List<Document> etapas = new ArrayList();
-        etapas.add(new Document("$match", new Document("_id", idPublicacionRevista)));
+        etapas.add(new Document("$match", new Document("_id", idPublicacionCongreso)));
         etapas.add(new Document("$unwind", new Document("path", "$autores")));
         etapas.add(
                 new Document("$lookup", 
@@ -136,7 +136,7 @@ public class PublicacionesRevistaDAO implements IPublicacionesRevistaDAO {
                 .append("orden", "$autores.orden")
         ));
         
-        List<AutorDTO> autores = baseDatos.getCollection("publicacionesRevista", AutorDTO.class).aggregate(etapas).into(new ArrayList());
+        List<AutorDTO> autores = baseDatos.getCollection("publicacionesCongreso", AutorDTO.class).aggregate(etapas).into(new ArrayList());
 
        
         if(autores.isEmpty()){

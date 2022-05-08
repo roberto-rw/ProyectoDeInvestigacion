@@ -39,5 +39,11 @@ public class NoDoctor extends Profesor {
          supervisiones.add(supervision);
     }
 
+    public void setSupervisiones(List<PeriodoSupervision> supervisiones) {
+        this.supervisiones = supervisiones;
+    }
+    
+    
+
     
 }

@@ -102,6 +102,10 @@ public class Profesor {
         }
         this.idsLineasInvestigacion.add(idLineaInvestigacion);
     }
+
+    public void setIdsLineasInvestigacion(List<ObjectId> idsLineasInvestigacion) {
+        this.idsLineasInvestigacion = idsLineasInvestigacion;
+    }
     
     @Override
     public int hashCode() {
@@ -129,7 +133,7 @@ public class Profesor {
 
     @Override
     public String toString() {
-        return nombre;
+        return nombre + " " + apellidoPaterno;
     }
     
     
