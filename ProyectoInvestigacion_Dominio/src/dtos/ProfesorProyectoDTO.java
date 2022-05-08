@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 public class ProfesorProyectoDTO {
     private ObjectId idProfesor;
     private String nombreProfesor;
+    private String apellidoPaternoProfesor;
     private Date fechaInicioParticipacion;
     private Date fechaFinParticipacion;
     

@@ -612,7 +612,7 @@ public class ProfesorForm extends javax.swing.JFrame {
             }
         });
 
-        noDoctorPnl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        noDoctorPnl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         tablaSupervisores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -836,8 +836,8 @@ public class ProfesorForm extends javax.swing.JFrame {
             }
         });
 
-        volverBtn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         volverBtn.setText("Volver");
+        volverBtn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

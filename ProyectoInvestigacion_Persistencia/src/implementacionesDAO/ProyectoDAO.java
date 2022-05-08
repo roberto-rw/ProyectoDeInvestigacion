@@ -211,6 +211,7 @@ public class ProyectoDAO implements IProyectoDAO{
                 .append("_id", 0)
                 .append("idProfesor", "$integrantes._id")
                 .append("nombreProfesor", "$integrantes.nombre"))
+                .append("apellidoPaternoProfesor", "$integrantes.apellidoPaterno")
                 .append("inicioSupervision", "detalles.fechaInicio")
                 .append("finSupervision", "$detalles.fechaFin")
         );
