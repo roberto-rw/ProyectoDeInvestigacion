@@ -353,11 +353,11 @@ public class ProyectoForm extends javax.swing.JFrame {
     private void vaciarIntegrantesPanel(){
         inicioSPicker.setDate(null);
         finSPicker.setDate(null);
-        this.periodosIntegrantes.clear();
+        
     }
     private void vaciarForm() {
         this.vaciarProyectoForm();
-        periodosIntegrantes = new ArrayList();
+        this.periodosIntegrantes.clear();
         this.codigoTxt.setText("");
         this.nombreTxt.setText("");
         this.acronimoTxt.setText("");
