@@ -970,7 +970,7 @@ public class ProfesorForm extends javax.swing.JFrame {
             pSupervisionEditar.setFechaFin(fechaFinSeleccionada);
             this.periodosSupervision.set(editarSupervisor, pSupervisionEditar);
             this.editarSupervisor = null;
-            this.agregarSupervisorBtn.setText("AgregarSupervisor Supervisor");
+            this.agregarSupervisorBtn.setText("Agregar Supervisor");
              JOptionPane.showMessageDialog(this, "Se realizaron los cambios correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
         } else{
             PeriodoSupervision pSupervision = new PeriodoSupervision(idDoctorSeleccionado, fechaInicioSeleccionada, fechaFinSeleccionada);

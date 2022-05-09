@@ -30,6 +30,7 @@ import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import org.bson.types.ObjectId;
 import utils.ButtonColumn;
 
@@ -44,7 +45,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     private ILineaInvestigacionBO lineaInvestigacion;
     private IProgramasBO programasBO;
     private IProyectoBO proyectoBO;
-    private List<Profesor> integrantesASeleccionar;
+
     private Integer editarIntegrante;
     private List<PeriodoParticipacion> periodosIntegrantes;
     
@@ -55,6 +56,20 @@ public class ProyectoForm extends javax.swing.JFrame {
         initComponents();
         this.doctoresBO = BOSFactory.crearDoctoresBO();
         this.noDoctoresBO = BOSFactory.crearNoDoctoresBO();
+        
+        //Ocultar Ids
+        
+        //Proyectos
+        TableColumnModel modeloColumnasProyecto = this.tablaProyectos.getColumnModel();
+        tablaProyectos.removeColumn( modeloColumnasProyecto.getColumn(0));
+        
+        //Lineas Investigación
+        TableColumnModel modeloColumnasLineas = this.lineaInvestigacionTabla.getColumnModel();
+        lineaInvestigacionTabla.removeColumn( modeloColumnasLineas.getColumn(0));
+        
+        //Integrantes
+        TableColumnModel modeloColumnasIntegrantes = this.tablaIntegrantes.getColumnModel();
+        tablaIntegrantes.removeColumn( modeloColumnasIntegrantes.getColumn(0));
         
         this.lineaInvestigacion = BOSFactory.crearLineaInvestigacionBO();
         this.proyectoBO = BOSFactory.crearProyectoBO();
@@ -111,7 +126,6 @@ public class ProyectoForm extends javax.swing.JFrame {
         return !(fechaInicioCalendar.compareTo(fechaFinCalendar) < 0);
     }
     
-
     private ObjectId getIdIntegranteSeleccionado() {
         int indiceFilaSeleccionada = this.tablaIntegrantes.getSelectedRow();
         if (indiceFilaSeleccionada != -1) {
@@ -139,7 +153,7 @@ public class ProyectoForm extends javax.swing.JFrame {
         String[] inicioSplit = fechaInicio.split("/");
         String[] finSplit = fechaFin.split("/");
 
-        this.fechaInicioPicker.setDate(LocalDate.of(Integer.parseInt(inicioSplit[2]), Integer.parseInt(inicioSplit[1]), Integer.parseInt(inicioSplit[0]))); //Despliega la fecha del Inicio en el DatePicker
+        this.inicioSPicker.setDate(LocalDate.of(Integer.parseInt(inicioSplit[2]), Integer.parseInt(inicioSplit[1]), Integer.parseInt(inicioSplit[0]))); //Despliega la fecha del Inicio en el DatePicker
         this.finSPicker.setDate(LocalDate.of(Integer.parseInt(finSplit[2]), Integer.parseInt(finSplit[1]), Integer.parseInt(finSplit[0]))); //Despliega la fecha fin en el DatePicker
         this.editarIntegrante = this.tablaIntegrantes.getSelectedRow();
         this.agregarParticipacionBtn.setText("Editar Integrante");
@@ -192,8 +206,8 @@ public class ProyectoForm extends javax.swing.JFrame {
             fila[6] = "Eliminar";
             modeloTabla.addRow(fila);
         });
-        ButtonColumn buttonColumnEditar = new ButtonColumn(tablaIntegrantes, editar, 5);
-        ButtonColumn buttonColumnEliminar = new ButtonColumn(tablaIntegrantes, eliminar, 6);
+        ButtonColumn buttonColumnEditar = new ButtonColumn(tablaIntegrantes, editar, 4);
+        ButtonColumn buttonColumnEliminar = new ButtonColumn(tablaIntegrantes, eliminar, 5);
     }
 
     private void llenarTablaLineasInvestigacion() {
@@ -215,6 +229,9 @@ public class ProyectoForm extends javax.swing.JFrame {
         List<Proyecto> proyectos = proyectoBO.consultarTodos();
         DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaProyectos.getModel();
         modeloTabla.setRowCount(0);
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        
         proyectos.forEach(linea -> {
             Object[] fila = new Object[10];
             fila[0] = linea.getId();
@@ -223,8 +240,8 @@ public class ProyectoForm extends javax.swing.JFrame {
             fila[3] = linea.getPresupuestoTotal();
             fila[4] = linea.getIdPrograma();
             fila[5] = linea.getPatrocinador();
-            fila[6] = linea.getFechaInicio();
-            fila[7] = linea.getFechaFin();
+            fila[6] = formatter.format(linea.getFechaInicio());
+            fila[7] = formatter.format(linea.getFechaFin());
             fila[8] = linea.getDescripcion();
             fila[9] = linea.getInvestigadorPrincipal();
             modeloTabla.addRow(fila);
@@ -336,6 +353,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     private void vaciarIntegrantesPanel(){
         inicioSPicker.setDate(null);
         finSPicker.setDate(null);
+        this.periodosIntegrantes.clear();
     }
     private void vaciarForm() {
         this.vaciarProyectoForm();
@@ -406,8 +424,10 @@ public class ProyectoForm extends javax.swing.JFrame {
         fechaInicioPicker = new com.github.lgooddatepicker.components.DatePicker();
         fechaFinPicker = new com.github.lgooddatepicker.components.DatePicker();
         jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Registrar Proyecto");
 
         programaComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -433,6 +453,7 @@ public class ProyectoForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tablaProyectos.setRowHeight(30);
         jScrollPane4.setViewportView(tablaProyectos);
 
         descripciontxta.setColumns(20);
@@ -492,6 +513,7 @@ public class ProyectoForm extends javax.swing.JFrame {
                 "Id", "Nombre", "Apellido Paterno", "Inicio Participación", "Fin Participación", "Editar", "Eliminar"
             }
         ));
+        tablaIntegrantes.setRowHeight(30);
         jScrollPane1.setViewportView(tablaIntegrantes);
 
         jLabel3.setText("Inicio Participación:");
@@ -581,6 +603,7 @@ public class ProyectoForm extends javax.swing.JFrame {
                 "Id", "Codigo", "Nombre", "Descriptores"
             }
         ));
+        lineaInvestigacionTabla.setRowHeight(30);
         jScrollPane2.setViewportView(lineaInvestigacionTabla);
 
         patrocinadorLbl1.setText("Investigador Doctor: ");
@@ -589,6 +612,8 @@ public class ProyectoForm extends javax.swing.JFrame {
         investigadorDoctorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel7.setText("Lineas de Investigación:");
+
+        jLabel8.setText("Proyectos:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -614,38 +639,38 @@ public class ProyectoForm extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(codigoTxt))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(0, 92, Short.MAX_VALUE)
                                         .addComponent(btnGuardarProyecto)
-                                        .addGap(192, 192, 192)
-                                        .addComponent(jButton2)))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
                                 .addGap(332, 332, 332))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(descripcionLbl)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(fechaInicioLbl)
-                                            .addComponent(fechaFinLbl))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(fechaInicioPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(fechaFinPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(presupuestoLbl)
-                                            .addComponent(patrocinadorLbl))
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(18, 18, 18)
-                                                .addComponent(patrocinadorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(18, 18, 18)
-                                                .addComponent(presupuestoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(patrocinadorLbl1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(investigadorDoctorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jButton2)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(descripcionLbl)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(fechaInicioLbl)
+                                                .addComponent(fechaFinLbl))
+                                            .addGap(18, 18, 18)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(fechaInicioPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(fechaFinPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(presupuestoLbl)
+                                                .addComponent(patrocinadorLbl))
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(patrocinadorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(presupuestoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(patrocinadorLbl1)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(investigadorDoctorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 430, Short.MAX_VALUE)))
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(356, 356, 356))
@@ -659,21 +684,23 @@ public class ProyectoForm extends javax.swing.JFrame {
                                 .addComponent(acronimoLbl)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(acronimoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel1)
                                 .addGap(574, 574, 574)
                                 .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 279, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(50, 50, 50)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 658, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(31, 31, 31)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(89, 89, 89))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addGap(37, 37, 37))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -703,12 +730,14 @@ public class ProyectoForm extends javax.swing.JFrame {
                         .addGap(25, 25, 25)
                         .addComponent(jLabel2)
                         .addGap(23, 23, 23)
-                        .addComponent(jLabel7)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(26, 26, 26)))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -735,11 +764,11 @@ public class ProyectoForm extends javax.swing.JFrame {
                         .addComponent(descripcionLbl)
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnGuardarProyecto)
                             .addComponent(jButton2))
-                        .addGap(25, 25, 25))
+                        .addGap(19, 19, 19))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addGap(18, 18, 18)
@@ -864,6 +893,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
