@@ -61,5 +61,10 @@ public class DoctoresBO implements IDoctoresBO {
     public InvestigadorDoctor consultarInvestigador(ObjectId idInvestigador) {
         return doctoresDAO.consultarInvestigador(idInvestigador);
     }
+
+    @Override
+    public List<InvestigadorDoctor> consultarTodosInvestigadores() {
+        return doctoresDAO.consultarTodosInvestigadores();
+    }
     
 }

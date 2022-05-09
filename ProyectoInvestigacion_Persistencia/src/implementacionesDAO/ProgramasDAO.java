@@ -11,6 +11,7 @@ import entidades.Doctor;
 import entidades.Programa;
 import interfacesDAO.IConexionBD;
 import interfacesDAO.IProgramasDAO;
+import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -54,5 +55,12 @@ public class ProgramasDAO implements IProgramasDAO{
         this.getColeccion().deleteOne(new Document("_id", idPrograma));
         return true;
     }
+
+    @Override
+    public List<Programa> consultarTodos() {
+        return this.getColeccion().find().into(new ArrayList());
+    }
+
+
     
 }

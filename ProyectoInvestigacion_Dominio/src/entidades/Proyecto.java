@@ -6,6 +6,7 @@
 package entidades;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -49,7 +50,7 @@ public class Proyecto {
         this.investigadorPrincipal = investigadorPrincipal;
     }
 
-    public Proyecto(String codigoReferencia, String nombre, String acronimo, Float presupuestoTotal, ObjectId idPrograma, String patrocinador, Date fechaInicio, Date fechaFin, String descripcion, InvestigadorDoctor investigadorPrincipal) {
+    public Proyecto(String codigoReferencia, String nombre, String acronimo, Float presupuestoTotal, ObjectId idPrograma, String patrocinador, Date fechaInicio, Date fechaFin, String descripcion, InvestigadorDoctor investigadorPrincipal, List<DetalleProyectoProfesor> detalles, List<ObjectId> idsLineasInvestigacion ) {
         this.codigoReferencia = codigoReferencia;
         this.nombre = nombre;
         this.acronimo = acronimo;
@@ -60,6 +61,8 @@ public class Proyecto {
         this.fechaFin = fechaFin;
         this.descripcion = descripcion;
         this.investigadorPrincipal = investigadorPrincipal;
+        this.detalles = detalles;
+        this.idsLineasInvestigacion = idsLineasInvestigacion;   
     }
 
     public ObjectId getId() {
@@ -133,6 +136,8 @@ public class Proyecto {
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
     }
+
+
 
     public String getDescripcion() {
         return descripcion;

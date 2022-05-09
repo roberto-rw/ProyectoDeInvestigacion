@@ -239,10 +239,6 @@ public class ProfesorForm extends javax.swing.JFrame {
      
      }
      
-     
-     
-    
-     
      private void eliminarSupervision(){
         int opcionSeleccionada = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea eliminar el supervisor seleccionado?", "Confirmación", JOptionPane.YES_NO_OPTION);
         
@@ -548,6 +544,11 @@ public class ProfesorForm extends javax.swing.JFrame {
         nombreLbl.setText("Nombre:");
         nombreLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
+        nombreTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nombreTxtActionPerformed(evt);
+            }
+        });
         nombreTxt.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 nombreTxtKeyTyped(evt);
@@ -913,21 +914,21 @@ public class ProfesorForm extends javax.swing.JFrame {
 
     private void nombreTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nombreTxtKeyTyped
         char c = evt.getKeyChar();
-        if((c < 'a' || c>'z') && (c < 'A' || c>'Z')){
+        if((c < 'a' || c>'z') && (c < 'A' || c>'Z') && (c > ' ') ){
            evt.consume();
         }
     }//GEN-LAST:event_nombreTxtKeyTyped
 
     private void paternoTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_paternoTxtKeyTyped
         char c = evt.getKeyChar();
-        if((c < 'a' || c>'z') && (c < 'A' || c>'Z')){
+        if((c < 'a' || c>'z') && (c < 'A' || c>'Z') && (c > ' ')){
            evt.consume();
         }
     }//GEN-LAST:event_paternoTxtKeyTyped
 
     private void maternoTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_maternoTxtKeyTyped
         char c = evt.getKeyChar();
-        if((c < 'a' || c>'z') && (c < 'A' || c>'Z')){
+        if((c < 'a' || c>'z') && (c < 'A' || c>'Z') && (c > ' ')){
            evt.consume();
         }
     }//GEN-LAST:event_maternoTxtKeyTyped
@@ -991,6 +992,10 @@ public class ProfesorForm extends javax.swing.JFrame {
     private void botonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCancelarActionPerformed
        this.vaciarForm();
     }//GEN-LAST:event_botonCancelarActionPerformed
+
+    private void nombreTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nombreTxtActionPerformed
 
     /**
      * @param args the command line arguments

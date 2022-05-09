@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package interfacesDAO;
+package interfacesBO;
 
 import entidades.Programa;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
  *
  * @author pc
  */
-public interface IProgramasDAO {
+public interface IProgramasBO {
     public boolean agregar(Programa programa);
     public boolean actualizar(Programa programa);
     public boolean eliminar(ObjectId idPrograma);
