@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import org.bson.types.ObjectId;
 
 /**
@@ -28,7 +29,7 @@ public class Proyecto {
     private String descripcion;
     private InvestigadorDoctor investigadorPrincipal;
     private List<ObjectId> idsLineasInvestigacion; //Representa ProyectoLineadeInvestigacion
-    private List<DetalleProyectoProfesor> detalles;
+    private List<PeriodoParticipacion> detalles;
     private List<Publicacion> publicaciones;
 
     
@@ -36,7 +37,7 @@ public class Proyecto {
     public Proyecto() {
     }
 
-    public Proyecto(ObjectId _id, String codigoReferencia, String nombre, String acronimo, Float presupuestoTotal, ObjectId idPrograma, String patrocinador, Date fechaInicio, Date fechaFin, String descripcion, InvestigadorDoctor investigadorPrincipal) {
+    public Proyecto(ObjectId _id, String codigoReferencia, String nombre, String acronimo, Float presupuestoTotal, ObjectId idPrograma, String patrocinador, Date fechaInicio, Date fechaFin, String descripcion, InvestigadorDoctor investigadorPrincipal, List<PeriodoParticipacion> detalles, List<ObjectId> idsLineasInvestigacion) {
         this._id = _id;
         this.codigoReferencia = codigoReferencia;
         this.nombre = nombre;
@@ -48,9 +49,11 @@ public class Proyecto {
         this.fechaFin = fechaFin;
         this.descripcion = descripcion;
         this.investigadorPrincipal = investigadorPrincipal;
+        this.detalles = detalles;
+        this.idsLineasInvestigacion = idsLineasInvestigacion;
     }
 
-    public Proyecto(String codigoReferencia, String nombre, String acronimo, Float presupuestoTotal, ObjectId idPrograma, String patrocinador, Date fechaInicio, Date fechaFin, String descripcion, InvestigadorDoctor investigadorPrincipal, List<DetalleProyectoProfesor> detalles, List<ObjectId> idsLineasInvestigacion ) {
+    public Proyecto(String codigoReferencia, String nombre, String acronimo, Float presupuestoTotal, ObjectId idPrograma, String patrocinador, Date fechaInicio, Date fechaFin, String descripcion, InvestigadorDoctor investigadorPrincipal, List<PeriodoParticipacion> detalles, List<ObjectId> idsLineasInvestigacion ) {
         this.codigoReferencia = codigoReferencia;
         this.nombre = nombre;
         this.acronimo = acronimo;
@@ -65,6 +68,12 @@ public class Proyecto {
         this.idsLineasInvestigacion = idsLineasInvestigacion;   
     }
 
+    public Proyecto(ObjectId _id) {
+        this._id = _id;
+    }
+
+    
+    
     public ObjectId getId() {
         return _id;
     }
@@ -166,24 +175,11 @@ public class Proyecto {
         this.idsLineasInvestigacion.add(idLineaInvestigacion);
     }
 
-    public void addDetalles(DetalleProyectoProfesor detalle) {
-        if(this.detalles == null){
-            this.detalles = new ArrayList();
-        }
-        this.detalles.add(detalle);
-    }
-
-    public List<DetalleProyectoProfesor> getDetalles() {
-        return this.detalles;
-    }
 
     public void setIdsLineasInvestigacion(List<ObjectId> idsLineasInvestigacion) {
         this.idsLineasInvestigacion = idsLineasInvestigacion;
     }
 
-    public void setDetalles(List<DetalleProyectoProfesor> detalles) {
-        this.detalles = detalles;
-    }
 
     public void setPublicaciones(List<Publicacion> publicaciones) {
         this.publicaciones = publicaciones;
@@ -192,6 +188,39 @@ public class Proyecto {
 
     public List<Publicacion> getPublicaciones() {
         return publicaciones;
+    }
+
+    public List<PeriodoParticipacion> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<PeriodoParticipacion> detalles) {
+        this.detalles = detalles;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + Objects.hashCode(this._id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Proyecto other = (Proyecto) obj;
+        if (!Objects.equals(this._id, other._id)) {
+            return false;
+        }
+        return true;
     }
     
     

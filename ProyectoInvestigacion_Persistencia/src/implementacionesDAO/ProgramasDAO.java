@@ -61,6 +61,15 @@ public class ProgramasDAO implements IProgramasDAO{
         return this.getColeccion().find().into(new ArrayList());
     }
 
+    @Override
+    public Programa consultar(ObjectId idPrograma) {
+        List<Programa> programas = this.getColeccion().find(new Document("_id", idPrograma)).into(new ArrayList());
+        if(programas.isEmpty()){
+            return null;
+        }
+        return programas.get(0);
+    }
+
 
     
 }

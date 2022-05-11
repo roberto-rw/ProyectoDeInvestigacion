@@ -5,6 +5,7 @@
  */
 package GUIS;
 
+import dtos.ProfesorProyectoDTO;
 import entidades.DetalleProyectoProfesor;
 import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
@@ -16,6 +17,7 @@ import implementacionesBO.BOSFactory;
 import interfacesBO.IDoctoresBO;
 import interfacesBO.ILineaInvestigacionBO;
 import interfacesBO.INoDoctoresBO;
+import interfacesBO.IProfesoresBO;
 import interfacesBO.IProgramasBO;
 import interfacesBO.IProyectoBO;
 import java.awt.event.ActionEvent;
@@ -40,8 +42,7 @@ import utils.ButtonColumn;
  */
 public class ProyectoForm extends javax.swing.JFrame {
 
-    private IDoctoresBO doctoresBO;
-    private INoDoctoresBO noDoctoresBO;
+    private IProfesoresBO profesoresBO;
     private ILineaInvestigacionBO lineaInvestigacion;
     private IProgramasBO programasBO;
     private IProyectoBO proyectoBO;
@@ -49,13 +50,14 @@ public class ProyectoForm extends javax.swing.JFrame {
     private Integer editarIntegrante;
     private List<PeriodoParticipacion> periodosIntegrantes;
     
+    private ObjectId editar;
+    
     /**
      * Creates new form ProyectoForm
      */
     public ProyectoForm() {
         initComponents();
-        this.doctoresBO = BOSFactory.crearDoctoresBO();
-        this.noDoctoresBO = BOSFactory.crearNoDoctoresBO();
+        this.profesoresBO = BOSFactory.crearProfesoresBO();
         
         //Ocultar Ids
         
@@ -85,27 +87,33 @@ public class ProyectoForm extends javax.swing.JFrame {
     }
     
     private void llenarComboBoxIntegrantes(){
-        List<Profesor> profesores = new ArrayList();
-        profesores.addAll(doctoresBO.consultarTodos());
-        profesores.addAll(noDoctoresBO.consultarTodos());
+        List<Object> profesores = new ArrayList();
+        profesores.add("-Selecciona-");
+        profesores.addAll(profesoresBO.consultarTodosProfesores());
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(profesores.toArray());
         integrantesComboBox.setModel(modeloComboBox);
     }
     
     private void llenarComboBoxProgramas(){
-        List<Programa> programas = new ArrayList();
+        List<Object> programas = new ArrayList();
+        programas.add("-Selecciona-");
         programas.addAll(programasBO.consultarTodos());
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(programas.toArray());
+        
         programaComboBox.setModel(modeloComboBox);
+        
+        
     }
     
     private void llenarComboBoxInvestigadorDoctor(){
-        List<InvestigadorDoctor> doctores = new ArrayList();
-        doctores.addAll(doctoresBO.consultarTodosInvestigadores());
-        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(doctores.toArray());
+        List<Object> investigadoresDoctores = new ArrayList();
+        investigadoresDoctores.add("-Selecciona-");
+        investigadoresDoctores.addAll(profesoresBO.consultarTodosInvestigadorDoctores());
+        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(investigadoresDoctores.toArray());
         investigadorDoctorComboBox.setModel(modeloComboBox);
     }
     
+    //Validaciones
     private boolean validarCamposVaciosIntegrantes() {
         return this.finSPicker.getDate() == null || this.inicioSPicker.getDate() == null;
     }
@@ -123,8 +131,45 @@ public class ProyectoForm extends javax.swing.JFrame {
         fechaInicioCalendar.set(fechaInicioPicker.getDate().getYear(), fechaInicioPicker.getDate().getMonthValue() - 1, fechaInicioPicker.getDate().getDayOfMonth(), 0, 0, 0);
         Calendar fechaFinCalendar = Calendar.getInstance();
         fechaFinCalendar.set(fechaFinPicker.getDate().getYear(), fechaFinPicker.getDate().getMonthValue() - 1, fechaFinPicker.getDate().getDayOfMonth(), 0, 0, 0);
-        return !(fechaInicioCalendar.compareTo(fechaFinCalendar) < 0);
+        return !(fechaInicioCalendar.compareTo(fechaFinCalendar) >= 0);
     }
+    
+    private boolean validarLineasSeleccionadas(){
+        return this.lineaInvestigacionTabla.getSelectedRows().length > 0;
+    }
+    
+    private boolean validarCamposVacios() {
+        return !(codigoTxt.getText().equals("") || this.nombreTxt.getText().equals("") || this.acronimoTxt.getText().equals("") || this.patrocinadorTxt.getText().equals("") 
+        || this.presupuestoTxt.getText().equals("") || this.descripcionTxt.getText().equals(""));
+        
+    }
+    
+    private boolean validarIntegrantesSeleccionados(){
+        return this.tablaIntegrantes.getRowCount() >= 2;
+    }
+    
+    private boolean validarSeleccionIntegrante(){
+        return this.integrantesComboBox.getSelectedIndex() != 0;
+    }
+    
+    private boolean validarPresupuesto(){
+        try{
+            Float.parseFloat(this.presupuestoTxt.getText());
+            return true;
+            
+        } catch(NumberFormatException nfe){
+            return false;
+        }
+    }
+    
+    private boolean validarSeleccionPrograma(){
+        return this.programaComboBox.getSelectedIndex() != 0;
+    }
+    
+    private boolean validarSeleccionInvestigadorPrincipal(){
+        return this.investigadorDoctorComboBox.getSelectedIndex() != 0;
+    }
+    
     
     private ObjectId getIdIntegranteSeleccionado() {
         int indiceFilaSeleccionada = this.tablaIntegrantes.getSelectedRow();
@@ -137,11 +182,23 @@ public class ProyectoForm extends javax.swing.JFrame {
             return null;
         }
     }
+    
+    private ObjectId getIdProyectoSeleccionado() {
+        int indiceFilaSeleccionada = this.tablaProyectos.getSelectedRow();
+        if (indiceFilaSeleccionada != -1) {
+            DefaultTableModel modelo = (DefaultTableModel) this.tablaProyectos.getModel();
+            int indiceColumnaId = 0;
+            ObjectId idProyectoSeleccionado = (ObjectId) modelo.getValueAt(indiceFilaSeleccionada, indiceColumnaId);
+            return idProyectoSeleccionado;
+        } else {
+            return null;
+        }
+    }
 
     private void editarParticipacion() {
-        Profesor profesorSeleccionado = doctoresBO.consultar(this.getIdIntegranteSeleccionado());
+        Profesor profesorSeleccionado = profesoresBO.consultarDoctor(this.getIdIntegranteSeleccionado());
         if(profesorSeleccionado == null){
-            profesorSeleccionado = noDoctoresBO.consultar(this.getIdIntegranteSeleccionado());
+            profesorSeleccionado = profesoresBO.consultarNoDoctor(this.getIdIntegranteSeleccionado());
         }
         this.integrantesComboBox.setSelectedItem(profesorSeleccionado);
 
@@ -159,7 +216,7 @@ public class ProyectoForm extends javax.swing.JFrame {
         this.agregarParticipacionBtn.setText("Editar Integrante");
     }
     
-    private void eliminarSupervision() {
+    private void eliminarIntegrante() {
         int opcionSeleccionada = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea eliminar el integrante seleccionado?", "Confirmación", JOptionPane.YES_NO_OPTION);
 
         if (opcionSeleccionada == JOptionPane.CLOSED_OPTION) {
@@ -186,15 +243,15 @@ public class ProyectoForm extends javax.swing.JFrame {
 
         Action eliminar = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                eliminarSupervision();
+                eliminarIntegrante();
             }
         };
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         this.periodosIntegrantes.forEach(periodo -> {
-           Profesor integrante = doctoresBO.consultar(periodo.getIdProfesor());
+           Profesor integrante = profesoresBO.consultarDoctor(periodo.getIdProfesor());
            if(integrante == null){
-               integrante = noDoctoresBO.consultar(periodo.getIdProfesor());
+               integrante = profesoresBO.consultarNoDoctor(periodo.getIdProfesor());
            }
             Object[] fila = new Object[7];
             fila[0] = periodo.getIdProfesor();
@@ -230,10 +287,23 @@ public class ProyectoForm extends javax.swing.JFrame {
         DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaProyectos.getModel();
         modeloTabla.setRowCount(0);
         
+        Action editar = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                editarProyecto();
+            }
+        };
+
+        Action eliminar = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+//                eliminarProyecto();
+            }
+        };
+        
+        
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         
         proyectos.forEach(linea -> {
-            Object[] fila = new Object[10];
+            Object[] fila = new Object[12];
             fila[0] = linea.getId();
             fila[1] = linea.getNombre();
             fila[2] = linea.getAcronimo();
@@ -244,24 +314,51 @@ public class ProyectoForm extends javax.swing.JFrame {
             fila[7] = formatter.format(linea.getFechaFin());
             fila[8] = linea.getDescripcion();
             fila[9] = linea.getInvestigadorPrincipal();
+            fila[10] = "Editar";
+            fila[11] = "Eliminar";
             modeloTabla.addRow(fila);
         });
+        
+        ButtonColumn buttonColumnEditar = new ButtonColumn(this.tablaProyectos, editar, 9);
+        ButtonColumn buttonColumnEliminar = new ButtonColumn(this.tablaProyectos, eliminar, 10);
     }
     
-    private boolean validarLineasSeleccionadas(){
-        return this.lineaInvestigacionTabla.getSelectedRows().length == 0;
+    private void editarProyecto(){
+        Proyecto proyectoSeleccionado = proyectoBO.consultar(this.getIdProyectoSeleccionado());
+        
+        this.codigoTxt.setText(proyectoSeleccionado.getCodigoReferencia());
+        this.nombreTxt.setText(proyectoSeleccionado.getNombre());
+        this.acronimoTxt.setText(proyectoSeleccionado.getAcronimo());
+        this.programaComboBox.setSelectedItem(programasBO.consultar(proyectoSeleccionado.getIdPrograma()));
+        this.presupuestoTxt.setText(proyectoSeleccionado.getPresupuestoTotal().toString());
+        this.patrocinadorTxt.setText(proyectoSeleccionado.getPatrocinador());
+        this.investigadorDoctorComboBox.setSelectedItem(proyectoSeleccionado.getInvestigadorPrincipal());
+        Date fechaInicio = proyectoSeleccionado.getFechaInicio();
+        fechaInicioPicker.setDate(LocalDate.of(fechaInicio.getYear()+1900, fechaInicio.getMonth()+1, fechaInicio.getDate()));
+        Date fechaFin = proyectoSeleccionado.getFechaFin();
+        fechaFinPicker.setDate(LocalDate.of(fechaFin.getYear()+1900, fechaFin.getMonth()+1, fechaFin.getDate()));
+        descripcionTxt.setText(proyectoSeleccionado.getDescripcion());
+        
+//        this.llenarTablaIntegrantes(proyectoBO.consultarIntegrantes(proyectoSeleccionado.getId()));
+        this.periodosIntegrantes = proyectoSeleccionado.getDetalles();
+        this.llenarTablaIntegrantes();
+        this.mostrarLineasInvestigacionSeleccionadas(proyectoBO.consultarLineasInvestigacion(proyectoSeleccionado.getId()));
+        editar = proyectoSeleccionado.getId();
+        btnGuardarProyecto.setText("Editar Proyecto");
+        
     }
     
-    private boolean validarCamposVacios() {
-        if(codigoTxt.getText().equals("") || this.nombreTxt.getText().equals("") || this.acronimoTxt.getText().equals("") || this.patrocinadorTxt.getText().equals("") 
-        || this.presupuestoTxt.getText().equals("") || this.descripciontxta.getText().equals("")){
-            return true;
-        }
-        else if(this.integrantesComboBox.getSelectedItem()==null){
-            return true;
-        }
-        return false;
-    }
+    private void mostrarLineasInvestigacionSeleccionadas(List<LineaInvestigacion> lineasInvestigacion){
+         DefaultTableModel modelo = (DefaultTableModel)this.lineaInvestigacionTabla.getModel();
+            int indiceColumnaId = 0;
+            //ObjectId idProfesorSeleccionado = (ObjectId)modelo.getValueAt(indiceFilaSeleccionada, indiceColumnaId);
+            
+            for (int i = 0; i < modelo.getRowCount(); i++) {
+                ObjectId idLineaSeleccionada = (ObjectId)modelo.getValueAt(i, indiceColumnaId);
+                LineaInvestigacion lineaInvestigacion = new LineaInvestigacion(idLineaSeleccionada);
+                if(lineasInvestigacion.contains(lineaInvestigacion)) this.lineaInvestigacionTabla.getSelectionModel().addSelectionInterval(i, i);
+            }
+     }
     
     private List<ObjectId> getLineasInvestigacionSeleccionadas() {
         List<ObjectId> lineasSeleccionadas = new ArrayList();
@@ -275,45 +372,71 @@ public class ProyectoForm extends javax.swing.JFrame {
         return lineasSeleccionadas;
     }
     
-      private List<DetalleProyectoProfesor> getIntegrantesSeleccionados() {
-        List<DetalleProyectoProfesor> integrantesSeleccionados = new ArrayList();
-        
-
-        DefaultTableModel modelo = (DefaultTableModel) this.tablaIntegrantes.getModel();
-        for (int i = 0; i<this.tablaIntegrantes.getRowCount(); i++) {
-            ObjectId integrantes = (ObjectId) modelo.getValueAt(i, 0);
-            String fechaInicio = (String) modelo.getValueAt(i, 3);
-            String fechaFin = (String) modelo.getValueAt(i, 4);
-            String[] fechaInicioSplit = fechaInicio.split("/");
-            String[] fechaFinSplit = fechaFin.split("/");
-            Calendar fechaI = Calendar.getInstance();
-            fechaI.set(Integer.parseInt(fechaInicioSplit[2]), Integer.parseInt(fechaInicioSplit[1]), Integer.parseInt(fechaInicioSplit[0]));
-            Calendar fechaF = Calendar.getInstance();
-            fechaI.set(Integer.parseInt(fechaFinSplit[2]), Integer.parseInt(fechaFinSplit[1]), Integer.parseInt(fechaFinSplit[0]));
-            DetalleProyectoProfesor dpp = new DetalleProyectoProfesor(integrantes, fechaI.getTime(), fechaF.getTime());
-            integrantesSeleccionados.add(dpp);
-        }
-        return integrantesSeleccionados;
-    }
-    
+//      private List<DetalleProyectoProfesor> getIntegrantesSeleccionados() {
+//        List<DetalleProyectoProfesor> integrantesSeleccionados = new ArrayList();
+//        
+//
+//        DefaultTableModel modelo = (DefaultTableModel) this.tablaIntegrantes.getModel();
+//        for (int i = 0; i<this.tablaIntegrantes.getRowCount(); i++) {
+//            ObjectId integrantes = (ObjectId) modelo.getValueAt(i, 0);
+//            String fechaInicio = (String) modelo.getValueAt(i, 3);
+//            String fechaFin = (String) modelo.getValueAt(i, 4);
+//            String[] fechaInicioSplit = fechaInicio.split("/");
+//            String[] fechaFinSplit = fechaFin.split("/");
+//            Calendar fechaI = Calendar.getInstance();
+//            fechaI.set(Integer.parseInt(fechaInicioSplit[2]), Integer.parseInt(fechaInicioSplit[1]), Integer.parseInt(fechaInicioSplit[0]));
+//            Calendar fechaF = Calendar.getInstance();
+//            fechaI.set(Integer.parseInt(fechaFinSplit[2]), Integer.parseInt(fechaFinSplit[1]), Integer.parseInt(fechaFinSplit[0]));
+//            DetalleProyectoProfesor dpp = new DetalleProyectoProfesor(integrantes, fechaI.getTime(), fechaF.getTime());
+//            integrantesSeleccionados.add(dpp);
+//        }
+//        return integrantesSeleccionados;
+//    }
+//    
     private void guardar(){
-        if (validarCamposVacios()) {
+        if (!validarCamposVacios()) {
             JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-         if(this.validarLineasSeleccionadas()){
+         if(!this.validarLineasSeleccionadas()){
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna linea", "información", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        if (this.validarFechasProyecto()) {
+        if (!this.validarFechasProyecto()) {
             JOptionPane.showMessageDialog(this, "Las fechas colcadas no son válidas", "información", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
+        if(!this.validarIntegrantesSeleccionados()){
+            JOptionPane.showMessageDialog(this, "Deben seleccionarse al menos 2 integrantes", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(!this.validarPresupuesto()){
+            JOptionPane.showMessageDialog(this, "Presupuesto inválido", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(!this.validarSeleccionPrograma()){
+            JOptionPane.showMessageDialog(this, "Se debe seleccionar un programa", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(!this.validarSeleccionInvestigadorPrincipal()){
+            JOptionPane.showMessageDialog(this, "Se debe seleccionar un investigador principal", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        
         String codigoReferencia = codigoTxt.getText();
-        String nombreProfesor = nombreTxt.getText();
+      
+        String nombreProyecto = nombreTxt.getText();
+        
         String acronimo = acronimoTxt.getText();
+        
+        
         Float presupuesto = Float.parseFloat(presupuestoTxt.getText());
         String patrocinador = patrocinadorTxt.getText();
         Programa programa = (Programa) programaComboBox.getSelectedItem();
@@ -322,21 +445,45 @@ public class ProyectoForm extends javax.swing.JFrame {
         fechaInicioCalendar.set(fechaInicioPicker.getDate().getYear(), fechaInicioPicker.getDate().getMonthValue() - 1, fechaInicioPicker.getDate().getDayOfMonth(), 0, 0, 0);
         Calendar fechaFinCalendar = Calendar.getInstance();
         fechaFinCalendar.set(fechaFinPicker.getDate().getYear(), fechaFinPicker.getDate().getMonthValue() - 1, fechaFinPicker.getDate().getDayOfMonth(), 0, 0, 0);
-        String descripcion = descripciontxta.getText();
+        String descripcion = descripcionTxt.getText();
+        
         
         List<ObjectId> lineasSeleccionadas = this.getLineasInvestigacionSeleccionadas();
-        List<DetalleProyectoProfesor> integrantesSeleccionados = this.getIntegrantesSeleccionados();
-        boolean seAgregoProyecto = false;
-        Proyecto proyecto = new Proyecto(codigoReferencia, nombreProfesor, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicioCalendar.getTime(), fechaFinCalendar.getTime(), descripcion, investigadorDoctor, integrantesSeleccionados, lineasSeleccionadas);
-        if(proyectoBO.agregar(proyecto)){
-            seAgregoProyecto = true;
+//        List<DetalleProyectoProfesor> integrantesSeleccionados = this.getIntegrantesSeleccionados();
+        if(editar != null){
+            Proyecto proyecto = new Proyecto(editar, codigoReferencia, nombreProyecto, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicioCalendar.getTime(), fechaFinCalendar.getTime(), descripcion, investigadorDoctor, this.periodosIntegrantes, lineasSeleccionadas);
+            boolean seEditoProyecto = proyectoBO.actualizar(proyecto);
+            if(seEditoProyecto){
+                JOptionPane.showMessageDialog(this, "Se modificó el proyecto correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
+                this.llenarTablaProyectos();
+            } else{
+                JOptionPane.showMessageDialog(this, "No se pudo modificar el Proyecto", "información", JOptionPane.INFORMATION_MESSAGE);
+            }
+            
+        } else{
+            if(proyectoBO.estaRepetidoCodigo(codigoReferencia)){
+                JOptionPane.showMessageDialog(this, "El código ya está en uso", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(proyectoBO.estaRepetidoAcronimo(acronimo)){
+                JOptionPane.showMessageDialog(this, "El acronimo ya está en uso", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(proyectoBO.estaRepetidoNombre(nombreProyecto)){
+                JOptionPane.showMessageDialog(this, "El nombre ya está en uso", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Proyecto proyecto = new Proyecto(codigoReferencia, nombreProyecto, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicioCalendar.getTime(), fechaFinCalendar.getTime(), descripcion, investigadorDoctor, this.periodosIntegrantes, lineasSeleccionadas);
+            boolean seAgregoProyecto = proyectoBO.agregar(proyecto);
+                 
+            if (seAgregoProyecto) {
+                JOptionPane.showMessageDialog(this, "Se agregó el proyecto correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
+                this.llenarTablaProyectos();
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo agregar el Proyecto", "información", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
-        if (seAgregoProyecto) {
-            JOptionPane.showMessageDialog(this, "Se agregó el proyecto correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
-            this.llenarTablaProyectos();
-        } else {
-            JOptionPane.showMessageDialog(this, "No se pudo agregar el Proyecto", "información", JOptionPane.INFORMATION_MESSAGE);
-        }
+        
         vaciarForm();
     }
     
@@ -365,12 +512,17 @@ public class ProyectoForm extends javax.swing.JFrame {
         this.presupuestoTxt.setText("");
         this.patrocinadorTxt.setText("");
         this.investigadorDoctorComboBox.setSelectedIndex(0);
-        this.descripciontxta.setText("");
+        this.descripcionTxt.setText("");
         this.llenarTablaLineasInvestigacion();
         this.llenarTablaProyectos();
         this.btnGuardarProyecto.setText("Guardar Proyecto");
+        editar = null;
+        btnGuardarProyecto.setText("Guardar Proyecto");
+        this.periodosIntegrantes.clear();
+        this.llenarTablaIntegrantes();
 
     }
+   
     
     
     /**
@@ -390,7 +542,7 @@ public class ProyectoForm extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         tablaProyectos = new javax.swing.JTable();
         jScrollPane6 = new javax.swing.JScrollPane();
-        descripciontxta = new javax.swing.JTextArea();
+        descripcionTxt = new javax.swing.JTextArea();
         codigoLbl = new javax.swing.JLabel();
         nombreLbl = new javax.swing.JLabel();
         acronimoLbl = new javax.swing.JLabel();
@@ -435,6 +587,9 @@ public class ProyectoForm extends javax.swing.JFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 presupuestoTxtKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                presupuestoTxtKeyTyped(evt);
+            }
         });
 
         tablaProyectos.setModel(new javax.swing.table.DefaultTableModel(
@@ -442,11 +597,11 @@ public class ProyectoForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "id", "Nombre", "Acronimo", "Presupuesto", "Programa", "Patrocinador", "Fecha de inicio", "Fecha de fin", "Descripción", "Investigador Principal"
+                "id", "Nombre", "Acronimo", "Presupuesto", "Programa", "Patrocinador", "Fecha de inicio", "Fecha de fin", "Descripción", "Investigador Principal", "Editar", "Eliminar"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, true, true, true, true, true, true, true, true
+                false, false, false, false, false, false, false, false, false, false, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -456,9 +611,9 @@ public class ProyectoForm extends javax.swing.JFrame {
         tablaProyectos.setRowHeight(30);
         jScrollPane4.setViewportView(tablaProyectos);
 
-        descripciontxta.setColumns(20);
-        descripciontxta.setRows(5);
-        jScrollPane6.setViewportView(descripciontxta);
+        descripcionTxt.setColumns(20);
+        descripcionTxt.setRows(5);
+        jScrollPane6.setViewportView(descripcionTxt);
 
         codigoLbl.setText("Codigo de Referencia:");
         codigoLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -502,6 +657,11 @@ public class ProyectoForm extends javax.swing.JFrame {
 
         jButton2.setText("Cancelar");
         jButton2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -533,7 +693,7 @@ public class ProyectoForm extends javax.swing.JFrame {
 
         integrantesComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel5.setText("Participante");
+        jLabel5.setText("Integrante:");
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -606,7 +766,7 @@ public class ProyectoForm extends javax.swing.JFrame {
         lineaInvestigacionTabla.setRowHeight(30);
         jScrollPane2.setViewportView(lineaInvestigacionTabla);
 
-        patrocinadorLbl1.setText("Investigador Doctor: ");
+        patrocinadorLbl1.setText("Investigador Principal: ");
         patrocinadorLbl1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         investigadorDoctorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -627,51 +787,35 @@ public class ProyectoForm extends javax.swing.JFrame {
                 .addGap(56, 56, 56)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(nombreLbl)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(nombreTxt))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(codigoLbl)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(codigoTxt))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnGuardarProyecto)
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addGap(332, 332, 332))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jButton2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton2)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(descripcionLbl)
+                                .addGroup(layout.createSequentialGroup()
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(descripcionLbl)
+                                        .addComponent(fechaInicioLbl)
+                                        .addComponent(fechaFinLbl))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(fechaInicioPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(fechaFinPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(presupuestoLbl)
+                                        .addComponent(patrocinadorLbl))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(fechaInicioLbl)
-                                                .addComponent(fechaFinLbl))
                                             .addGap(18, 18, 18)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(fechaInicioPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(fechaFinPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(patrocinadorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(presupuestoLbl)
-                                                .addComponent(patrocinadorLbl))
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addGap(18, 18, 18)
-                                                    .addComponent(patrocinadorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addGap(18, 18, 18)
-                                                    .addComponent(presupuestoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(patrocinadorLbl1)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(investigadorDoctorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 430, Short.MAX_VALUE)))
+                                            .addGap(18, 18, 18)
+                                            .addComponent(presupuestoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(patrocinadorLbl1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(investigadorDoctorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 430, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(356, 356, 356))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -693,14 +837,28 @@ public class ProyectoForm extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 279, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 658, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(31, 31, 31)))
+                                .addComponent(jLabel8)
+                                .addGap(628, 628, 628)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7))
-                        .addGap(37, 37, 37))))
+                        .addGap(37, 37, 37))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(nombreLbl)
+                                .addGap(18, 18, 18)
+                                .addComponent(nombreTxt))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(codigoLbl)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(codigoTxt))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnGuardarProyecto)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(21, 21, 21)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 687, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(570, 570, 570))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -770,8 +928,9 @@ public class ProyectoForm extends javax.swing.JFrame {
                             .addComponent(jButton2))
                         .addGap(19, 19, 19))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
                         .addComponent(jLabel6)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
@@ -786,6 +945,12 @@ public class ProyectoForm extends javax.swing.JFrame {
 
     private void agregarParticipacionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarParticipacionBtnActionPerformed
 
+        
+        if (!this.validarSeleccionIntegrante()) {
+            JOptionPane.showMessageDialog(this, "No hay ningun integrante seleccionado", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         if(this.validarCamposVaciosIntegrantes()){
             JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
             return;
@@ -830,7 +995,20 @@ public class ProyectoForm extends javax.swing.JFrame {
 
     private void btnGuardarProyectoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProyectoActionPerformed
         this.guardar();
+
     }//GEN-LAST:event_btnGuardarProyectoActionPerformed
+
+    private void presupuestoTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_presupuestoTxtKeyTyped
+        char c = evt.getKeyChar();
+       
+       if((c < '0' || c>'9') && (c > '.')){
+           evt.consume();
+       }
+    }//GEN-LAST:event_presupuestoTxtKeyTyped
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.vaciarForm();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -876,7 +1054,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     private javax.swing.JLabel codigoLbl;
     private javax.swing.JTextField codigoTxt;
     private javax.swing.JLabel descripcionLbl;
-    private javax.swing.JTextArea descripciontxta;
+    private javax.swing.JTextArea descripcionTxt;
     private javax.swing.JLabel fechaFinLbl;
     private com.github.lgooddatepicker.components.DatePicker fechaFinPicker;
     private javax.swing.JLabel fechaInicioLbl;

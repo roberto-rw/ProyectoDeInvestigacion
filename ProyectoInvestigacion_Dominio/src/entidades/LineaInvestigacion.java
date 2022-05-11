@@ -34,6 +34,11 @@ public class LineaInvestigacion {
         this.nombre = nombre;
         this.conjuntoDescriptores = conjuntoDescriptores;
     }
+
+    public LineaInvestigacion(ObjectId _id) {
+        this._id = _id;
+    }
+    
     
 
     public ObjectId getId() {

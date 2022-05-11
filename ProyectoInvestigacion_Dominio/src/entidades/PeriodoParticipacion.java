@@ -13,15 +13,15 @@ import org.bson.types.ObjectId;
  * @author pc
  */
 public class PeriodoParticipacion {
-    private ObjectId idProfesor; 
+    private ObjectId idProfesor;
     private Date fechaInicio;
     private Date fechaFin;
 
     public PeriodoParticipacion() {
     }
 
-    public PeriodoParticipacion(ObjectId idSupervisor, Date fechaInicio, Date fechaFin) {
-        this.idProfesor = idSupervisor;
+    public PeriodoParticipacion(ObjectId idProfesor, Date fechaInicio, Date fechaFin) {
+        this.idProfesor = idProfesor;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
     }
@@ -48,6 +48,11 @@ public class PeriodoParticipacion {
 
     public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
+    }
+
+    @Override
+    public String toString() {
+        return "DetalleProyectoProfesor{" + "idProfesor=" + idProfesor + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + '}';
     }
 
     

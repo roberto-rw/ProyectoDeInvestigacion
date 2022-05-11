@@ -8,6 +8,7 @@ package implementacionesBO;
 import interfacesBO.IDoctoresBO;
 import interfacesBO.ILineaInvestigacionBO;
 import interfacesBO.INoDoctoresBO;
+import interfacesBO.IProfesoresBO;
 import interfacesBO.IProgramasBO;
 import interfacesBO.IProyectoBO;
 
@@ -34,5 +35,9 @@ public class BOSFactory {
     
     public static IProgramasBO crearProgramaBO(){
         return new ProgramasBO();
+    }
+    
+    public static IProfesoresBO crearProfesoresBO(){
+        return new ProfesoresBO();
     }
 }

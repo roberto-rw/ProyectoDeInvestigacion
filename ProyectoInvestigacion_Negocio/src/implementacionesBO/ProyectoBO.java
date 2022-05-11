@@ -69,7 +69,20 @@ public class ProyectoBO implements IProyectoBO{
         return proyectoDAO.agregarPublicacion(idProyecto, publicacion);
     }
 
-    
+    @Override
+    public boolean estaRepetidoNombre(String nombre) {
+        return proyectoDAO.estaRepetidoNombre(nombre);
+    }
+
+    @Override
+    public boolean estaRepetidoCodigo(String codigo) {
+        return proyectoDAO.estaRepetidoCodigo(codigo);
+    }
+
+    @Override
+    public boolean estaRepetidoAcronimo(String acronimo) {
+        return proyectoDAO.estaRepetidoAcronimo(acronimo);
+    }
 
     
 }

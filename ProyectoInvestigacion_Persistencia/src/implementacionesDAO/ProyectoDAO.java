@@ -16,6 +16,7 @@ import entidades.Publicacion;
 import interfacesDAO.IConexionBD;
 import interfacesDAO.IProyectoDAO;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -57,7 +58,8 @@ public class ProyectoDAO implements IProyectoDAO{
                 .append("fechaInicio", proyecto.getFechaInicio())
                 .append("fechaFin", proyecto.getFechaFin())
                 .append("publicaciones", proyecto.getPublicaciones())
-                .append("detalles", proyecto.getDetalles());
+                .append("detalles", proyecto.getDetalles())
+                .append("idsLineasInvestigacion", proyecto.getIdsLineasInvestigacion());
         
 
         this.getCollection().updateOne(filtro, new Document("$set", cambios));
@@ -117,19 +119,6 @@ public class ProyectoDAO implements IProyectoDAO{
         
         return lineasInvestigacion.get(0).getLineasInvestigacion(); 
     }
-
-
-//    @Override
-//    public boolean agregarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId idProyecto) {
-//          
-////        Bson filtro = Filters.eq(idProyecto);
-////        Bson updates = Updates.set("detalles", integrantes);
-////        this.getCollection().findOneAndUpdate(filtro, updates);
-//             
-//        this.getCollection().updateOne(new Document("_id",idProyecto), new Document("$set", new Document("detalles", integrantes)));
-//        
-//        return true;
-//    }
     
     @Override
     public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id) {
@@ -137,28 +126,6 @@ public class ProyectoDAO implements IProyectoDAO{
         return true;
     }
     
-    
-//    @Override
-//    public boolean eliminarIntegrantes(List<DetalleProyectoProfesor> integrantesEliminar, ObjectId idProyecto) {
-//        Proyecto proyecto = this.consultar(idProyecto);
-//        List<DetalleProyectoProfesor> listaIntegrantesProyecto = proyecto.getDetalles();
-//        List<DetalleProyectoProfesor> listaIntegrantesEliminar = integrantesEliminar;
-//        
-//        for (DetalleProyectoProfesor integrantes: listaIntegrantesProyecto) {
-//            
-//            for (DetalleProyectoProfesor integrantesE: listaIntegrantesEliminar) {
-//                
-//                    if(integrantesE.getIdProfesor().equals(integrantes.getIdProfesor())){
-//                        
-//                        listaIntegrantesProyecto.remove(integrantes);
-//                    }
-//            }
-//        }
-//        
-//        this.getCollection().updateOne(new Document("_id:",idProyecto), new Document("$set", new Document("detalles", listaIntegrantesProyecto)));
-//        
-//        return true;
-//    }
 
     @Override
     public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion) {
@@ -174,6 +141,8 @@ public class ProyectoDAO implements IProyectoDAO{
     @Override
     public List<ProfesorProyectoDTO> consultarIntegrantes(ObjectId idProyecto) {
         List<Document> etapasDoctor = new ArrayList();
+        
+       
         etapasDoctor.add(new Document("$match", new Document("_id", idProyecto)));
         etapasDoctor.add(new Document("$unwind", new Document("path", "$detalles")));
         etapasDoctor.add(
@@ -189,12 +158,14 @@ public class ProyectoDAO implements IProyectoDAO{
                 new Document()
                 .append("_id", 0)
                 .append("idProfesor", "$integrantes._id")
-                .append("nombreProfesor", "$integrantes.nombre"))
-                .append("inicioSupervision", "detalles.fechaInicio")
-                .append("finSupervision", "$detalles.fechaFin")
-        );
-        List<ProfesorProyectoDTO> detallesDoctor = baseDatos.getCollection("noDoctores", ProfesorProyectoDTO.class).aggregate(etapasDoctor).into(new ArrayList());
+                .append("nombreProfesor", "$integrantes.nombre")
+                .append("apellidoPaternoProfesor", "$integrantes.apellidoPaterno")
+                .append("fechaInicioParticipacion", "$detalles.fechaInicio")
+                .append("fechaFinParticipacion", "$detalles.fechaFin")
+        ));
         
+        List<ProfesorProyectoDTO> integrantesDoctores = baseDatos.getCollection("proyectos", ProfesorProyectoDTO.class).aggregate(etapasDoctor).into(new ArrayList());
+        //NoDoctores
         List<Document> etapasNoDoctor = new ArrayList();
         etapasNoDoctor.add(new Document("$match", new Document("_id", idProyecto)));
         etapasNoDoctor.add(new Document("$unwind", new Document("path", "$detalles")));
@@ -211,16 +182,39 @@ public class ProyectoDAO implements IProyectoDAO{
                 new Document()
                 .append("_id", 0)
                 .append("idProfesor", "$integrantes._id")
-                .append("nombreProfesor", "$integrantes.nombre"))
+                .append("nombreProfesor", "$integrantes.nombre")
                 .append("apellidoPaternoProfesor", "$integrantes.apellidoPaterno")
-                .append("inicioSupervision", "detalles.fechaInicio")
-                .append("finSupervision", "$detalles.fechaFin")
-        );
-        List<ProfesorProyectoDTO> detallesNoDoctor = baseDatos.getCollection("noDoctores", ProfesorProyectoDTO.class).aggregate(etapasDoctor).into(new ArrayList());
-        List<ProfesorProyectoDTO> detalles = new ArrayList();
-        detalles.addAll(detallesDoctor);
-        detalles.addAll(detallesNoDoctor);
-        return detalles;
+                .append("fechaInicioParticipacion", "$detalles.fechaInicio")
+                .append("fechaFinParticipacion", "$detalles.fechaFin")
+        ));
+        
+       List<ProfesorProyectoDTO> integrantesNoDoctores = baseDatos.getCollection("proyectos", ProfesorProyectoDTO.class).aggregate(etapasNoDoctor).into(new ArrayList());
+        if(integrantesDoctores.isEmpty()){
+            return null;
+        }
+        integrantesDoctores.addAll(integrantesNoDoctores);
+        return integrantesDoctores;
+        
+       
+    }
+    
+    @Override
+    public boolean estaRepetidoNombre(String nombre){
+        List<Proyecto> resultados = this.getCollection().find(new Document()
+                                                                .append("nombre", nombre)).into(new ArrayList());
+        return (!resultados.isEmpty());
+    }
+
+    @Override
+    public boolean estaRepetidoCodigo(String codigo) {
+        List<Proyecto> resultados = this.getCollection().find(new Document("codigoReferencia", codigo)).into(new ArrayList());
+        return !resultados.isEmpty();
+    }
+
+    @Override
+    public boolean estaRepetidoAcronimo(String acronimo) {
+        List<Proyecto> resultados = this.getCollection().find(new Document("acronimo", acronimo)).into(new ArrayList());
+        return !resultados.isEmpty();
     }
 
 

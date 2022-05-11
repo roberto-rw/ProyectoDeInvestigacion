@@ -17,5 +17,6 @@ public interface IProgramasDAO {
     public boolean agregar(Programa programa);
     public boolean actualizar(Programa programa);
     public boolean eliminar(ObjectId idPrograma);
+    public Programa consultar(ObjectId idPrograma);
     public List<Programa> consultarTodos();
 }

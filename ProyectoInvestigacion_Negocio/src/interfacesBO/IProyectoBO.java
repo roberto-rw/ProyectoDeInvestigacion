@@ -27,4 +27,7 @@ public interface IProyectoBO {
     public List<ProfesorProyectoDTO> consultarIntegrantes(ObjectId idProyecto); 
     public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id);
     public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion);
+    public boolean estaRepetidoNombre(String nombre);
+    public boolean estaRepetidoCodigo(String codigo);
+    public boolean estaRepetidoAcronimo(String acronimo);
 }

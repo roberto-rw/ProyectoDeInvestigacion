@@ -40,5 +40,10 @@ public class ProgramasBO implements IProgramasBO{
         return programasDAO.consultarTodos();
     }
 
+    @Override
+    public Programa consultar(ObjectId idPrograma) {
+        return programasDAO.consultar(idPrograma);
+    }
+
     
 }
