@@ -19,6 +19,19 @@ public class ConexionBD implements IConexionBD{
     private static final String HOST = "localhost";
     private static final int PUERTO = 27017;
     private static final String BASE_DATOS = "ProyectoInvestigacion";
+    private static ConexionBD conexionBD;
+    private MongoDatabase conexion;
+    
+    private ConexionBD(){
+        conexion = crearConexion();
+    }
+    
+    public static ConexionBD getInstance(){
+        if(conexionBD == null){
+            conexionBD = new ConexionBD();
+        }
+        return conexionBD;
+    }
     
     @Override
     public MongoDatabase crearConexion() {
@@ -47,5 +60,5 @@ public class ConexionBD implements IConexionBD{
             return null;
         }
     }
-    
+
 }

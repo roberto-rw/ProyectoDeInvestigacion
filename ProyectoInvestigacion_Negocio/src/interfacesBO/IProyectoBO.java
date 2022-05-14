@@ -7,9 +7,11 @@ package interfacesBO;
 
 import dtos.ProfesorProyectoDTO;
 import entidades.DetalleProyectoProfesor;
+import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
 import entidades.Proyecto;
 import entidades.Publicacion;
+import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -30,4 +32,13 @@ public interface IProyectoBO {
     public boolean estaRepetidoNombre(String nombre);
     public boolean estaRepetidoCodigo(String codigo);
     public boolean estaRepetidoAcronimo(String acronimo);
+    public Proyecto consultarPorCodigo(String codigo);
+    public Proyecto consultarPorNombre(String nombre);
+    public Proyecto consultarPorAcronimo(String acronimo);
+    public List<Proyecto> consultarPorFechas(Date fechaInicio, Date fechaFin);
+    public List<Proyecto> consultarPorCaracteristicas(ObjectId idPrograma, Float presupuesto, Integer filtroPresupuesto, InvestigadorDoctor investigador, String patrocinador);
+    public List<String> consultarCodigos();
+    public List<String> consultarNombres();
+    public List<String> consultarAcronimos();
+    public boolean validarFechasReales(Proyecto proyecto);
 }

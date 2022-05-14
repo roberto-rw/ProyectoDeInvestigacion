@@ -18,7 +18,7 @@ import interfacesDAO.IPublicacionesCongresoDAO;
  * @author jegav
  */
 public class DAOSFactory {
-    private static final IConexionBD conexionBD = new ConexionBD();
+    private static final IConexionBD conexionBD = ConexionBD.getInstance();
     
     public static IDoctoresDAO crearDoctoresDAO(){
         return new DoctoresDAO(conexionBD);

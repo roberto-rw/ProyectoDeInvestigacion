@@ -5,35 +5,166 @@
  */
 package GUIS;
 
+import entidades.InvestigadorDoctor;
+import entidades.Programa;
+import entidades.Proyecto;
+import implementacionesBO.BOSFactory;
+import interfacesBO.IProfesoresBO;
+import interfacesBO.IProgramasBO;
+import interfacesBO.IProyectoBO;
+import java.awt.event.ActionEvent;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
+import org.bson.types.ObjectId;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import utils.ButtonColumn;
+
 /**
  *
  * @author jegav
  */
 public class BuscarProyecto extends javax.swing.JFrame {
 
+    IProyectoBO proyectoBO;
+    IProfesoresBO profesoresBO;
+    IProgramasBO programasBO;
+    
     /**
      * Creates new form BuscarProyecto
      */
     public BuscarProyecto() {
         initComponents();
         this.demasSeleccionado();
+        
+        proyectoBO = BOSFactory.crearProyectoBO();
+        profesoresBO = BOSFactory.crearProfesoresBO();
+        programasBO = BOSFactory.crearProgramaBO();
+        this.llenarCodigoComboBox();
+        this.llenarNombreComboBox();
+        this.llenarAcronimoComboBox();
+        AutoCompleteDecorator.decorate(codigoComboBox);
+        AutoCompleteDecorator.decorate(nombreComboBox);
+        AutoCompleteDecorator.decorate(acronimoComboBox);
+        this.llenarProgramasComboBox();
+        this.llenarComboBoxInvestigadorDoctor();
+        AutoCompleteDecorator.decorate(programasComboBox);
+        AutoCompleteDecorator.decorate(investigadorComboBox);
+    }
+    
+    
+    private void llenarCodigoComboBox(){
+        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(proyectoBO.consultarCodigos().toArray());
+        codigoComboBox.setModel(modeloComboBox);
+    }
+    
+    private void llenarNombreComboBox(){
+        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(proyectoBO.consultarNombres().toArray());
+        
+        nombreComboBox.setModel(modeloComboBox);
+    }
+    
+    private void llenarAcronimoComboBox(){
+        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(proyectoBO.consultarAcronimos().toArray());
+        
+        acronimoComboBox.setModel(modeloComboBox);
+    }
+    
+    
+    private void llenarProgramasComboBox(){
+        List<Object> programas = new ArrayList();
+        programas.add("-Selecciona-");
+        programas.addAll(programasBO.consultarTodos());
+        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(programas.toArray());
+        
+        programasComboBox.setModel(modeloComboBox);
+    }
+    
+    
+    private void llenarComboBoxInvestigadorDoctor(){
+        List<Object> investigadoresDoctores = new ArrayList();
+        investigadoresDoctores.add("-Selecciona-");
+        investigadoresDoctores.addAll(profesoresBO.consultarTodosInvestigadorDoctores());
+        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(investigadoresDoctores.toArray());
+        investigadorComboBox.setModel(modeloComboBox);
+    }
+    
+    
+    private ObjectId getIdProyectoSeleccionado(){
+        int indiceFilaSeleccionada = this.tablaProyectos.getSelectedRow();
+        if (indiceFilaSeleccionada != -1) {
+            DefaultTableModel modelo = (DefaultTableModel) this.tablaProyectos.getModel();
+            int indiceColumnaId = 0;
+            ObjectId idProyectoSeleccionado = (ObjectId) modelo.getValueAt(indiceFilaSeleccionada, indiceColumnaId);
+            return idProyectoSeleccionado;
+        } else {
+            return null;
+        }
+    }
+    
+    
+    private void llenarTablaResultados(List<Proyecto> resultados){
+        Action verProyecto = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                mostrarProyecto();
+            }
+        };
+        
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaProyectos.getModel();
+        modeloTabla.setRowCount(0);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        
+        
+        resultados.forEach(proyecto -> {
+            Object[] fila = new Object[11];
+            fila[0] = proyecto.getId();
+            fila[1] = proyecto.getCodigoReferencia();
+            fila[2] = proyecto.getNombre();
+            fila[3] = proyecto.getAcronimo();
+            fila[4] = formatter.format(proyecto.getFechaInicio());
+            fila[5] = formatter.format(proyecto.getFechaFin());
+            fila[6] = programasBO.consultar(proyecto.getIdPrograma());
+            fila[7] = proyecto.getPresupuestoTotal();
+            fila[8] = proyecto.getInvestigadorPrincipal();
+            fila[9] = proyecto.getPatrocinador();
+            fila[10] = "Ver";
+            modeloTabla.addRow(fila);
+        });
+        ButtonColumn buttonColumnVer = new ButtonColumn(this.tablaProyectos, verProyecto, 10);
+    }
+    
+    private void mostrarProyecto(){
+        VerProyectoForm proyectoPantalla = new VerProyectoForm(this.getIdProyectoSeleccionado());
+        proyectoPantalla.setVisible(true);
     }
     
     private void codigoSeleccionado(){
-        codigoTxt.setEnabled(true);
-        nombreTxt.setEnabled(false);
-        acronimoTxt.setEnabled(false);
+        codigoComboBox.setEnabled(true);
+        nombreComboBox.setEnabled(false);
+        acronimoComboBox.setEnabled(false);
         programasComboBox.setEnabled(false);
         presupuestoComboBox.setEnabled(false);
         presupuestoTxt.setEnabled(false);
         investigadorComboBox.setEnabled(false);
         patrocinadorTxt.setEnabled(false);
+        fechaITxt.setEnabled(false);
+        fechaFTxt.setEnabled(false);
     }
     
     private void nombreSeleccionado(){
-        codigoTxt.setEnabled(false);
-        nombreTxt.setEnabled(true);
-        acronimoTxt.setEnabled(false);
+        codigoComboBox.setEnabled(false);
+        nombreComboBox.setEnabled(true);
+        acronimoComboBox.setEnabled(false);
         programasComboBox.setEnabled(false);
         presupuestoComboBox.setEnabled(false);
         presupuestoTxt.setEnabled(false);
@@ -44,9 +175,9 @@ public class BuscarProyecto extends javax.swing.JFrame {
     }
     
     private void acronimoSeleccionado(){
-        codigoTxt.setEnabled(false);
-        nombreTxt.setEnabled(false);
-        acronimoTxt.setEnabled(true);
+        codigoComboBox.setEnabled(false);
+        nombreComboBox.setEnabled(false);
+        acronimoComboBox.setEnabled(true);
         programasComboBox.setEnabled(false);
         presupuestoComboBox.setEnabled(false);
         presupuestoTxt.setEnabled(false);
@@ -57,9 +188,9 @@ public class BuscarProyecto extends javax.swing.JFrame {
     }
     
     private void fechaSeleccionado(){
-        codigoTxt.setEnabled(false);
-        nombreTxt.setEnabled(false);
-        acronimoTxt.setEnabled(false);
+        codigoComboBox.setEnabled(false);
+        nombreComboBox.setEnabled(false);
+        acronimoComboBox.setEnabled(false);
         programasComboBox.setEnabled(false);
         presupuestoComboBox.setEnabled(false);
         presupuestoTxt.setEnabled(false);
@@ -68,11 +199,11 @@ public class BuscarProyecto extends javax.swing.JFrame {
         fechaITxt.setEnabled(true);
         fechaFTxt.setEnabled(true);
     }
-    
+//    
     private void demasSeleccionado(){
-        codigoTxt.setEnabled(false);
-        nombreTxt.setEnabled(false);
-        acronimoTxt.setEnabled(false);
+        codigoComboBox.setEnabled(false);
+        nombreComboBox.setEnabled(false);
+        acronimoComboBox.setEnabled(false);
         programasComboBox.setEnabled(true);
         presupuestoComboBox.setEnabled(true);
         presupuestoTxt.setEnabled(true);
@@ -96,10 +227,10 @@ public class BuscarProyecto extends javax.swing.JFrame {
         contenedor = new javax.swing.JPanel();
         porCodigo = new javax.swing.JRadioButton();
         jPanel1 = new javax.swing.JPanel();
-        codigoTxt = new javax.swing.JTextField();
+        codigoComboBox = new javax.swing.JComboBox<>();
         porNombre = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
-        nombreTxt = new javax.swing.JTextField();
+        nombreComboBox = new javax.swing.JComboBox<>();
         porFecha = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         fechaITxt = new com.github.lgooddatepicker.components.DatePicker();
@@ -108,7 +239,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         porAcronimo = new javax.swing.JRadioButton();
         jPanel4 = new javax.swing.JPanel();
-        acronimoTxt = new javax.swing.JTextField();
+        acronimoComboBox = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         porDemas = new javax.swing.JRadioButton();
         programaLbl = new javax.swing.JLabel();
@@ -128,16 +259,20 @@ public class BuscarProyecto extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Buscar Proyecto");
 
         opcionesBusqueda.add(porCodigo);
         porCodigo.setText("Buscar por Codigo de Referencia");
-        porCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                porCodigoFocusGained(evt);
+        porCodigo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                porCodigoActionPerformed(evt);
             }
         });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Coloque un Código de Referencia"));
+
+        codigoComboBox.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        codigoComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -145,60 +280,63 @@ public class BuscarProyecto extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(codigoTxt)
+                .addComponent(codigoComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(codigoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addComponent(codigoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         opcionesBusqueda.add(porNombre);
         porNombre.setText("Buscar por Nombre");
         porNombre.setToolTipText("");
-        porNombre.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                porNombreFocusGained(evt);
+        porNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                porNombreActionPerformed(evt);
             }
         });
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Coloque el nombre del Proyecto"));
 
+        nombreComboBox.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        nombreComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(nombreTxt)
+                .addComponent(nombreComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(nombreTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGap(17, 17, 17)
+                .addComponent(nombreComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         opcionesBusqueda.add(porFecha);
         porFecha.setText("Buscar  por Fecha");
-        porFecha.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                porFechaFocusGained(evt);
+        porFecha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                porFechaActionPerformed(evt);
             }
         });
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Coloque un Rango de Fechas"));
 
-        fechaILbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         fechaILbl.setText("Inicio:");
+        fechaILbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel1.setText("Fin:");
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -231,13 +369,16 @@ public class BuscarProyecto extends javax.swing.JFrame {
 
         opcionesBusqueda.add(porAcronimo);
         porAcronimo.setText("Buscar por Acronimo");
-        porAcronimo.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                porAcronimoFocusGained(evt);
+        porAcronimo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                porAcronimoActionPerformed(evt);
             }
         });
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Coloque el Acronimo del Proyecto"));
+
+        acronimoComboBox.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        acronimoComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -245,71 +386,85 @@ public class BuscarProyecto extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(acronimoTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                .addComponent(acronimoComboBox, 0, 294, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(acronimoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGap(14, 14, 14)
+                .addComponent(acronimoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel2.setText("Buscar Proyecto");
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
 
         opcionesBusqueda.add(porDemas);
         porDemas.setSelected(true);
         porDemas.setText("Buscar por Demas Características");
-        porDemas.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                porDemasFocusGained(evt);
+        porDemas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                porDemasActionPerformed(evt);
             }
         });
 
-        programaLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         programaLbl.setText("Programa:");
+        programaLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         programasComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        presupuestoLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         presupuestoLbl.setText("Presupuesto:");
+        presupuestoLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         presupuestoComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Selecciona-", "Mayor que", "Menor que", "Igual a" }));
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jLabel3.setText("$");
+        presupuestoTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                presupuestoTxtKeyTyped(evt);
+            }
+        });
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel3.setText("$");
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+
         jLabel4.setText("Investigador Principal:");
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         investigadorComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel5.setText("Patrocinador");
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         tablaProyectos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Id", "Codigo", "Nombre", "Acrónimo", "FechaI", "FechaF", "Programa", "Presupuesto", "Inv Principal", "Patrocinador", "Ver"
             }
         ));
+        tablaProyectos.setRowHeight(30);
         jScrollPane2.setViewportView(tablaProyectos);
 
-        buscarBtn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         buscarBtn.setText("Buscar");
+        buscarBtn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        buscarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarBtnActionPerformed(evt);
+            }
+        });
 
-        cancelarBtn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         cancelarBtn.setText("Cancelar");
+        cancelarBtn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        cancelarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarBtnActionPerformed(evt);
+            }
+        });
 
-        jButton1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jButton1.setText("Inicio");
+        jButton1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jButton1.setToolTipText("");
 
         javax.swing.GroupLayout contenedorLayout = new javax.swing.GroupLayout(contenedor);
@@ -337,42 +492,44 @@ public class BuscarProyecto extends javax.swing.JFrame {
                 .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(contenedorLayout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(porDemas)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 892, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(porDemas))
                     .addGroup(contenedorLayout.createSequentialGroup()
                         .addGap(35, 35, 35)
-                        .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(contenedorLayout.createSequentialGroup()
-                                    .addComponent(programaLbl)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(programasComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(contenedorLayout.createSequentialGroup()
-                                    .addComponent(presupuestoLbl)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(presupuestoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(presupuestoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel3))
-                                .addGroup(contenedorLayout.createSequentialGroup()
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(investigadorComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(contenedorLayout.createSequentialGroup()
-                                    .addComponent(jLabel5)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(patrocinadorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(contenedorLayout.createSequentialGroup()
+                                .addComponent(programaLbl)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(programasComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(contenedorLayout.createSequentialGroup()
+                                .addComponent(presupuestoLbl)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(presupuestoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(presupuestoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel3))
+                            .addGroup(contenedorLayout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(investigadorComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(contenedorLayout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(patrocinadorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(contenedorLayout.createSequentialGroup()
+                                .addGap(142, 142, 142)
+                                .addComponent(jLabel2))))
+                    .addGroup(contenedorLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 890, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         contenedorLayout.setVerticalGroup(
             contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contenedorLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(19, 19, 19)
                 .addComponent(jLabel2)
-                .addGap(41, 41, 41)
+                .addGap(45, 45, 45)
                 .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(contenedorLayout.createSequentialGroup()
                         .addComponent(porCodigo)
@@ -424,9 +581,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(contenedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 8, Short.MAX_VALUE))
+            .addComponent(contenedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -436,28 +591,183 @@ public class BuscarProyecto extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void porCodigoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_porCodigoFocusGained
-        this.codigoSeleccionado();
-    }//GEN-LAST:event_porCodigoFocusGained
+    private void porCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_porCodigoActionPerformed
+       this.codigoSeleccionado();
+    }//GEN-LAST:event_porCodigoActionPerformed
 
-    private void porNombreFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_porNombreFocusGained
+    private void porNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_porNombreActionPerformed
         this.nombreSeleccionado();
-    }//GEN-LAST:event_porNombreFocusGained
+    }//GEN-LAST:event_porNombreActionPerformed
 
-    private void porAcronimoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_porAcronimoFocusGained
+    private void porAcronimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_porAcronimoActionPerformed
         this.acronimoSeleccionado();
-    }//GEN-LAST:event_porAcronimoFocusGained
+    }//GEN-LAST:event_porAcronimoActionPerformed
 
-    private void porFechaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_porFechaFocusGained
+    private void porFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_porFechaActionPerformed
         this.fechaSeleccionado();
-    }//GEN-LAST:event_porFechaFocusGained
+    }//GEN-LAST:event_porFechaActionPerformed
 
-    private void porDemasFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_porDemasFocusGained
+    private void porDemasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_porDemasActionPerformed
         this.demasSeleccionado();
-    }//GEN-LAST:event_porDemasFocusGained
+    }//GEN-LAST:event_porDemasActionPerformed
 
+    private void presupuestoTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_presupuestoTxtKeyTyped
+       char c = evt.getKeyChar();
+       
+       if((c < '0' || c>'9') && (c > '.')){
+           evt.consume();
+       }
+    }//GEN-LAST:event_presupuestoTxtKeyTyped
+
+    private void buscarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarBtnActionPerformed
+        List<Proyecto> resultados;
+        if(porCodigo.isSelected()){ //Por Cógigo
+            
+            resultados = new ArrayList();
+            Proyecto proyecto = proyectoBO.consultarPorCodigo((String) codigoComboBox.getSelectedItem());
+            
+            resultados.add(proyecto);
+            
+        } else if(porNombre.isSelected()){ //Por Nombre
+            
+            resultados = new ArrayList();
+            Proyecto proyecto = proyectoBO.consultarPorNombre((String) nombreComboBox.getSelectedItem());
+            resultados.add(proyecto);
+            
+        } else if(porAcronimo.isSelected()){ //Por Acrónimo
+            
+            resultados = new ArrayList();
+            Proyecto proyecto = proyectoBO.consultarPorAcronimo((String) acronimoComboBox.getSelectedItem());
+            resultados.add(proyecto);
+            
+        } else if(porFecha.isSelected()){ //Por Fecha
+            if(!validarCamposVaciosFechas()){
+                JOptionPane.showMessageDialog(this, "Es necesario llenar ambas fechas", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(!validarFechas()){
+                JOptionPane.showMessageDialog(this, "Las fechas Introducidas son inválidas", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Date fechaInicio = Date.from(fechaITxt.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Date fechaFin = Date.from(fechaFTxt.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            
+             
+            resultados = proyectoBO.consultarPorFechas(fechaInicio, fechaFin);
+            
+        } else{ //Por Demas
+            if(!validarCamposVaciosDemas()){
+                JOptionPane.showMessageDialog(this, "Es necesario llenar al menos un campo", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            ObjectId idPrograma = this.getIdPrograma();
+            Float presupuesto = null;
+            String patrocinador = null;
+            if(validarFiltroPresupuesto()){
+                JOptionPane.showMessageDialog(this, "Se deben llenar ambos campos del Presupuesto", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(!presupuestoTxt.getText().equals("") && presupuestoComboBox.getSelectedIndex() >0){
+                if(!validarFormatoPresupuesto()){
+                    JOptionPane.showMessageDialog(this, "El presupuesto introducido no es válido", "información", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                presupuesto = Float.parseFloat(presupuestoTxt.getText());
+            }
+            
+            if(!patrocinadorTxt.getText().equals("")){
+                patrocinador = patrocinadorTxt.getText();
+            }
+            resultados = proyectoBO.consultarPorCaracteristicas(idPrograma, presupuesto, presupuestoComboBox.getSelectedIndex(), this.getInvestigador(), patrocinador);
+            
+        }
+        
+        if (resultados == null){
+            JOptionPane.showMessageDialog(this, "No hay Resultados", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        this.llenarTablaResultados(resultados);
+    }//GEN-LAST:event_buscarBtnActionPerformed
+
+    private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
+        vaciarForm();
+    }//GEN-LAST:event_cancelarBtnActionPerformed
+
+    
+    private void vaciarForm(){
+        porDemas.setSelected(true);
+        this.demasSeleccionado();
+        this.programasComboBox.setSelectedIndex(0);
+        this.presupuestoComboBox.setSelectedIndex(0);
+        this.presupuestoTxt.setText("");
+        this.investigadorComboBox.setSelectedIndex(0);
+        this.patrocinadorTxt.setText("");
+        this.codigoComboBox.setSelectedIndex(0);
+        this.nombreComboBox.setSelectedIndex(0);
+        this.acronimoComboBox.setSelectedIndex(0);
+        this.fechaITxt.setDate(null);
+        this.fechaFTxt.setDate(null);
+    }
+    
+    private ObjectId getIdPrograma(){
+        return (this.programasComboBox.getSelectedIndex() == 0)? null: ((Programa) this.programasComboBox.getSelectedItem()).getId();
+    }
+    
+    private InvestigadorDoctor getInvestigador(){
+        return (this.investigadorComboBox.getSelectedIndex() == 0)? null: ((InvestigadorDoctor) this.investigadorComboBox.getSelectedItem());
+    }
+    
+    
+//    private String getFiltroPresupuesto(){
+//        if(this.presupuestoComboBox.getSelectedIndex() == 0){
+//            return null;
+//        }
+//        switch(this.presupuestoComboBox.getSelectedIndex()){
+//            case 0:
+//                return null;
+//            case 1:
+//                return "$gte";
+//            case 2:
+//                return "$lte";
+//            case 3:
+//                return "$eq";
+//        }
+//        return null;
+//    }
+    
+    private boolean validarCamposVaciosDemas(){
+        return !(this.programasComboBox.getSelectedIndex() == 0 
+                && presupuestoComboBox.getSelectedIndex() == 0 && presupuestoTxt.getText().equals("") 
+                && investigadorComboBox.getSelectedIndex() == 0
+                && patrocinadorTxt.getText().equals(""));
+    }
+    
+    private boolean validarFormatoPresupuesto(){
+        try{
+            Float presupuesto = Float.parseFloat(this.presupuestoTxt.getText());
+            return presupuesto > 0;
+        } catch(NumberFormatException nfe){
+            return false;
+        }
+    }
+    
+    private boolean validarFiltroPresupuesto(){
+        Integer filtroPresupuesto = presupuestoComboBox.getSelectedIndex();
+        return (presupuestoTxt.getText().equals("") && filtroPresupuesto != 0) || (filtroPresupuesto == 0 && !presupuestoTxt.getText().equals(""));
+    }
+    
+    private boolean validarFechas(){
+        return !(fechaITxt.getDate().compareTo(fechaFTxt.getDate()) >= 0);
+    }
+    
+    private boolean validarCamposVaciosFechas(){
+ 
+        return !(fechaITxt.getDate() == null || fechaFTxt.getDate() == null);
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -494,10 +804,10 @@ public class BuscarProyecto extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField acronimoTxt;
+    private javax.swing.JComboBox<String> acronimoComboBox;
     private javax.swing.JButton buscarBtn;
     private javax.swing.JButton cancelarBtn;
-    private javax.swing.JTextField codigoTxt;
+    private javax.swing.JComboBox<String> codigoComboBox;
     private javax.swing.JPanel contenedor;
     private com.github.lgooddatepicker.components.DatePicker fechaFTxt;
     private javax.swing.JLabel fechaILbl;
@@ -514,7 +824,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField nombreTxt;
+    private javax.swing.JComboBox<String> nombreComboBox;
     private javax.swing.ButtonGroup opcionesBusqueda;
     private javax.swing.JTextField patrocinadorTxt;
     private javax.swing.JRadioButton porAcronimo;

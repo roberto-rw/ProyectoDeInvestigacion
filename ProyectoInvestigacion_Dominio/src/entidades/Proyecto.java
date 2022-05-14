@@ -30,7 +30,8 @@ public class Proyecto {
     private InvestigadorDoctor investigadorPrincipal;
     private List<ObjectId> idsLineasInvestigacion; //Representa ProyectoLineadeInvestigacion
     private List<PeriodoParticipacion> detalles;
-    private List<Publicacion> publicaciones;
+    private List<PublicacionRevista> publicacionesRevista;
+    private List<PublicacionCongreso> publicacionesCongreso;
 
     
 
@@ -180,14 +181,20 @@ public class Proyecto {
         this.idsLineasInvestigacion = idsLineasInvestigacion;
     }
 
-
-    public void setPublicaciones(List<Publicacion> publicaciones) {
-        this.publicaciones = publicaciones;
+    public List<PublicacionRevista> getPublicacionesRevista() {
+        return publicacionesRevista;
     }
 
+    public void setPublicacionesRevista(List<PublicacionRevista> publicacionesRevista) {
+        this.publicacionesRevista = publicacionesRevista;
+    }
 
-    public List<Publicacion> getPublicaciones() {
-        return publicaciones;
+    public List<PublicacionCongreso> getPublicacionesCongreso() {
+        return publicacionesCongreso;
+    }
+
+    public void setPublicacionesCongreso(List<PublicacionCongreso> publicacionesCongreso) {
+        this.publicacionesCongreso = publicacionesCongreso;
     }
 
     public List<PeriodoParticipacion> getDetalles() {

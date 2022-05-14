@@ -10,7 +10,6 @@ import com.mongodb.client.MongoDatabase;
 import dtos.ProfesorLineaInvestigacionDTO;
 import entidades.Doctor;
 import entidades.InvestigadorDoctor;
-import entidades.InvestigadorNoDoctor;
 import entidades.LineaInvestigacion;
 import interfacesDAO.IConexionBD;
 import java.util.List;

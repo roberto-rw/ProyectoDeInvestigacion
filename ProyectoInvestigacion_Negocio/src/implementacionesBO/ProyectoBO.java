@@ -7,12 +7,15 @@ package implementacionesBO;
 
 import dtos.ProfesorProyectoDTO;
 import entidades.DetalleProyectoProfesor;
+import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
 import entidades.Proyecto;
 import entidades.Publicacion;
 import implementacionesDAO.DAOSFactory;
 import interfacesBO.IProyectoBO;
 import interfacesDAO.IProyectoDAO;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -26,6 +29,9 @@ public class ProyectoBO implements IProyectoBO{
 
     @Override
     public boolean agregar(Proyecto proyecto) {
+        
+        
+        
         return proyectoDAO.agregar(proyecto);
     }
 
@@ -71,18 +77,79 @@ public class ProyectoBO implements IProyectoBO{
 
     @Override
     public boolean estaRepetidoNombre(String nombre) {
-        return proyectoDAO.estaRepetidoNombre(nombre);
+        return this.consultarNombres().contains(nombre);
     }
 
     @Override
     public boolean estaRepetidoCodigo(String codigo) {
-        return proyectoDAO.estaRepetidoCodigo(codigo);
+        return this.consultarCodigos().contains(codigo);
     }
 
     @Override
     public boolean estaRepetidoAcronimo(String acronimo) {
-        return proyectoDAO.estaRepetidoAcronimo(acronimo);
+       return this.consultarAcronimos().contains(acronimo);
     }
 
-    
+    @Override
+    public List<Proyecto> consultarPorFechas(Date fechaInicio, Date fechaFin) {
+        return proyectoDAO.consultarPorFechas(fechaInicio, fechaFin);
+    }
+
+    @Override
+    public List<Proyecto> consultarPorCaracteristicas(ObjectId idPrograma, Float presupuesto, Integer filtroPresupuesto, InvestigadorDoctor investigador, String patrocinador) {
+        return proyectoDAO.consultarPorCaracteristicas(idPrograma, presupuesto, filtroPresupuesto, investigador, patrocinador);
+    }
+
+    @Override
+    public List<String> consultarCodigos() {
+        List<Proyecto> proyectos = proyectoDAO.consultarTodos();
+        List<String> resultado = new ArrayList();
+        proyectos.forEach(proyecto ->{
+            resultado.add(proyecto.getCodigoReferencia());
+        });
+        return resultado;
+    }
+
+    @Override
+    public List<String> consultarNombres() {
+        List<Proyecto> proyectos = proyectoDAO.consultarTodos();
+        List<String> resultado = new ArrayList();
+        proyectos.forEach(proyecto ->{
+            resultado.add(proyecto.getNombre());
+        });
+        return resultado;
+    }
+
+    @Override
+    public List<String> consultarAcronimos() {
+        List<Proyecto> proyectos = proyectoDAO.consultarTodos();
+        List<String> resultado = new ArrayList();
+        proyectos.forEach(proyecto ->{
+            resultado.add(proyecto.getAcronimo());
+        });
+        return resultado;
+    }
+
+    @Override
+    public boolean validarFechasReales(Proyecto proyecto) {
+        return !(proyecto.getFechaInicio().compareTo(proyecto.getFechaFin()) >= 0);
+    }
+
+    @Override
+    public Proyecto consultarPorCodigo(String codigo) {
+        return proyectoDAO.consultarPorCodigo(codigo);
+    }
+
+    @Override
+    public Proyecto consultarPorNombre(String nombre) {
+        return proyectoDAO.consultarPorNombre(nombre);
+    }
+
+    @Override
+    public Proyecto consultarPorAcronimo(String acronimo) {
+        return proyectoDAO.consultarPorAcronimo(acronimo);
+    }
+
+
+
 }

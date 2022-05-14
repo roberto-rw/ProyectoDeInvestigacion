@@ -8,6 +8,7 @@ import com.mongodb.client.model.Updates;
 import dtos.ProfesorLineaInvestigacionDTO;
 import dtos.ProfesorProyectoDTO;
 import entidades.DetalleProyectoProfesor;
+import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
 import entidades.LineaInvestigacion;
 import entidades.Profesor;
@@ -17,6 +18,7 @@ import interfacesDAO.IConexionBD;
 import interfacesDAO.IProyectoDAO;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -57,7 +59,8 @@ public class ProyectoDAO implements IProyectoDAO{
                 .append("patrocinador", proyecto.getPatrocinador())
                 .append("fechaInicio", proyecto.getFechaInicio())
                 .append("fechaFin", proyecto.getFechaFin())
-                .append("publicaciones", proyecto.getPublicaciones())
+                .append("publicacionesRevista", proyecto.getPublicacionesRevista())
+                .append("publicacionesCongreso", proyecto.getPublicacionesCongreso())
                 .append("detalles", proyecto.getDetalles())
                 .append("idsLineasInvestigacion", proyecto.getIdsLineasInvestigacion());
         
@@ -129,12 +132,12 @@ public class ProyectoDAO implements IProyectoDAO{
 
     @Override
     public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion) {
-        Proyecto proyecto = this.consultar(idProyecto);
-        if(proyecto != null){
-            proyecto.getPublicaciones().add(publicacion);
-            this.actualizar(proyecto);
-            return true;
-        }
+//        Proyecto proyecto = this.consultar(idProyecto);
+//        if(proyecto != null){
+//            proyecto.getPublicaciones().add(publicacion);
+//            this.actualizar(proyecto);
+//            return true;
+//        }
         return false;
     }
 
@@ -198,23 +201,86 @@ public class ProyectoDAO implements IProyectoDAO{
        
     }
     
+
     @Override
-    public boolean estaRepetidoNombre(String nombre){
-        List<Proyecto> resultados = this.getCollection().find(new Document()
-                                                                .append("nombre", nombre)).into(new ArrayList());
-        return (!resultados.isEmpty());
+    public Proyecto consultarPorNombre(String nombre) {
+        List<Proyecto> resultados = this.getCollection().find(new Document("nombre", nombre)).into(new ArrayList());
+        if(resultados.isEmpty()){
+            return null;
+        }
+        return resultados.get(0);
     }
 
     @Override
-    public boolean estaRepetidoCodigo(String codigo) {
+    public Proyecto consultarPorCodigo(String codigo) {
         List<Proyecto> resultados = this.getCollection().find(new Document("codigoReferencia", codigo)).into(new ArrayList());
-        return !resultados.isEmpty();
+        if(resultados.isEmpty()){
+            return null;
+        }
+        return resultados.get(0);
     }
 
     @Override
-    public boolean estaRepetidoAcronimo(String acronimo) {
+    public Proyecto consultarPorAcronimo(String acronimo) {
         List<Proyecto> resultados = this.getCollection().find(new Document("acronimo", acronimo)).into(new ArrayList());
-        return !resultados.isEmpty();
+        if(resultados.isEmpty()){
+            return null;
+        }
+        return resultados.get(0);
+    }
+
+    @Override
+    public List<Proyecto> consultarPorFechas(Date fechaInicio, Date fechaFin) {
+        Document filtro = new Document()
+                .append("fechaInicio", new Document("$gte", fechaInicio))
+                .append("fechaFin", new Document("$lte", fechaFin));
+         List<Proyecto> resultados = this.getCollection().find(filtro).into(new ArrayList());
+         if(resultados.isEmpty()){
+             return null;
+         }
+         return resultados;
+    }
+
+    @Override
+    public List<Proyecto> consultarPorCaracteristicas(ObjectId idPrograma, Float presupuesto, Integer filtroPresupuesto, InvestigadorDoctor investigador, String patrocinador) {
+        /*
+            1 = Mayor que
+            2 = Menor que
+            3 = Igual que
+        */
+        
+        Document filtro = new Document();
+       
+        switch(filtroPresupuesto){
+            case 0:
+                break;
+            case 1:
+                filtro.append("presupuestoTotal", new Document("$gt", presupuesto));
+                break;
+            case 2:
+                filtro.append("presupuestoTotal", new Document("$lt", presupuesto));
+                break;
+            case 3:
+                filtro.append("presupuestoTotal", new Document("$eq", presupuesto));
+                break;
+            default:
+                break;
+        }
+        
+        if(idPrograma != null){
+            filtro.append("idPrograma", idPrograma);
+        }
+        if(investigador != null){
+            filtro.append("investigadorPrincipal", investigador);
+        }
+        if(patrocinador != null){
+            filtro.append("patrocinador", patrocinador);
+        }
+        List<Proyecto> resultados = this.getCollection().find(filtro).into(new ArrayList());
+         if(resultados.isEmpty()){
+             return null;
+         }
+         return resultados;
     }
 
 
