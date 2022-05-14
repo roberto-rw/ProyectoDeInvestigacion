@@ -10,11 +10,11 @@ import entidades.LineaInvestigacion;
 import entidades.Proyecto;
 import implementacionesBO.BOSFactory;
 import interfacesBO.IProgramasBO;
-import interfacesBO.IProyectoBO;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import org.bson.types.ObjectId;
+import interfacesBO.IProyectosBO;
 
 /**
  *
@@ -23,7 +23,7 @@ import org.bson.types.ObjectId;
 public class VerProyectoForm extends javax.swing.JFrame {
     
     private Proyecto proyectoSeleccionado;
-    private IProyectoBO proyectoBO;
+    private IProyectosBO proyectoBO;
     private IProgramasBO programasBO;
     /**
      * Creates new form VerProyectoForm

@@ -12,18 +12,18 @@ import entidades.LineaInvestigacion;
 import entidades.Proyecto;
 import entidades.Publicacion;
 import implementacionesDAO.DAOSFactory;
-import interfacesBO.IProyectoBO;
 import interfacesDAO.IProyectoDAO;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
+import interfacesBO.IProyectosBO;
 
 /**
  *
  * @author pc
  */
-public class ProyectoBO implements IProyectoBO{
+public class ProyectoBO implements IProyectosBO{
     
     IProyectoDAO proyectoDAO = DAOSFactory.crearProyectoDAO();
 

@@ -19,7 +19,7 @@ import org.bson.types.ObjectId;
  *
  * @author pc
  */
-public interface IProyectoBO {
+public interface IProyectosBO {
     public boolean agregar(Proyecto proyecto);
     public boolean actualizar(Proyecto proyecto);
     public boolean eliminar(ObjectId idProyecto);

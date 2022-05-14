@@ -10,7 +10,7 @@ import interfacesBO.ILineaInvestigacionBO;
 import interfacesBO.INoDoctoresBO;
 import interfacesBO.IProfesoresBO;
 import interfacesBO.IProgramasBO;
-import interfacesBO.IProyectoBO;
+import interfacesBO.IProyectosBO;
 
 /**
  *
@@ -25,7 +25,7 @@ public class BOSFactory {
         return new NoDoctoresBO();
     }
     
-    public static IProyectoBO crearProyectoBO(){
+    public static IProyectosBO crearProyectoBO(){
         return new ProyectoBO();
     }
     

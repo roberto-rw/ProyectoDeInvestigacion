@@ -15,7 +15,6 @@ import implementacionesBO.BOSFactory;
 import interfacesBO.ILineaInvestigacionBO;
 import interfacesBO.IProfesoresBO;
 import interfacesBO.IProgramasBO;
-import interfacesBO.IProyectoBO;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -31,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import org.bson.types.ObjectId;
 import utils.ButtonColumn;
+import interfacesBO.IProyectosBO;
 
 /**
  *
@@ -41,7 +41,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     private IProfesoresBO profesoresBO;
     private ILineaInvestigacionBO lineaInvestigacion;
     private IProgramasBO programasBO;
-    private IProyectoBO proyectoBO;
+    private IProyectosBO proyectoBO;
 
     private Integer editarIntegrante;
     private List<PeriodoParticipacion> periodosIntegrantes;

@@ -11,7 +11,6 @@ import entidades.Proyecto;
 import implementacionesBO.BOSFactory;
 import interfacesBO.IProfesoresBO;
 import interfacesBO.IProgramasBO;
-import interfacesBO.IProyectoBO;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -29,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 import org.bson.types.ObjectId;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import utils.ButtonColumn;
+import interfacesBO.IProyectosBO;
 
 /**
  *
@@ -36,7 +36,7 @@ import utils.ButtonColumn;
  */
 public class BuscarProyecto extends javax.swing.JFrame {
 
-    IProyectoBO proyectoBO;
+    IProyectosBO proyectoBO;
     IProfesoresBO profesoresBO;
     IProgramasBO programasBO;
     
