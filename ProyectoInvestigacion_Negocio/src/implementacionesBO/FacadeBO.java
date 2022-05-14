@@ -1,6 +1,7 @@
 
 package implementacionesBO;
 
+import dtos.AutorDTO;
 import dtos.ProfesorProyectoDTO;
 import entidades.DetalleProyectoProfesor;
 import entidades.Doctor;
@@ -11,18 +12,15 @@ import entidades.Profesor;
 import entidades.Programa;
 import entidades.Proyecto;
 import entidades.Publicacion;
-import implementacionesDAO.DAOSFactory;
+import entidades.PublicacionCongreso;
+import entidades.PublicacionRevista;
 import interfacesBO.IFacadeBO;
 import interfacesBO.ILineaInvestigacionBO;
+import interfacesBO.IProfesoresBO;
 import interfacesBO.IProgramasBO;
 import interfacesBO.IProyectosBO;
 import interfacesBO.IPublicacionesCongresoBO;
 import interfacesBO.IPublicacionesRevistaBO;
-import interfacesDAO.ILineaInvestigacionDAO;
-import interfacesDAO.IProgramasDAO;
-import interfacesDAO.IProyectoDAO;
-import interfacesDAO.IPublicacionesCongresoDAO;
-import interfacesDAO.IPublicacionesRevistaDAO;
 import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -35,19 +33,17 @@ public class FacadeBO implements IFacadeBO{
     IProyectosBO proyectosBO;
     IPublicacionesCongresoBO publicacionesCongresoBO;
     IPublicacionesRevistaBO publicacionesRevistaBO;
+    IProfesoresBO profesoresBO;
     
-    ILineaInvestigacionDAO lineasInvestigacionDAO;
-    IProgramasDAO programasDAO;i
-    IProyectoDAO proyectoDAO;
-    IPublicacionesCongresoDAO publicacionesCongresoDAO;
-    IPublicacionesRevistaDAO publicacionesRevistaDAO;
     
     public FacadeBO(){
-        lineasInvestigacionDAO = DAOSFactory.crearLineaInvestigacionDAO();
-        programasDAO = DAOSFactory.crearProgramasDAO();
-        proyectoDAO = DAOSFactory.crearProyectoDAO();
-        publicacionesCongresoDAO = DAOSFactory.crearPublicacionesCongresoDAO();
-        publicacionesRevistaDAO = DAOSFactory.crearPublicacionesRevistaDAO();
+        
+        lineasInvestigacionBO = BOSFactory.crearLineaInvestigacionBO();
+        programasBO = BOSFactory.crearProgramaBO();
+        proyectosBO = BOSFactory.crearProyectoBO();
+        publicacionesCongresoBO = BOSFactory.crearPublicacionesCongresoBO();
+        publicacionesRevistaBO = BOSFactory.crearPublicacionesRevistaBO();
+        profesoresBO = BOSFactory.crearProfesoresBO();
     }
 
     //LineasInvestigacionBO
@@ -58,69 +54,69 @@ public class FacadeBO implements IFacadeBO{
 
     @Override
     public boolean actualizarLinea(LineaInvestigacion lineaInvestigacion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lineasInvestigacionBO.actualizar(lineaInvestigacion);
     }
 
     @Override
     public boolean eliminarLinea(ObjectId idLineaInvestigacion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lineasInvestigacionBO.eliminar(idLineaInvestigacion);
     }
 
     @Override
     public LineaInvestigacion consultarLineas(ObjectId idLineaInvestigacion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lineasInvestigacionBO.consultar(idLineaInvestigacion);
     }
 
     @Override
     public List<LineaInvestigacion> consultarTodosLineas() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lineasInvestigacionBO.consultarTodos();
     }
 
     
     //ProfesoresBO
     @Override
     public List<Profesor> consultarTodosProfesores() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return profesoresBO.consultarTodosProfesores();
     }
 
     @Override
     public List<Doctor> consultarTodosDoctores() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return profesoresBO.consultarTodosDoctores();
     }
 
     @Override
     public List<InvestigadorDoctor> consultarTodosInvestigadorDoctores() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return profesoresBO.consultarTodosInvestigadorDoctores();
     }
 
     @Override
     public boolean agregarProfesor(Profesor profesor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return profesoresBO.agregar(profesor);
     }
 
     @Override
     public boolean eliminarProfesor(ObjectId idProfesor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return profesoresBO.eliminar(idProfesor);
     }
 
     @Override
     public NoDoctor consultarNoDoctor(ObjectId idNoDoctor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return profesoresBO.consultarNoDoctor(idNoDoctor);
     }
 
     @Override
     public Doctor consultarDoctorProfesor(ObjectId idDoctor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return profesoresBO.consultarDoctor(idDoctor);
     }
 
     @Override
     public boolean esInvestigador(ObjectId idProfesor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return profesoresBO.esInvestigador(idProfesor);
     }
 
     @Override
     public InvestigadorDoctor consultarProfesor(ObjectId idInvestigador) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return profesoresBO.consultarInvestigadorDoctor(idInvestigador);
     }
 
     
@@ -129,27 +125,27 @@ public class FacadeBO implements IFacadeBO{
     //ProgramasBO
     @Override
     public boolean agregarPrograma(Programa programa) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return programasBO.agregar(programa);
     }
 
     @Override
     public boolean actualizarPrograma(Programa programa) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return programasBO.actualizar(programa);
     }
 
     @Override
     public boolean eliminarPrograma(ObjectId idPrograma) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return programasBO.eliminar(idPrograma);
     }
 
     @Override
     public Programa consultarPrograma(ObjectId idPrograma) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return programasBO.consultar(idPrograma);
     }
 
     @Override
     public List<Programa> consultarTodosProgramas() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return programasBO.consultarTodos();
     }
 
     
@@ -157,107 +153,183 @@ public class FacadeBO implements IFacadeBO{
     //ProyectosBO
     @Override
     public boolean agregarProyecto(Proyecto proyecto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.agregar(proyecto);
     }
 
     @Override
     public boolean actualizarProyecto(Proyecto proyecto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.actualizar(proyecto);
     }
 
     @Override
     public boolean eliminarProyecto(ObjectId idProyecto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.eliminar(idProyecto);
     }
 
     @Override
     public List<Proyecto> consultarTodosProyectos() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarTodos();
     }
 
     @Override
     public Proyecto consultarProyecto(ObjectId idProyecto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultar(idProyecto);
     }
 
     @Override
     public List<LineaInvestigacion> consultarLineasInvestigacion(ObjectId idProyecto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarLineasInvestigacion(idProyecto);
     }
 
     @Override
     public List<ProfesorProyectoDTO> consultarIntegrantes(ObjectId idProyecto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarIntegrantes(idProyecto);
     }
 
     @Override
     public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.actualizarIntegrantes(integrantes, id);
     }
 
     @Override
     public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.agregarPublicacion(idProyecto, publicacion);
     }
 
     @Override
     public boolean estaRepetidoNombre(String nombre) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.estaRepetidoNombre(nombre);
     }
 
     @Override
     public boolean estaRepetidoCodigo(String codigo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.estaRepetidoCodigo(codigo);
     }
 
     @Override
     public boolean estaRepetidoAcronimo(String acronimo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.estaRepetidoAcronimo(acronimo);
     }
 
     @Override
     public Proyecto consultarPorCodigo(String codigo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarPorCodigo(codigo);
     }
 
     @Override
     public Proyecto consultarPorNombre(String nombre) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarPorNombre(nombre);
     }
 
     @Override
     public Proyecto consultarPorAcronimo(String acronimo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarPorAcronimo(acronimo);
     }
 
     @Override
     public List<Proyecto> consultarPorFechas(Date fechaInicio, Date fechaFin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarPorFechas(fechaInicio, fechaFin);
     }
 
     @Override
     public List<Proyecto> consultarPorCaracteristicas(ObjectId idPrograma, Float presupuesto, Integer filtroPresupuesto, InvestigadorDoctor investigador, String patrocinador) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarPorCaracteristicas(idPrograma, presupuesto, filtroPresupuesto, investigador, patrocinador);
     }
 
     @Override
     public List<String> consultarCodigos() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarCodigos();
     }
 
     @Override
     public List<String> consultarNombres() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarNombres();
     }
 
     @Override
     public List<String> consultarAcronimos() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.consultarAcronimos();
     }
 
     @Override
     public boolean validarFechasReales(Proyecto proyecto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return proyectosBO.validarFechasReales(proyecto);
+    }
+    
+    
+    //PublicacionesCongresoBO
+
+    @Override
+    public boolean agregarPublicacionCongreso(PublicacionCongreso publicacionCongreso) {
+        return publicacionesCongresoBO.agregar(publicacionCongreso);
+    }
+
+    @Override
+    public boolean actualizarPublicacionCongreso(PublicacionCongreso publicacionCongreso) {
+        return publicacionesCongresoBO.actualizar(publicacionCongreso);
+    }
+
+    @Override
+    public boolean eliminarPublicacionCongreso(ObjectId idPublicacionCongreso) {
+        return publicacionesCongresoBO.eliminar(idPublicacionCongreso);
+    }
+
+    @Override
+    public PublicacionCongreso consultar(ObjectId idPublicacionCongreso) {
+        return publicacionesCongresoBO.consultar(idPublicacionCongreso);
+    }
+
+    @Override
+    public List<PublicacionCongreso> consultarTodos() {
+        return publicacionesCongresoBO.consultarTodos();
+    }
+
+    @Override
+    public Proyecto consultarProyectoPublicacionCongreso(ObjectId idPublicacionCongreso) {
+        return publicacionesCongresoBO.consultarProyecto(idPublicacionCongreso);
+    }
+
+    @Override
+    public List<AutorDTO> consultarAutoresPublicacionCongreso(ObjectId idPublicacionCongreso) {
+        return publicacionesCongresoBO.consultarAutores(idPublicacionCongreso);
+    }
+
+    
+    //PublicacionesRevistaBO
+    
+    @Override
+    public boolean agregarPublicacionRevista(PublicacionRevista publicacionRevista) {
+        return publicacionesRevistaBO.agregar(publicacionRevista);
+    }
+
+    @Override
+    public boolean actualizarPublicacionRevista(PublicacionRevista publicacionRevista) {
+        return publicacionesRevistaBO.actualizar(publicacionRevista);
+    }
+
+    @Override
+    public boolean eliminarPublicacionRevista(ObjectId idPublicacionRevista) {
+        return publicacionesRevistaBO.eliminar(idPublicacionRevista);
+    }
+
+    @Override
+    public PublicacionRevista consultarPublicacionRevista(ObjectId idPublicacionRevista) {
+        return publicacionesRevistaBO.consultar(idPublicacionRevista);
+    }
+
+    @Override
+    public List<PublicacionRevista> consultarTodosPublicacionRevista() {
+        return publicacionesRevistaBO.consultarTodos();
+    }
+
+    @Override
+    public Proyecto consultarProyectoPublicacionRevista(ObjectId idPublicacionRevista) {
+        return publicacionesRevistaBO.consultarProyecto(idPublicacionRevista);
+    }
+
+    @Override
+    public List<AutorDTO> consultarAutoresPublicacionRevista(ObjectId idPublicacionRevista) {
+        return publicacionesRevistaBO.consultarAutores(idPublicacionRevista);
     }
     
 }

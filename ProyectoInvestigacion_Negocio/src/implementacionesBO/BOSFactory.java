@@ -11,6 +11,8 @@ import interfacesBO.INoDoctoresBO;
 import interfacesBO.IProfesoresBO;
 import interfacesBO.IProgramasBO;
 import interfacesBO.IProyectosBO;
+import interfacesBO.IPublicacionesCongresoBO;
+import interfacesBO.IPublicacionesRevistaBO;
 
 /**
  *
@@ -39,5 +41,13 @@ public class BOSFactory {
     
     public static IProfesoresBO crearProfesoresBO(){
         return new ProfesoresBO();
+    }
+    
+    public static IPublicacionesCongresoBO crearPublicacionesCongresoBO(){
+        return new PublicacionesCongresoBO();
+    }
+    
+    public static IPublicacionesRevistaBO crearPublicacionesRevistaBO(){
+        return new PublicacionesRevistaBO();
     }
 }
