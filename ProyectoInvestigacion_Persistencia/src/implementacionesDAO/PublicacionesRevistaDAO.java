@@ -29,7 +29,7 @@ public class PublicacionesRevistaDAO implements IPublicacionesRevistaDAO {
 
     public PublicacionesRevistaDAO(IConexionBD conexion) {
         this.conexion = conexion;
-        this.baseDatos = this.conexion.crearConexion();
+        this.baseDatos = this.conexion.getConexion();
     }
     
     private MongoCollection<PublicacionRevista> getColeccion(){

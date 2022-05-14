@@ -30,7 +30,7 @@ public class NoDoctoresDAO implements INoDoctoresDAO {
 
     public NoDoctoresDAO(IConexionBD conexion) {
         this.conexion = conexion;
-        this.baseDatos = this.conexion.crearConexion();
+        this.baseDatos = this.conexion.getConexion();
     }
     
     private MongoCollection<NoDoctor> getColeccion(){

@@ -28,7 +28,7 @@ public class ProgramasDAO implements IProgramasDAO{
     
     public ProgramasDAO(IConexionBD conexion) {
         this.conexion = conexion;
-        this.baseDatos = this.conexion.crearConexion();
+        this.baseDatos = this.conexion.getConexion();
     }
 
     private MongoCollection<Programa> getColeccion() {

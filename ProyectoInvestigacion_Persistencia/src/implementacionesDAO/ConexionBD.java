@@ -23,7 +23,6 @@ public class ConexionBD implements IConexionBD{
     private MongoDatabase conexion;
     
     private ConexionBD(){
-        conexion = crearConexion();
     }
     
     public static ConexionBD getInstance(){
@@ -32,6 +31,16 @@ public class ConexionBD implements IConexionBD{
         }
         return conexionBD;
     }
+    
+    
+    @Override
+    public MongoDatabase getConexion(){
+        if(conexion == null){
+            conexion = crearConexion();
+        }
+        return conexion;
+    }
+    
     
     @Override
     public MongoDatabase crearConexion() {
@@ -53,7 +62,7 @@ public class ConexionBD implements IConexionBD{
             MongoClient clienteMongo = MongoClients.create(clientsSettings); //Se utilza el objeto de arriba para establecer la conexión
 
             MongoDatabase baseDatos = clienteMongo.getDatabase(BASE_DATOS);
-
+            System.out.println("Hola");
             return baseDatos;
         }catch(Exception ex){
             System.err.println(ex.getMessage());
