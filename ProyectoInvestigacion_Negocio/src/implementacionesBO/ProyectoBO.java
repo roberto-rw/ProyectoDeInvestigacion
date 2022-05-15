@@ -9,6 +9,7 @@ import dtos.ProfesorProyectoDTO;
 import entidades.DetalleProyectoProfesor;
 import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
+import entidades.PeriodoParticipacion;
 import entidades.Proyecto;
 import entidades.Publicacion;
 import implementacionesDAO.DAOSFactory;
@@ -148,6 +149,11 @@ public class ProyectoBO implements IProyectosBO{
     @Override
     public Proyecto consultarPorAcronimo(String acronimo) {
         return proyectoDAO.consultarPorAcronimo(acronimo);
+    }
+
+    @Override
+    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo) {
+        return !(periodo.getFechaInicio().compareTo(periodo.getFechaFin()) >= 0);
     }
 
 

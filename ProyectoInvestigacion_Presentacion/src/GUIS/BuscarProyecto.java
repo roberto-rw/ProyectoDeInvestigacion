@@ -13,22 +13,20 @@ import interfacesBO.IProfesoresBO;
 import interfacesBO.IProgramasBO;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import org.bson.types.ObjectId;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import utils.ButtonColumn;
 import interfacesBO.IProyectosBO;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -47,6 +45,10 @@ public class BuscarProyecto extends javax.swing.JFrame {
         initComponents();
         this.demasSeleccionado();
         
+         TableColumnModel modeloColumnasLineasInvestigacion = this.tablaProyectos.getColumnModel();
+        tablaProyectos.removeColumn( modeloColumnasLineasInvestigacion.getColumn(0));
+        
+        
         proyectoBO = BOSFactory.crearProyectoBO();
         profesoresBO = BOSFactory.crearProfesoresBO();
         programasBO = BOSFactory.crearProgramaBO();
@@ -63,18 +65,18 @@ public class BuscarProyecto extends javax.swing.JFrame {
     }
     
     
-    private void llenarCodigoComboBox(){
+    protected void llenarCodigoComboBox(){
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(proyectoBO.consultarCodigos().toArray());
         codigoComboBox.setModel(modeloComboBox);
     }
     
-    private void llenarNombreComboBox(){
+    protected void llenarNombreComboBox(){
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(proyectoBO.consultarNombres().toArray());
         
         nombreComboBox.setModel(modeloComboBox);
     }
     
-    private void llenarAcronimoComboBox(){
+    protected void llenarAcronimoComboBox(){
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(proyectoBO.consultarAcronimos().toArray());
         
         acronimoComboBox.setModel(modeloComboBox);
@@ -114,9 +116,9 @@ public class BuscarProyecto extends javax.swing.JFrame {
     
     
     private void llenarTablaResultados(List<Proyecto> resultados){
-        Action verProyecto = new AbstractAction() {
+        Action editarProyecto = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                mostrarProyecto();
+                editarProyecto();
             }
         };
         
@@ -137,14 +139,14 @@ public class BuscarProyecto extends javax.swing.JFrame {
             fila[7] = proyecto.getPresupuestoTotal();
             fila[8] = proyecto.getInvestigadorPrincipal();
             fila[9] = proyecto.getPatrocinador();
-            fila[10] = "Ver";
+            fila[10] = "Editar";
             modeloTabla.addRow(fila);
         });
-        ButtonColumn buttonColumnVer = new ButtonColumn(this.tablaProyectos, verProyecto, 10);
+        ButtonColumn buttonColumnVer = new ButtonColumn(this.tablaProyectos, editarProyecto, 9);
     }
     
-    private void mostrarProyecto(){
-        VerProyectoForm proyectoPantalla = new VerProyectoForm(this.getIdProyectoSeleccionado());
+    private void editarProyecto(){
+        EditarProyectoForm proyectoPantalla = EditarProyectoForm.getInstance(this.getIdProyectoSeleccionado(), this);
         proyectoPantalla.setVisible(true);
     }
     
@@ -213,6 +215,76 @@ public class BuscarProyecto extends javax.swing.JFrame {
         fechaFTxt.setEnabled(false);
     }
     
+    
+    protected void buscar(){
+        List<Proyecto> resultados;
+        if(porCodigo.isSelected()){ //Por Cógigo
+            
+            resultados = new ArrayList();
+            Proyecto proyecto = proyectoBO.consultarPorCodigo((String) codigoComboBox.getSelectedItem());
+            
+            resultados.add(proyecto);
+            
+        } else if(porNombre.isSelected()){ //Por Nombre
+            
+            resultados = new ArrayList();
+            Proyecto proyecto = proyectoBO.consultarPorNombre((String) nombreComboBox.getSelectedItem());
+            resultados.add(proyecto);
+            
+        } else if(porAcronimo.isSelected()){ //Por Acrónimo
+            
+            resultados = new ArrayList();
+            Proyecto proyecto = proyectoBO.consultarPorAcronimo((String) acronimoComboBox.getSelectedItem());
+            resultados.add(proyecto);
+            
+        } else if(porFecha.isSelected()){ //Por Fecha
+            if(!validarCamposVaciosFechas()){
+                JOptionPane.showMessageDialog(this, "Es necesario llenar ambas fechas", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(!validarFechas()){
+                JOptionPane.showMessageDialog(this, "Las fechas Introducidas son inválidas", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Date fechaInicio = Date.from(fechaITxt.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Date fechaFin = Date.from(fechaFTxt.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            
+             
+            resultados = proyectoBO.consultarPorFechas(fechaInicio, fechaFin);
+            
+        } else{ //Por Demas
+            if(!validarCamposVaciosDemas()){
+                JOptionPane.showMessageDialog(this, "Es necesario llenar al menos un campo", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            ObjectId idPrograma = this.getIdPrograma();
+            Float presupuesto = null;
+            String patrocinador = null;
+            if(validarFiltroPresupuesto()){
+                JOptionPane.showMessageDialog(this, "Se deben llenar ambos campos del Presupuesto", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if(!presupuestoTxt.getText().equals("") && presupuestoComboBox.getSelectedIndex() >0){
+                if(!validarFormatoPresupuesto()){
+                    JOptionPane.showMessageDialog(this, "El presupuesto introducido no es válido", "información", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                presupuesto = Float.parseFloat(presupuestoTxt.getText());
+            }
+            
+            if(!patrocinadorTxt.getText().equals("")){
+                patrocinador = patrocinadorTxt.getText();
+            }
+            resultados = proyectoBO.consultarPorCaracteristicas(idPrograma, presupuesto, presupuestoComboBox.getSelectedIndex(), this.getInvestigador(), patrocinador);
+            
+        }
+        
+        if (resultados == null){
+            JOptionPane.showMessageDialog(this, "No hay Resultados", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        this.llenarTablaResultados(resultados);
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -623,73 +695,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
     }//GEN-LAST:event_presupuestoTxtKeyTyped
 
     private void buscarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarBtnActionPerformed
-        List<Proyecto> resultados;
-        if(porCodigo.isSelected()){ //Por Cógigo
-            
-            resultados = new ArrayList();
-            Proyecto proyecto = proyectoBO.consultarPorCodigo((String) codigoComboBox.getSelectedItem());
-            
-            resultados.add(proyecto);
-            
-        } else if(porNombre.isSelected()){ //Por Nombre
-            
-            resultados = new ArrayList();
-            Proyecto proyecto = proyectoBO.consultarPorNombre((String) nombreComboBox.getSelectedItem());
-            resultados.add(proyecto);
-            
-        } else if(porAcronimo.isSelected()){ //Por Acrónimo
-            
-            resultados = new ArrayList();
-            Proyecto proyecto = proyectoBO.consultarPorAcronimo((String) acronimoComboBox.getSelectedItem());
-            resultados.add(proyecto);
-            
-        } else if(porFecha.isSelected()){ //Por Fecha
-            if(!validarCamposVaciosFechas()){
-                JOptionPane.showMessageDialog(this, "Es necesario llenar ambas fechas", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if(!validarFechas()){
-                JOptionPane.showMessageDialog(this, "Las fechas Introducidas son inválidas", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            Date fechaInicio = Date.from(fechaITxt.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-            Date fechaFin = Date.from(fechaFTxt.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-            
-             
-            resultados = proyectoBO.consultarPorFechas(fechaInicio, fechaFin);
-            
-        } else{ //Por Demas
-            if(!validarCamposVaciosDemas()){
-                JOptionPane.showMessageDialog(this, "Es necesario llenar al menos un campo", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            ObjectId idPrograma = this.getIdPrograma();
-            Float presupuesto = null;
-            String patrocinador = null;
-            if(validarFiltroPresupuesto()){
-                JOptionPane.showMessageDialog(this, "Se deben llenar ambos campos del Presupuesto", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if(!presupuestoTxt.getText().equals("") && presupuestoComboBox.getSelectedIndex() >0){
-                if(!validarFormatoPresupuesto()){
-                    JOptionPane.showMessageDialog(this, "El presupuesto introducido no es válido", "información", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                presupuesto = Float.parseFloat(presupuestoTxt.getText());
-            }
-            
-            if(!patrocinadorTxt.getText().equals("")){
-                patrocinador = patrocinadorTxt.getText();
-            }
-            resultados = proyectoBO.consultarPorCaracteristicas(idPrograma, presupuesto, presupuestoComboBox.getSelectedIndex(), this.getInvestigador(), patrocinador);
-            
-        }
-        
-        if (resultados == null){
-            JOptionPane.showMessageDialog(this, "No hay Resultados", "información", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        this.llenarTablaResultados(resultados);
+        this.buscar();
     }//GEN-LAST:event_buscarBtnActionPerformed
 
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
@@ -720,23 +726,6 @@ public class BuscarProyecto extends javax.swing.JFrame {
         return (this.investigadorComboBox.getSelectedIndex() == 0)? null: ((InvestigadorDoctor) this.investigadorComboBox.getSelectedItem());
     }
     
-    
-//    private String getFiltroPresupuesto(){
-//        if(this.presupuestoComboBox.getSelectedIndex() == 0){
-//            return null;
-//        }
-//        switch(this.presupuestoComboBox.getSelectedIndex()){
-//            case 0:
-//                return null;
-//            case 1:
-//                return "$gte";
-//            case 2:
-//                return "$lte";
-//            case 3:
-//                return "$eq";
-//        }
-//        return null;
-//    }
     
     private boolean validarCamposVaciosDemas(){
         return !(this.programasComboBox.getSelectedIndex() == 0 

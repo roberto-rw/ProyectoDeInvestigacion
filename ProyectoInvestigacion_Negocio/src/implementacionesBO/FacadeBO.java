@@ -8,6 +8,7 @@ import entidades.Doctor;
 import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
 import entidades.NoDoctor;
+import entidades.PeriodoParticipacion;
 import entidades.Profesor;
 import entidades.Programa;
 import entidades.Proyecto;
@@ -113,14 +114,17 @@ public class FacadeBO implements IFacadeBO{
     public boolean esInvestigador(ObjectId idProfesor) {
         return profesoresBO.esInvestigador(idProfesor);
     }
-
-    @Override
-    public InvestigadorDoctor consultarProfesor(ObjectId idInvestigador) {
+    
+       @Override
+    public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigador) {
         return profesoresBO.consultarInvestigadorDoctor(idInvestigador);
     }
 
-    
-    
+    @Override
+    public Profesor consultarProfesor(ObjectId idProfesor) {
+        return profesoresBO.consultar(idProfesor);
+    }
+
     
     //ProgramasBO
     @Override
@@ -256,6 +260,11 @@ public class FacadeBO implements IFacadeBO{
         return proyectosBO.validarFechasReales(proyecto);
     }
     
+    @Override
+    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo) {
+        return proyectosBO.validarFechasRealesIntegrante(periodo);
+    }
+    
     
     //PublicacionesCongresoBO
 
@@ -331,5 +340,7 @@ public class FacadeBO implements IFacadeBO{
     public List<AutorDTO> consultarAutoresPublicacionRevista(ObjectId idPublicacionRevista) {
         return publicacionesRevistaBO.consultarAutores(idPublicacionRevista);
     }
+
     
+
 }

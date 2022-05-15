@@ -62,7 +62,8 @@ public class ProyectoDAO implements IProyectoDAO{
                 .append("publicacionesRevista", proyecto.getPublicacionesRevista())
                 .append("publicacionesCongreso", proyecto.getPublicacionesCongreso())
                 .append("detalles", proyecto.getDetalles())
-                .append("idsLineasInvestigacion", proyecto.getIdsLineasInvestigacion());
+                .append("idsLineasInvestigacion", proyecto.getIdsLineasInvestigacion())
+                .append("investigadorPrincipal", proyecto.getInvestigadorPrincipal());
         
 
         this.getCollection().updateOne(filtro, new Document("$set", cambios));

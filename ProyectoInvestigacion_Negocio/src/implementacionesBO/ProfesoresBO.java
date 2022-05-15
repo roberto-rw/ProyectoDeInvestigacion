@@ -98,4 +98,13 @@ public class ProfesoresBO implements IProfesoresBO{
     public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigador) {
         return doctoresDAO.consultarInvestigador(idInvestigador);
     }
+
+    @Override
+    public Profesor consultar(ObjectId idProfesor) {
+        Profesor profesor = doctoresDAO.consultar(idProfesor);
+        if(profesor == null){
+            return noDoctoresDAO.consultar(idProfesor);
+        } 
+        return profesor;
+    }
 }

@@ -31,6 +31,7 @@ import javax.swing.table.TableColumnModel;
 import org.bson.types.ObjectId;
 import utils.ButtonColumn;
 import interfacesBO.IProyectosBO;
+import java.time.ZoneId;
 
 /**
  *
@@ -423,17 +424,15 @@ public class ProyectoForm extends javax.swing.JFrame {
         String patrocinador = patrocinadorTxt.getText();
         Programa programa = (Programa) programaComboBox.getSelectedItem();
         InvestigadorDoctor investigadorDoctor = (InvestigadorDoctor) investigadorDoctorComboBox.getSelectedItem();
-        Calendar fechaInicioCalendar = Calendar.getInstance();
-        fechaInicioCalendar.set(fechaInicioPicker.getDate().getYear(), fechaInicioPicker.getDate().getMonthValue() - 1, fechaInicioPicker.getDate().getDayOfMonth(), 0, 0, 0);
-        Calendar fechaFinCalendar = Calendar.getInstance();
-        fechaFinCalendar.set(fechaFinPicker.getDate().getYear(), fechaFinPicker.getDate().getMonthValue() - 1, fechaFinPicker.getDate().getDayOfMonth(), 0, 0, 0);
+        Date fechaInicio = Date.from(this.fechaInicioPicker.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+       Date fechaFin = Date.from(this.fechaFinPicker.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
         String descripcion = descripcionTxt.getText();
         
         
         List<ObjectId> lineasSeleccionadas = this.getLineasInvestigacionSeleccionadas();
 //        List<DetalleProyectoProfesor> integrantesSeleccionados = this.getIntegrantesSeleccionados();
         if(editar != null){
-            proyecto = new Proyecto(editar, codigoReferencia, nombreProyecto, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicioCalendar.getTime(), fechaFinCalendar.getTime(), descripcion, investigadorDoctor, this.periodosIntegrantes, lineasSeleccionadas);
+            proyecto = new Proyecto(editar, codigoReferencia, nombreProyecto, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicio, fechaFin, descripcion, investigadorDoctor, this.periodosIntegrantes, lineasSeleccionadas);
             boolean seEditoProyecto = proyectoBO.actualizar(proyecto);
             if(seEditoProyecto){
                 JOptionPane.showMessageDialog(this, "Se modificó el proyecto correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
@@ -456,7 +455,7 @@ public class ProyectoForm extends javax.swing.JFrame {
                 return;
             }
             
-            proyecto = new Proyecto(codigoReferencia, nombreProyecto, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicioCalendar.getTime(), fechaFinCalendar.getTime(), descripcion, investigadorDoctor, this.periodosIntegrantes, lineasSeleccionadas);
+            proyecto = new Proyecto(codigoReferencia, nombreProyecto, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicio, fechaFin, descripcion, investigadorDoctor, this.periodosIntegrantes, lineasSeleccionadas);
             if(!proyectoBO.validarFechasReales(proyecto)){
                 JOptionPane.showMessageDialog(this, "Las fechas colcadas no son válidas", "información", JOptionPane.ERROR_MESSAGE);
                 return;

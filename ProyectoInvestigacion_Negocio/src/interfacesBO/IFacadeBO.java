@@ -10,6 +10,7 @@ import entidades.InvestigadorDoctor;
 import entidades.InvestigadorNoDoctor;
 import entidades.LineaInvestigacion;
 import entidades.NoDoctor;
+import entidades.PeriodoParticipacion;
 import entidades.Profesor;
 import entidades.Programa;
 import entidades.Proyecto;
@@ -39,7 +40,8 @@ public interface IFacadeBO {
     public NoDoctor consultarNoDoctor(ObjectId idNoDoctor);
     public Doctor consultarDoctorProfesor(ObjectId idDoctor);
     public boolean esInvestigador(ObjectId idProfesor);
-    public InvestigadorDoctor consultarProfesor(ObjectId idInvestigador);
+    public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigador);
+    public Profesor consultarProfesor(ObjectId idProfesor);
     
     //ProgramasBO
     public boolean agregarPrograma(Programa programa);
@@ -70,6 +72,7 @@ public interface IFacadeBO {
     public List<String> consultarNombres();
     public List<String> consultarAcronimos();
     public boolean validarFechasReales(Proyecto proyecto);
+    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo);
     
     //PublicacionesCongresoBO
     public boolean agregarPublicacionCongreso(PublicacionCongreso publicacionCongreso);

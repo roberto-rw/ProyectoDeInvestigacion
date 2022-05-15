@@ -22,6 +22,7 @@ public interface IProfesoresBO {
     public List<InvestigadorDoctor> consultarTodosInvestigadorDoctores(); 
     public boolean agregar(Profesor profesor);
     public boolean eliminar(ObjectId idProfesor);
+    public Profesor consultar(ObjectId idProfesor);
     public NoDoctor consultarNoDoctor(ObjectId idNoDoctor);
     public Doctor consultarDoctor(ObjectId idDoctor);
     public boolean esInvestigador(ObjectId idProfesor);

@@ -9,6 +9,7 @@ import dtos.ProfesorProyectoDTO;
 import entidades.DetalleProyectoProfesor;
 import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
+import entidades.PeriodoParticipacion;
 import entidades.Proyecto;
 import entidades.Publicacion;
 import java.util.Date;
@@ -41,4 +42,5 @@ public interface IProyectosBO {
     public List<String> consultarNombres();
     public List<String> consultarAcronimos();
     public boolean validarFechasReales(Proyecto proyecto);
+    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo);
 }
