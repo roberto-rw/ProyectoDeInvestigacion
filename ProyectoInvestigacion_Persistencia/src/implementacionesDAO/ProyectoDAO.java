@@ -3,25 +3,19 @@ package implementacionesDAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 import dtos.ProfesorLineaInvestigacionDTO;
 import dtos.ProfesorProyectoDTO;
 import entidades.DetalleProyectoProfesor;
 import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
-import entidades.LineaInvestigacion;
-import entidades.Profesor;
 import entidades.Proyecto;
-import entidades.Publicacion;
+import entidades.PublicacionCongreso;
+import entidades.PublicacionRevista;
 import interfacesDAO.IConexionBD;
 import interfacesDAO.IProyectoDAO;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -132,16 +126,36 @@ public class ProyectoDAO implements IProyectoDAO{
     
 
     @Override
-    public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion) {
-//        Proyecto proyecto = this.consultar(idProyecto);
-//        if(proyecto != null){
-//            proyecto.getPublicaciones().add(publicacion);
-//            this.actualizar(proyecto);
-//            return true;
-//        }
+    public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion) {
+        Proyecto proyecto = this.consultar(idProyecto);
+        if(proyecto != null){
+            
+            if(proyecto.getPublicacionesCongreso()==null){
+                List<PublicacionCongreso> publicaciones = new ArrayList();
+                publicaciones.add(publicacion);
+                proyecto.setPublicacionesCongreso(publicaciones);
+                this.actualizar(proyecto);                
+                return true;
+            }else{
+                 proyecto.getPublicacionesCongreso().add(publicacion);
+                this.actualizar(proyecto);
+                return true;
+            }           
+        }
         return false;
     }
-
+    
+    @Override
+    public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion) {
+        Proyecto proyecto = this.consultar(idProyecto);
+        if (proyecto != null) {
+            proyecto.getPublicacionesRevista().add(publicacion);
+            this.actualizar(proyecto);
+            return true;
+        }
+        return false;
+    }
+    
     @Override
     public List<ProfesorProyectoDTO> consultarIntegrantes(ObjectId idProyecto) {
         List<Document> etapasDoctor = new ArrayList();
@@ -211,7 +225,7 @@ public class ProyectoDAO implements IProyectoDAO{
         }
         return resultados.get(0);
     }
-
+ 
     @Override
     public Proyecto consultarPorCodigo(String codigo) {
         List<Proyecto> resultados = this.getCollection().find(new Document("codigoReferencia", codigo)).into(new ArrayList());
@@ -283,6 +297,8 @@ public class ProyectoDAO implements IProyectoDAO{
          }
          return resultados;
     }
+
+   
 
 
 }

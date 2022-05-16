@@ -12,6 +12,8 @@ import entidades.LineaInvestigacion;
 import entidades.PeriodoParticipacion;
 import entidades.Proyecto;
 import entidades.Publicacion;
+import entidades.PublicacionCongreso;
+import entidades.PublicacionRevista;
 import implementacionesDAO.DAOSFactory;
 import interfacesDAO.IProyectoDAO;
 import java.util.ArrayList;
@@ -69,11 +71,6 @@ public class ProyectoBO implements IProyectosBO{
     @Override
     public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id) {
         return proyectoDAO.actualizarIntegrantes(integrantes, id);
-    }
-
-    @Override
-    public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion) {
-        return proyectoDAO.agregarPublicacion(idProyecto, publicacion);
     }
 
     @Override
@@ -154,6 +151,32 @@ public class ProyectoBO implements IProyectosBO{
     @Override
     public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo) {
         return !(periodo.getFechaInicio().compareTo(periodo.getFechaFin()) >= 0);
+    } 
+    
+    public List<Proyecto> consultarVigentes() {
+        List<Proyecto> proyectos = proyectoDAO.consultarTodos();
+        List<Proyecto> proyectosVigentes = new ArrayList();
+        
+        Date fechaActual = new Date();
+        
+        for (Proyecto p: proyectos) {
+            
+            if(p.getFechaFin().compareTo(fechaActual)>=0){
+                proyectosVigentes.add(p);
+            }
+        }
+        
+        return proyectosVigentes;
+    }
+
+    @Override
+    public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion) {
+        return proyectoDAO.agregarPublicacionCongreso(idProyecto, publicacion);
+    }
+
+    @Override
+    public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion) {
+        return proyectoDAO.agregarPublicacionRevista(idProyecto, publicacion);
     }
 
 

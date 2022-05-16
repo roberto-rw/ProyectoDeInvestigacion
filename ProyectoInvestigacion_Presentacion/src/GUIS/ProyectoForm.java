@@ -968,7 +968,7 @@ public class ProyectoForm extends javax.swing.JFrame {
             this.periodosIntegrantes.add(pParticipacion);
             JOptionPane.showMessageDialog(this, "Se agregó el integrante", "información", JOptionPane.INFORMATION_MESSAGE);
         }
-
+        
         vaciarIntegrantesPanel();
         llenarTablaIntegrantes();
     }//GEN-LAST:event_agregarParticipacionBtnActionPerformed

@@ -237,7 +237,7 @@ public class Persistencia implements IPersistencia{
 
     @Override
     public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion) {
-        return proyectoDAO.agregarPublicacion(idProyecto, publicacion);
+        return true;
     }
 
     @Override

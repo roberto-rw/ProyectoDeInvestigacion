@@ -196,11 +196,6 @@ public class FacadeBO implements IFacadeBO{
     }
 
     @Override
-    public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion) {
-        return proyectosBO.agregarPublicacion(idProyecto, publicacion);
-    }
-
-    @Override
     public boolean estaRepetidoNombre(String nombre) {
         return proyectosBO.estaRepetidoNombre(nombre);
     }
@@ -264,6 +259,20 @@ public class FacadeBO implements IFacadeBO{
     public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo) {
         return proyectosBO.validarFechasRealesIntegrante(periodo);
     }
+
+    public List<Proyecto> consultarVigentes() {
+        return proyectosBO.consultarVigentes();
+    }
+    @Override
+    public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion) {
+        return proyectosBO.agregarPublicacionCongreso(idProyecto, publicacion);
+    }
+
+    @Override
+    public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion) {
+        return proyectosBO.agregarPublicacionRevista(idProyecto, publicacion);
+    }
+    
     
     
     //PublicacionesCongresoBO

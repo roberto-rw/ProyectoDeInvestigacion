@@ -11,7 +11,8 @@ import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
 import entidades.PeriodoParticipacion;
 import entidades.Proyecto;
-import entidades.Publicacion;
+import entidades.PublicacionCongreso;
+import entidades.PublicacionRevista;
 import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -29,7 +30,8 @@ public interface IProyectosBO {
     public List<LineaInvestigacion> consultarLineasInvestigacion(ObjectId idProyecto);
     public List<ProfesorProyectoDTO> consultarIntegrantes(ObjectId idProyecto); 
     public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id);
-    public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion);
+    public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion);
+    public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion);
     public boolean estaRepetidoNombre(String nombre);
     public boolean estaRepetidoCodigo(String codigo);
     public boolean estaRepetidoAcronimo(String acronimo);
@@ -41,6 +43,7 @@ public interface IProyectosBO {
     public List<String> consultarCodigos();
     public List<String> consultarNombres();
     public List<String> consultarAcronimos();
+    public List<Proyecto> consultarVigentes();
     public boolean validarFechasReales(Proyecto proyecto);
     public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo);
 }
