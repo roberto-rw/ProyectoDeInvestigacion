@@ -4,6 +4,7 @@ package GUIS;
 import entidades.Autor;
 import entidades.Profesor;
 import entidades.PublicacionCongreso;
+import entidades.PublicacionRevista;
 import enums.TipoPublicacionCongreso;
 import implementacionesBO.FacadeBO;
 import interfacesBO.IFacadeBO;
@@ -708,25 +709,30 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
             autores.add(new Autor(autoresAgregados.get(i).getId(), i+1 ));
             }
             
-            String nombre = this.campoNombreCongreso.getText();
+            Long numeroSecuencia = Long.parseLong(this.campoNumeroSecuencia.getText());
+            String titulo = this.campoTitulo.getText();
+            String nombreCongreso = this.campoNombreCongreso.getText();
             TipoPublicacionCongreso tipo = (TipoPublicacionCongreso)this.comboBoxTipoCongreso.getSelectedItem();
             Calendar fechaInicioCalendar = Calendar.getInstance();
             Calendar fechaFinCalendar = Calendar.getInstance();
             String lugar = this.campoLugarCelebracion.getText();
             String pais = this.campoPais.getText();
             String editorial = this.campoEditorialCongreso.getText();
-            Long numeroSecuencia = Long.parseLong(this.campoNumeroSecuencia.getText());
-            String titulo = this.campoTitulo.getText();
+            
             
             fechaFinCalendar.set(campoFechaFin.getDate().getYear(), campoFechaFin.getDate().getMonthValue() - 1, campoFechaFin.getDate().getDayOfMonth(), 0, 0, 0);
             fechaInicioCalendar.set(campoFechaInicio.getDate().getYear(), campoFechaInicio.getDate().getMonthValue() - 1, campoFechaInicio.getDate().getDayOfMonth(), 0, 0, 0);
             
             
             
-            PublicacionCongreso publicacion = new PublicacionCongreso(nombre,tipo,fechaInicioCalendar.getTime(),fechaFinCalendar.getTime()
+            PublicacionCongreso publicacionCongreso = new PublicacionCongreso(nombreCongreso,tipo,fechaInicioCalendar.getTime(),fechaFinCalendar.getTime()
                                                                         ,lugar,pais,editorial,numeroSecuencia,titulo,this.idProyecto);
             
-            if(fachadaBO.agregarPublicacionCongreso(this.idProyecto, publicacion)){
+            for (Autor autor: autores) {
+                publicacionCongreso.addAutor(autor);
+            }
+            
+            if(fachadaBO.agregarPublicacionCongreso(this.idProyecto, publicacionCongreso)){
                 JOptionPane.showMessageDialog(this, "Se agregó la publicación", "información", JOptionPane.INFORMATION_MESSAGE);
             }else{
                 JOptionPane.showMessageDialog(this, "No se pudo agregar la publicación", "Error", JOptionPane.ERROR);
@@ -740,10 +746,33 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
             return;
             }
             
+            List<Autor> autores = new ArrayList();
+       
+            for (int i = 0; i < autoresAgregados.size(); i++) {
+            autores.add(new Autor(autoresAgregados.get(i).getId(), i+1 ));
+            }
             
+            Long numeroSecuencia = Long.parseLong(this.campoNumeroSecuencia.getText());
+            String titulo = this.campoTitulo.getText();
+            String nombreRevista = this.campoNombreRevista.getText();
+            String editorialRevista = this.campoEditorialRevista.getText();
+            String volumen = this.campoVolumen.getText();
+            String numero = this.campoNumero.getText();
+            String pagInicio = this.campoPagInicio.getText();
+            String pagFin = this.campoPagFin.getText();
             
+            PublicacionRevista publicacionRevista = new PublicacionRevista(nombreRevista,editorialRevista, volumen, numero,  pagInicio, pagFin,
+                                                                            numeroSecuencia, titulo, this.idProyecto);
             
+            for (Autor autor: autores) {
+                publicacionRevista.addAutor(autor);
+            }
             
+            if(fachadaBO.agregarPublicacionRevista(this.idProyecto, publicacionRevista)){
+                JOptionPane.showMessageDialog(this, "Se agregó la publicación", "información", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(this, "No se pudo agregar la publicación", "Error", JOptionPane.ERROR);
+            }
             
         }
      
