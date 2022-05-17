@@ -6,7 +6,6 @@
 package implementacionesBO;
 
 import dtos.ProfesorProyectoDTO;
-import entidades.DetalleProyectoProfesor;
 import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
 import entidades.PeriodoParticipacion;
@@ -121,7 +120,12 @@ public class ProyectoBO implements IProyectosBO{
     public boolean estaRepetidoAcronimo(String acronimo) {
        return this.consultarAcronimos().contains(acronimo);
     }
-
+    
+    @Override
+    public boolean estaRepetidoTituloPublicacion(String titulo) {
+        return this.consultarTitulosPublicaciones().contains(titulo);
+    }
+    
     @Override
     public List<Proyecto> consultarPorFechas(Date fechaInicio, Date fechaFin) {
         return persistencia.consultarProyectoPorFechas(fechaInicio, fechaFin);
@@ -161,7 +165,31 @@ public class ProyectoBO implements IProyectosBO{
         });
         return resultado;
     }
-
+    
+    @Override
+    public List<String> consultarTitulosPublicaciones() {
+        List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
+        List<PublicacionCongreso> publicacionesCongreso = new ArrayList();
+        List<PublicacionRevista> publicacionesRevista = new ArrayList();
+        List<String> titulos = new ArrayList();
+        
+        for (Proyecto p: proyectos) {
+            publicacionesCongreso = p.getPublicacionesCongreso();
+            for (PublicacionCongreso pC: publicacionesCongreso) {
+                titulos.add(pC.getTitulo());
+                System.out.println(pC.getTitulo());
+            }
+            publicacionesRevista = p.getPublicacionesRevista();
+            for (PublicacionRevista pR: publicacionesRevista) {
+                titulos.add(pR.getTitulo());
+                System.out.println(pR.getTitulo());
+            }
+        }
+        System.out.println(titulos);
+        System.out.println(proyectos);
+        return titulos;
+    }
+    
     @Override
     public boolean validarFechasReales(Proyecto proyecto) {
         return !(proyecto.getFechaInicio().compareTo(proyecto.getFechaFin()) >= 0);
@@ -202,7 +230,7 @@ public class ProyectoBO implements IProyectosBO{
         
         return proyectosVigentes;
     }
-
+        
     @Override
     public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion) {
         return persistencia.agregarPublicacionCongreso(idProyecto, publicacion);
@@ -223,4 +251,8 @@ public class ProyectoBO implements IProyectosBO{
         return proyecto.getPresupuestoTotal() > 0;
     }
 
+
+    
+    
+    
 }

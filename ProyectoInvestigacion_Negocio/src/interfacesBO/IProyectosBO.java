@@ -34,6 +34,7 @@ public interface IProyectosBO {
     public boolean estaRepetidoNombre(String nombre);
     public boolean estaRepetidoCodigo(String codigo);
     public boolean estaRepetidoAcronimo(String acronimo);
+    public boolean estaRepetidoTituloPublicacion(String titulo);
     public Proyecto consultarPorCodigo(String codigo);
     public Proyecto consultarPorNombre(String nombre);
     public Proyecto consultarPorAcronimo(String acronimo);
@@ -43,6 +44,7 @@ public interface IProyectosBO {
     public List<String> consultarNombres();
     public List<String> consultarAcronimos();
     public List<Proyecto> consultarVigentes();
+    public List<String> consultarTitulosPublicaciones();
     public boolean validarFechasReales(Proyecto proyecto);
     public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo);
     public boolean validarNumeroIntegrantes(Proyecto proyecto);

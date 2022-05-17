@@ -699,8 +699,13 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
         if(this.radioCongreso.isSelected()){
             
             if(!(this.validarCamposVaciosCongreso())){
-            JOptionPane.showMessageDialog(this, "No dejes campos vacíos", "información", JOptionPane.ERROR_MESSAGE);
-            return;
+                JOptionPane.showMessageDialog(this, "No dejes campos vacíos", "información", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if(fachadaBO.estaRepetidoTituloPublicacion(this.campoTitulo.getText())){
+                JOptionPane.showMessageDialog(this, "El titulo de la publicación ya existe", "información", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             
             List<Autor> autores = new ArrayList();
@@ -744,6 +749,11 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
             if(!(this.validarCamposVaciosRevista())){
             JOptionPane.showMessageDialog(this, "No dejes campos vacíos", "información", JOptionPane.ERROR_MESSAGE);
             return;
+            }
+
+            if(fachadaBO.estaRepetidoTituloPublicacion(this.campoTitulo.getText())){
+                JOptionPane.showMessageDialog(this, "El titulo de la publicación ya existe", "información", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             
             List<Autor> autores = new ArrayList();

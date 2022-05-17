@@ -57,6 +57,7 @@ public interface IFacadeBO {
     public boolean estaRepetidoNombre(String nombre);
     public boolean estaRepetidoCodigo(String codigo);
     public boolean estaRepetidoAcronimo(String acronimo);
+    public boolean estaRepetidoTituloPublicacion(String titulo);
     public Proyecto consultarPorCodigo(String codigo);
     public Proyecto consultarPorNombre(String nombre);
     public Proyecto consultarPorAcronimo(String acronimo);

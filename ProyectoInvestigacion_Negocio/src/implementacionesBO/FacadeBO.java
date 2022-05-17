@@ -203,7 +203,12 @@ public class FacadeBO implements IFacadeBO{
     public boolean estaRepetidoAcronimo(String acronimo) {
         return proyectosBO.estaRepetidoAcronimo(acronimo);
     }
-
+    
+    @Override
+    public boolean estaRepetidoTituloPublicacion(String titulo) {
+        return proyectosBO.estaRepetidoTituloPublicacion(titulo);
+    }
+    
     @Override
     public Proyecto consultarPorCodigo(String codigo) {
         return proyectosBO.consultarPorCodigo(codigo);
@@ -273,4 +278,6 @@ public class FacadeBO implements IFacadeBO{
     public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo) {
         return proyectosBO.validarFechasRealesIntegrante(periodo);
     }
+
+    
 }
