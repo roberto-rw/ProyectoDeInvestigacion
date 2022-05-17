@@ -23,7 +23,7 @@ import utils.ButtonColumn;
 
 
 public class AgregarPublicacionForm extends javax.swing.JFrame {
-    
+    PrincipalForm pantallaPrincipal;
     IFacadeBO fachadaBO;
     List<Profesor> autoresAgregados;
     ObjectId idProyecto;
@@ -220,26 +220,32 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
         campoPagInicio = new javax.swing.JTextField();
         campoPagFin = new javax.swing.JTextField();
         botonGuardar = new javax.swing.JButton();
+        botonInicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Agregar Publicación");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setText("Agregar Publicación");
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel2.setText("Titulo:");
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel3.setText("Número en Secuencia:");
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         textAreaAutores.setEditable(false);
         textAreaAutores.setColumns(20);
         textAreaAutores.setRows(5);
         jScrollPane1.setViewportView(textAreaAutores);
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel4.setText("Autores:");
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         comboBoxProfesores.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -287,8 +293,8 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel5.setText("Tipo de Publicación:");
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         panelPublicacionCongreso.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -306,20 +312,20 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel7.setText("Nombre del Congreso:");
+        jLabel7.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel8.setText("Tipo:");
+        jLabel8.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel9.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel9.setText("Lugar de Celebración:");
+        jLabel9.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel10.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel10.setText("Editorial:");
+        jLabel10.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel11.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel11.setText("País:");
+        jLabel11.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         campoPais.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -412,23 +418,23 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
 
         panelPublicacionRevista.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel12.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel12.setText("Nombre de la Revista:");
+        jLabel12.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel13.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel13.setText("Volumen:");
+        jLabel13.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel14.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel14.setText("Editorial:");
+        jLabel14.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel15.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel15.setText("Número:");
+        jLabel15.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel16.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel16.setText("Página de Inicio:");
+        jLabel16.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel17.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel17.setText("Página de Fin:");
+        jLabel17.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         campoNumero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -503,6 +509,13 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
             }
         });
 
+        botonInicio.setText("Volver");
+        botonInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonInicioActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -516,8 +529,10 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
                             .addGap(56, 56, 56)
                             .addComponent(panelPublicacionRevista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(547, 547, 547)
-                            .addComponent(botonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(471, 471, 471)
+                            .addComponent(botonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(51, 51, 51)
+                            .addComponent(botonInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
                             .addGap(531, 531, 531)
                             .addComponent(jLabel1)))
@@ -586,7 +601,9 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
                             .addComponent(panelPublicacionRevista, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panelPublicacionCongreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addComponent(botonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(botonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonInicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addContainerGap())
@@ -790,6 +807,22 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
         
     }//GEN-LAST:event_botonGuardarActionPerformed
 
+    private void botonInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonInicioActionPerformed
+        this.dispose();
+        pantallaPrincipal = new PrincipalForm();
+        pantallaPrincipal.setVisible(true);
+    }//GEN-LAST:event_botonInicioActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        if(pantallaPrincipal==null){
+           pantallaPrincipal = new PrincipalForm();
+        }else{
+            pantallaPrincipal.setVisible(true);
+        }
+        
+        pantallaPrincipal.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
+
  
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -826,6 +859,7 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonAgregarAutor;
     private javax.swing.JButton botonGuardar;
+    private javax.swing.JButton botonInicio;
     private javax.swing.JTextField campoEditorialCongreso;
     private javax.swing.JTextField campoEditorialRevista;
     private com.github.lgooddatepicker.components.DatePicker campoFechaFin;

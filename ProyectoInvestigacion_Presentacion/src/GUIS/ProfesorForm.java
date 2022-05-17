@@ -6,7 +6,6 @@
 package GUIS;
 
 
-import dtos.PeriodoSupervisionDTO;
 import entidades.Doctor;
 import entidades.InvestigadorDoctor;
 import entidades.InvestigadorNoDoctor;
@@ -14,13 +13,8 @@ import entidades.LineaInvestigacion;
 import entidades.NoDoctor;
 import entidades.PeriodoSupervision;
 import entidades.Profesor;
-import implementacionesBO.BOSFactory;
 import implementacionesBO.FacadeBO;
-import interfacesBO.IDoctoresBO;
 import interfacesBO.IFacadeBO;
-import interfacesBO.INoDoctoresBO;
-import interfacesBO.ILineaInvestigacionBO;
-import interfacesBO.IProfesoresBO;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -28,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
@@ -46,7 +38,7 @@ import utils.ButtonColumn;
 public class ProfesorForm extends javax.swing.JFrame {
     
 
-    
+    PrincipalForm pantallaPrincipal;
     IFacadeBO fachadaBO;
     private List<PeriodoSupervision> periodosSupervision;
     private Integer editarSupervisor;
@@ -521,8 +513,13 @@ public class ProfesorForm extends javax.swing.JFrame {
         botonCancelar = new javax.swing.JButton();
         volverBtn = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Profesores");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         nombreLbl.setText("Nombre:");
         nombreLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
@@ -822,6 +819,11 @@ public class ProfesorForm extends javax.swing.JFrame {
 
         volverBtn.setText("Volver");
         volverBtn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        volverBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                volverBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -979,6 +981,22 @@ public class ProfesorForm extends javax.swing.JFrame {
     private void nombreTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nombreTxtActionPerformed
+
+    private void volverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverBtnActionPerformed
+        this.dispose();
+        pantallaPrincipal = new PrincipalForm();
+        pantallaPrincipal.setVisible(true);
+    }//GEN-LAST:event_volverBtnActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        if(pantallaPrincipal==null){
+           pantallaPrincipal = new PrincipalForm();
+        }else{
+            pantallaPrincipal.setVisible(true);
+        }
+        
+        pantallaPrincipal.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments

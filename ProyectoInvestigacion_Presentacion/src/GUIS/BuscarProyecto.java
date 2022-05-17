@@ -33,7 +33,7 @@ import javax.swing.table.TableColumnModel;
 public class BuscarProyecto extends javax.swing.JFrame {
 
     IFacadeBO fachadaBO;
-    
+    PrincipalForm pantallaPrincipal;
     /**
      * Creates new form BuscarProyecto
      */
@@ -321,10 +321,15 @@ public class BuscarProyecto extends javax.swing.JFrame {
         tablaProyectos = new javax.swing.JTable();
         buscarBtn = new javax.swing.JButton();
         cancelarBtn = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        botonInicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Buscar Proyecto");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         opcionesBusqueda.add(porCodigo);
         porCodigo.setText("Buscar por Codigo de Referencia");
@@ -528,9 +533,14 @@ public class BuscarProyecto extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Inicio");
-        jButton1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jButton1.setToolTipText("");
+        botonInicio.setText("Inicio");
+        botonInicio.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        botonInicio.setToolTipText("");
+        botonInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonInicioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout contenedorLayout = new javax.swing.GroupLayout(contenedor);
         contenedor.setLayout(contenedorLayout);
@@ -553,7 +563,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
                         .addGap(38, 38, 38)
                         .addComponent(cancelarBtn)
                         .addGap(35, 35, 35)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(botonInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(contenedorLayout.createSequentialGroup()
                         .addGap(23, 23, 23)
@@ -638,7 +648,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
                 .addGroup(contenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buscarBtn)
                     .addComponent(cancelarBtn)
-                    .addComponent(jButton1))
+                    .addComponent(botonInicio))
                 .addContainerGap(47, Short.MAX_VALUE))
         );
 
@@ -694,6 +704,22 @@ public class BuscarProyecto extends javax.swing.JFrame {
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
         vaciarForm();
     }//GEN-LAST:event_cancelarBtnActionPerformed
+
+    private void botonInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonInicioActionPerformed
+        this.dispose();
+        pantallaPrincipal = new PrincipalForm();
+        pantallaPrincipal.setVisible(true);        
+    }//GEN-LAST:event_botonInicioActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        if(pantallaPrincipal==null){
+           pantallaPrincipal = new PrincipalForm();
+        }else{
+            pantallaPrincipal.setVisible(true);
+        }
+        
+        pantallaPrincipal.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
 
     
     private void vaciarForm(){
@@ -787,6 +813,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> acronimoComboBox;
+    private javax.swing.JButton botonInicio;
     private javax.swing.JButton buscarBtn;
     private javax.swing.JButton cancelarBtn;
     private javax.swing.JComboBox<String> codigoComboBox;
@@ -795,7 +822,6 @@ public class BuscarProyecto extends javax.swing.JFrame {
     private javax.swing.JLabel fechaILbl;
     private com.github.lgooddatepicker.components.DatePicker fechaITxt;
     private javax.swing.JComboBox<String> investigadorComboBox;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
