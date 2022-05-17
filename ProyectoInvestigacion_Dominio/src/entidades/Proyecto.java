@@ -181,14 +181,23 @@ public class Proyecto {
     }
 
     public List<PublicacionRevista> getPublicacionesRevista() {
+        if(publicacionesRevista == null){
+            return new ArrayList();
+        }
         return publicacionesRevista;
     }
 
-    public void setPublicacionesRevista(List<PublicacionRevista> publicacionesRevista) {
-        this.publicacionesRevista = publicacionesRevista;
+    public void addPublicacionRevista(PublicacionRevista publicacionesRevista) {
+        if(this.publicacionesRevista == null){
+            this.publicacionesRevista = new ArrayList();
+        }
+        this.publicacionesRevista.add(publicacionesRevista);
     }
 
     public List<PublicacionCongreso> getPublicacionesCongreso() {
+        if(publicacionesCongreso == null){
+            return new ArrayList();
+        }
         return publicacionesCongreso;
     }
 

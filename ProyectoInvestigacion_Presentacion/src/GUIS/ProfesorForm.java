@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
@@ -254,7 +256,12 @@ public class ProfesorForm extends javax.swing.JFrame {
         if(opcionSeleccionada  == JOptionPane.NO_OPTION){
             return;
         }
-        fachadaBO.eliminarProfesor(this.getIdProfesorSeleccionado());
+        try {
+            fachadaBO.eliminarProfesor(this.getIdProfesorSeleccionado());
+        } catch (Exception ex) {
+             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+             return;
+        }
         JOptionPane.showMessageDialog(this, "Se eliminó el profesor correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
         this.llenarTablaProfesores();
      }
@@ -296,7 +303,7 @@ public class ProfesorForm extends javax.swing.JFrame {
                 despachoTxt.setText(profesorSeleccionado.getDespacho());
                 esDoctor.setSelected(true);
                 this.mostrarLineasInvestigacionSeleccionadas(profesorSeleccionado.getIdsLineasInvestigacion());
-             
+                 
          } else{
               NoDoctor profesorSeleccionado = fachadaBO.consultarNoDoctor(idSeleccionado);
               nombreTxt.setText(profesorSeleccionado.getNombre());
@@ -313,6 +320,8 @@ public class ProfesorForm extends javax.swing.JFrame {
          if(esInvestigadorSeleccionado) esInvestigador.setSelected(true);
          botonGuardar.setText("Editar Proyecto");
          this.editar = this.getIdProfesorSeleccionado();
+         esDoctor.setEnabled(false);
+         esInvestigador.setEnabled(false);
      }
      
      
@@ -342,7 +351,8 @@ public class ProfesorForm extends javax.swing.JFrame {
          periodosSupervision = new ArrayList();
          esDoctor.setSelected(false);
          esInvestigador.setSelected(false);
-         
+         esDoctor.setEnabled(true);
+         esInvestigador.setEnabled(true);
          nombreTxt.setText("");
          paternoTxt.setText("");
          maternoTxt.setText("");
@@ -408,9 +418,6 @@ public class ProfesorForm extends javax.swing.JFrame {
              JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
              return;
          }
-         
-         
-        fachadaBO.eliminarProfesor(editar);
          
          String nombreProfesor = nombreTxt.getText();
          String aPaterno = paternoTxt.getText();

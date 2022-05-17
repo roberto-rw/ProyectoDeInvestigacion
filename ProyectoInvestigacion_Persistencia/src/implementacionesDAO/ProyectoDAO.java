@@ -149,7 +149,7 @@ public class ProyectoDAO implements IProyectoDAO{
     public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion) {
         Proyecto proyecto = this.consultar(idProyecto);
         if (proyecto != null) {
-            proyecto.getPublicacionesRevista().add(publicacion);
+            proyecto.addPublicacionRevista(publicacion);
             this.actualizar(proyecto);
             return true;
         }

@@ -5,11 +5,15 @@
  */
 package implementacionesBO;
 
+import entidades.Autor;
 import entidades.Doctor;
 import entidades.InvestigadorDoctor;
 import entidades.InvestigadorNoDoctor;
 import entidades.NoDoctor;
+import entidades.PeriodoParticipacion;
 import entidades.Profesor;
+import entidades.Proyecto;
+import entidades.Publicacion;
 import implementacionesDAO.Persistencia;
 import interfacesBO.IProfesoresBO;
 import interfacesDAO.IPersistencia;
@@ -53,7 +57,15 @@ public class ProfesoresBO implements IProfesoresBO{
     }
 
     @Override
-    public boolean eliminar(ObjectId idProfesor) {
+    public boolean eliminar(ObjectId idProfesor) throws Exception {
+        
+        if(!this.validarEliminarIntegrante(idProfesor)){
+            throw new Exception("No se puede eliminar un Profesor si es integrante de un proyecto");
+        }
+        if(!this.validarEliminarAutores(idProfesor)){
+            throw new Exception("No se puede eliminar un Profesor si es autor de una publicacion");
+        }
+        
         if(persistencia.consultarDoctor(idProfesor) != null){
             return persistencia.eliminarDoctor(idProfesor);
         } else{
@@ -105,4 +117,42 @@ public class ProfesoresBO implements IProfesoresBO{
         } 
         return profesor;
     }
+
+    @Override
+    public boolean validarEliminarIntegrante(ObjectId idProfesor) {
+        List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
+        for(Proyecto proyecto: proyectos){
+            List<PeriodoParticipacion> periodos = proyecto.getIntegrantes();
+            for(PeriodoParticipacion periodo: periodos){
+                if(periodo.getIdProfesor().equals(idProfesor)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean validarEliminarAutores(ObjectId idProfesor) {
+        List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
+        for(Proyecto proyecto: proyectos){
+            List<Publicacion> publicaciones = new ArrayList();
+            publicaciones.addAll(proyecto.getPublicacionesCongreso());
+            publicaciones.addAll(proyecto.getPublicacionesRevista());
+            for(Publicacion publicacion: publicaciones){
+                List<Autor> autores = publicacion.getAutores();
+                for(Autor autor: autores){
+                    if(autor.getIdProfesor().equals(idProfesor)){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    
+    
+       
 }
+

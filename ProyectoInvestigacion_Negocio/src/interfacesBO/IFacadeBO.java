@@ -31,7 +31,7 @@ public interface IFacadeBO {
     public List<Doctor> consultarTodosDoctores();
     public List<InvestigadorDoctor> consultarTodosInvestigadorDoctores(); 
     public boolean agregarProfesor(Profesor profesor);
-    public boolean eliminarProfesor(ObjectId idProfesor);
+    public boolean eliminarProfesor(ObjectId idProfesor) throws Exception;
     public NoDoctor consultarNoDoctor(ObjectId idNoDoctor);
     public Doctor consultarDoctorProfesor(ObjectId idDoctor);
     public boolean esInvestigador(ObjectId idProfesor);

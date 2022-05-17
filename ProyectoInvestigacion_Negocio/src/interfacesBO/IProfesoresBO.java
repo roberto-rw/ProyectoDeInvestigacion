@@ -21,12 +21,14 @@ public interface IProfesoresBO {
     public List<Doctor> consultarTodosDoctores();
     public List<InvestigadorDoctor> consultarTodosInvestigadorDoctores(); 
     public boolean agregar(Profesor profesor);
-    public boolean eliminar(ObjectId idProfesor);
+    public boolean eliminar(ObjectId idProfesor) throws Exception;
     public Profesor consultar(ObjectId idProfesor);
     public NoDoctor consultarNoDoctor(ObjectId idNoDoctor);
     public Doctor consultarDoctor(ObjectId idDoctor);
     public boolean esInvestigador(ObjectId idProfesor);
     public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigador);
+    public boolean validarEliminarIntegrante(ObjectId idProfesor);
+    public boolean validarEliminarAutores(ObjectId idProfesor);
     
     
 }

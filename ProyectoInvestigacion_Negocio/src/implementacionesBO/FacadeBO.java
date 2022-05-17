@@ -93,7 +93,7 @@ public class FacadeBO implements IFacadeBO{
     }
 
     @Override
-    public boolean eliminarProfesor(ObjectId idProfesor) {
+    public boolean eliminarProfesor(ObjectId idProfesor) throws Exception {
         return profesoresBO.eliminar(idProfesor);
     }
 
