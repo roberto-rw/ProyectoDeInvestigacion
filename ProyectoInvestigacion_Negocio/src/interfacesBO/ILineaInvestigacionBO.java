@@ -16,7 +16,9 @@ import org.bson.types.ObjectId;
 public interface ILineaInvestigacionBO {
     public boolean agregar(LineaInvestigacion lineaInvestigacion);
     public boolean actualizar(LineaInvestigacion lineaInvestigacion);
-    public boolean eliminar(ObjectId idLineaInvestigacion);
+    public boolean eliminar(ObjectId idLineaInvestigacion) throws Exception;
     public LineaInvestigacion consultar(ObjectId idLineaInvestigacion);
     public List<LineaInvestigacion> consultarTodos();
+    public boolean validarEliminarLineasProfesor(ObjectId idLineaInvestigacion);
+    public boolean validarEliminarLineasProyecto(ObjectId idLineaInvestigacion);
 }

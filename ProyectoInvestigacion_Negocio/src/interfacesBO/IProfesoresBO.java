@@ -29,6 +29,6 @@ public interface IProfesoresBO {
     public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigador);
     public boolean validarEliminarIntegrante(ObjectId idProfesor);
     public boolean validarEliminarAutores(ObjectId idProfesor);
-    
+    public boolean validarEliminarInvestigadorPrincipal(Object idProfesor); 
     
 }

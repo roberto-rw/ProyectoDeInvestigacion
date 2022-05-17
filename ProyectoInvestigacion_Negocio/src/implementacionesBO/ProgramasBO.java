@@ -6,6 +6,7 @@
 package implementacionesBO;
 
 import entidades.Programa;
+import entidades.Proyecto;
 import implementacionesDAO.Persistencia;
 import interfacesBO.IProgramasBO;
 import interfacesDAO.IPersistencia;
@@ -31,7 +32,10 @@ public class ProgramasBO implements IProgramasBO{
     }
 
     @Override
-    public boolean eliminar(ObjectId idPrograma) {
+    public boolean eliminar(ObjectId idPrograma) throws Exception {
+        if(!this.validarEliminarProgramaProyecto(idPrograma)){
+            throw new Exception("No se puede eliminar una programa si a este lo contiene un proyecto");
+        }
         return persistencia.eliminarPrograma(idPrograma);
     }
 
@@ -43,6 +47,17 @@ public class ProgramasBO implements IProgramasBO{
     @Override
     public Programa consultar(ObjectId idPrograma) {
         return persistencia.consultarPrograma(idPrograma);
+    }
+
+    @Override
+    public boolean validarEliminarProgramaProyecto(ObjectId idPrograma) {
+        List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
+        for(Proyecto proyecto: proyectos){
+            if(proyecto.getIdPrograma().equals(idPrograma)){
+                return false;
+            }
+        }
+        return true;
     }
 
     

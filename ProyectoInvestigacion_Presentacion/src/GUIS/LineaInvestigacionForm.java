@@ -1,0 +1,347 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package GUIS;
+
+import entidades.LineaInvestigacion;
+import implementacionesBO.FacadeBO;
+import interfacesBO.IFacadeBO;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import org.bson.types.ObjectId;
+import utils.ButtonColumn;
+
+/**
+ *
+ * @author jegav
+ */
+public class LineaInvestigacionForm extends javax.swing.JFrame {
+
+    IFacadeBO fachadaBO;
+    private List<String> descriptores;
+    
+    /**
+     * Creates new form LineaInvestigacionForm
+     */
+    public LineaInvestigacionForm() {
+        initComponents();
+        this.fachadaBO = new FacadeBO();
+        this.descriptores = new ArrayList();
+        
+         TableColumnModel modeloColumnasLineas = this.lineaInvestigacionTabla.getColumnModel();
+        lineaInvestigacionTabla.removeColumn( modeloColumnasLineas.getColumn(0));
+        
+        this.llenarTablaLineas();
+        
+    }
+    
+    public void llenarListaDescriptores(){
+        DefaultListModel lista = new DefaultListModel();
+        lista.removeAllElements();
+        this.descriptores.forEach(descriptor ->{
+            lista.addElement(descriptor);
+        });
+        this.descriptoresLista.setModel(lista);
+    }
+    
+    private ObjectId getIdSeleccionado(){
+         int indiceFilaSeleccionada = this.lineaInvestigacionTabla.getSelectedRow();
+        if (indiceFilaSeleccionada != -1) {
+            DefaultTableModel modelo = (DefaultTableModel) this.lineaInvestigacionTabla.getModel();
+            int indiceColumnaId = 0;
+            ObjectId idLineaSeleccionada = (ObjectId) modelo.getValueAt(indiceFilaSeleccionada, indiceColumnaId);
+            return idLineaSeleccionada;
+        } else {
+            return null;
+        }
+    }
+    
+    private void llenarTablaLineas(){
+        List<LineaInvestigacion> lineasInvestigacion = fachadaBO.consultarTodosLineas();
+        
+        Action eliminar = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                eliminarLinea();
+            }
+        };
+        
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.lineaInvestigacionTabla.getModel();
+        modeloTabla.setRowCount(0);
+        lineasInvestigacion.forEach(linea -> {
+            Object[] fila = new Object[5];
+            fila[0] = linea.getId();
+            fila[1] = linea.getCodigo();
+            fila[2] = linea.getNombre();
+            fila[3] = linea.getConjuntoDescriptores();
+            fila[4] = "Eliminar";
+
+            modeloTabla.addRow(fila);
+        });
+        ButtonColumn buttonColumnEliminar = new ButtonColumn(lineaInvestigacionTabla, eliminar, 3);
+    }
+    
+    private void eliminarLinea(){
+        int opcionSeleccionada = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea eliminar la Linea Investigación seleccionado?", "Confirmación", JOptionPane.YES_NO_OPTION);
+
+        if (opcionSeleccionada == JOptionPane.CLOSED_OPTION) {
+            return;
+        }
+
+        if (opcionSeleccionada == JOptionPane.NO_OPTION) {
+            return;
+        }
+        try {
+            fachadaBO.eliminarLinea(this.getIdSeleccionado());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "información", JOptionPane.ERROR_MESSAGE);
+        }
+        this.llenarTablaLineas();
+    }
+    
+    private boolean validarCamposVacios(){
+        return !(this.nombreTxt.equals("") || this.nombreTxt.equals("") || this.descriptores.isEmpty());
+    }
+    
+    private void agregarLinea(){
+        if(!validarCamposVacios()){
+            JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String codigo = this.codigoTxt.getText();
+        String nombre = this.nombreTxt.getText();
+        LineaInvestigacion lineaInvestigacion = new LineaInvestigacion(codigo, nombre, this.descriptores);
+        fachadaBO.agregarLinea(lineaInvestigacion);
+        JOptionPane.showMessageDialog(this, "Se agregó correctamente la Linea de Investigacion", "información", JOptionPane.INFORMATION_MESSAGE);
+        this.llenarTablaLineas();
+        this.vaciarForm();
+    }
+    
+    private void vaciarForm(){
+        this.codigoTxt.setText("");
+        this.nombreTxt.setText("");
+        this.descriptores.clear();
+        this.llenarListaDescriptores();
+    }
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        codigoTxt = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        nombreTxt = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        descriptoresTxt = new javax.swing.JTextField();
+        agregarDescriptorBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        descriptoresLista = new javax.swing.JList<>();
+        agregarLineaBtn = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        lineaInvestigacionTabla = new javax.swing.JTable();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Linea Investigación");
+
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel1.setText("Lineas de Investigación");
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel2.setText("Código:");
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel3.setText("Nombre:");
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jLabel4.setText("Descriptores:");
+
+        agregarDescriptorBtn.setText("Agregar");
+        agregarDescriptorBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarDescriptorBtnActionPerformed(evt);
+            }
+        });
+
+        jScrollPane1.setViewportView(descriptoresLista);
+
+        agregarLineaBtn.setText("Agregar Linea de Investigación");
+        agregarLineaBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarLineaBtnActionPerformed(evt);
+            }
+        });
+
+        lineaInvestigacionTabla.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id", "Código", "Nombre", "Descriptores", "Eliminar"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        lineaInvestigacionTabla.setRowHeight(30);
+        jScrollPane2.setViewportView(lineaInvestigacionTabla);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(385, 385, 385))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(agregarLineaBtn)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel2))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(codigoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nombreTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(descriptoresTxt)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))))
+                        .addGap(18, 18, 18)
+                        .addComponent(agregarDescriptorBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(23, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(jLabel1)
+                .addGap(29, 29, 29)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(codigoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(44, 44, 44)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(nombreTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(42, 42, 42)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(descriptoresTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(agregarDescriptorBtn))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addComponent(agregarLineaBtn)
+                .addContainerGap(32, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void agregarDescriptorBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarDescriptorBtnActionPerformed
+        this.descriptores.add(this.descriptoresTxt.getText());
+        this.llenarListaDescriptores();
+        this.descriptoresTxt.setText("");
+    }//GEN-LAST:event_agregarDescriptorBtnActionPerformed
+
+    private void agregarLineaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarLineaBtnActionPerformed
+        this.agregarLinea();
+    }//GEN-LAST:event_agregarLineaBtnActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(LineaInvestigacionForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(LineaInvestigacionForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(LineaInvestigacionForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(LineaInvestigacionForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new LineaInvestigacionForm().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton agregarDescriptorBtn;
+    private javax.swing.JButton agregarLineaBtn;
+    private javax.swing.JTextField codigoTxt;
+    private javax.swing.JList<String> descriptoresLista;
+    private javax.swing.JTextField descriptoresTxt;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable lineaInvestigacionTabla;
+    private javax.swing.JTextField nombreTxt;
+    // End of variables declaration//GEN-END:variables
+}

@@ -16,7 +16,8 @@ import org.bson.types.ObjectId;
 public interface IProgramasBO {
     public boolean agregar(Programa programa);
     public boolean actualizar(Programa programa);
-    public boolean eliminar(ObjectId idPrograma);
+    public boolean eliminar(ObjectId idPrograma) throws Exception ;
     public Programa consultar(ObjectId idPrograma);
     public List<Programa> consultarTodos();
+    public boolean validarEliminarProgramaProyecto(ObjectId idPrograma);
 }

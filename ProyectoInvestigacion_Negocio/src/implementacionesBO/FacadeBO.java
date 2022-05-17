@@ -56,7 +56,7 @@ public class FacadeBO implements IFacadeBO{
     }
 
     @Override
-    public boolean eliminarLinea(ObjectId idLineaInvestigacion) {
+    public boolean eliminarLinea(ObjectId idLineaInvestigacion) throws Exception {
         return lineasInvestigacionBO.eliminar(idLineaInvestigacion);
     }
 
@@ -132,7 +132,7 @@ public class FacadeBO implements IFacadeBO{
     }
 
     @Override
-    public boolean eliminarPrograma(ObjectId idPrograma) {
+    public boolean eliminarPrograma(ObjectId idPrograma) throws Exception {
         return programasBO.eliminar(idPrograma);
     }
 

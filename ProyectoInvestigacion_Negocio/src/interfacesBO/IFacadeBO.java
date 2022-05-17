@@ -22,7 +22,7 @@ public interface IFacadeBO {
     //LineasInvestigacionBO
     public boolean agregarLinea(LineaInvestigacion lineaInvestigacion);
     public boolean actualizarLinea(LineaInvestigacion lineaInvestigacion);
-    public boolean eliminarLinea(ObjectId idLineaInvestigacion);
+    public boolean eliminarLinea(ObjectId idLineaInvestigacion) throws Exception;
     public LineaInvestigacion consultarLineas(ObjectId idLineaInvestigacion);
     public List<LineaInvestigacion> consultarTodosLineas();
 
@@ -41,7 +41,7 @@ public interface IFacadeBO {
     //ProgramasBO
     public boolean agregarPrograma(Programa programa);
     public boolean actualizarPrograma(Programa programa);
-    public boolean eliminarPrograma(ObjectId idPrograma);
+    public boolean eliminarPrograma(ObjectId idPrograma) throws Exception;
     public Programa consultarPrograma(ObjectId idPrograma);
     public List<Programa> consultarTodosProgramas();
     

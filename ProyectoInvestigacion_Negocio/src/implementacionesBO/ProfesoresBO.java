@@ -65,7 +65,9 @@ public class ProfesoresBO implements IProfesoresBO{
         if(!this.validarEliminarAutores(idProfesor)){
             throw new Exception("No se puede eliminar un Profesor si es autor de una publicacion");
         }
-        
+        if(!this.validarEliminarInvestigadorPrincipal(idProfesor)){
+            throw new Exception("No se puede eliminar un Profesor si es investigador principal de un proyecto");
+        }
         if(persistencia.consultarDoctor(idProfesor) != null){
             return persistencia.eliminarDoctor(idProfesor);
         } else{
@@ -149,6 +151,18 @@ public class ProfesoresBO implements IProfesoresBO{
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean validarEliminarInvestigadorPrincipal(Object idProfesor) {
+        List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
+        for(Proyecto proyecto: proyectos){
+            if(proyecto.getInvestigadorPrincipal().getId().equals(idProfesor)){
+                return false;
+            }
+        }
+        return true;
+        
     }
     
     
