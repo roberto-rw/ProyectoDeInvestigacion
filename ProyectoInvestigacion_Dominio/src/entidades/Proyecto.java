@@ -181,9 +181,6 @@ public class Proyecto {
     }
 
     public List<PublicacionRevista> getPublicacionesRevista() {
-        if(publicacionesRevista == null){
-            return new ArrayList();
-        }
         return publicacionesRevista;
     }
 
@@ -195,9 +192,6 @@ public class Proyecto {
     }
 
     public List<PublicacionCongreso> getPublicacionesCongreso() {
-        if(publicacionesCongreso == null){
-            return new ArrayList();
-        }
         return publicacionesCongreso;
     }
 

@@ -169,24 +169,28 @@ public class ProyectoBO implements IProyectosBO{
     @Override
     public List<String> consultarTitulosPublicaciones() {
         List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
-        List<PublicacionCongreso> publicacionesCongreso = new ArrayList();
-        List<PublicacionRevista> publicacionesRevista = new ArrayList();
+        List<PublicacionCongreso> publicacionesCongreso;
+        List<PublicacionRevista> publicacionesRevista;
         List<String> titulos = new ArrayList();
-        
+        System.out.println(proyectos);
         for (Proyecto p: proyectos) {
             publicacionesCongreso = p.getPublicacionesCongreso();
-            for (PublicacionCongreso pC: publicacionesCongreso) {
-                titulos.add(pC.getTitulo());
-                System.out.println(pC.getTitulo());
+            if(publicacionesCongreso != null){
+                for (PublicacionCongreso pC: publicacionesCongreso) {
+                    titulos.add(pC.getTitulo());
+                    System.out.println(pC.getTitulo());
+                }
             }
             publicacionesRevista = p.getPublicacionesRevista();
-            for (PublicacionRevista pR: publicacionesRevista) {
-                titulos.add(pR.getTitulo());
-                System.out.println(pR.getTitulo());
+            if(publicacionesRevista != null){
+                for (PublicacionRevista pR: publicacionesRevista) {
+                    titulos.add(pR.getTitulo());
+                    System.out.println(pR.getTitulo());
+                }
             }
+            
+            
         }
-        System.out.println(titulos);
-        System.out.println(proyectos);
         return titulos;
     }
     

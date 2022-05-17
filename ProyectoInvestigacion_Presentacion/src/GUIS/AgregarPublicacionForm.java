@@ -702,7 +702,7 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "No dejes campos vacíos", "información", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+            System.out.println(fachadaBO.estaRepetidoTituloPublicacion(this.campoTitulo.getText()));
             if(fachadaBO.estaRepetidoTituloPublicacion(this.campoTitulo.getText())){
                 JOptionPane.showMessageDialog(this, "El titulo de la publicación ya existe", "información", JOptionPane.ERROR_MESSAGE);
                 return;
