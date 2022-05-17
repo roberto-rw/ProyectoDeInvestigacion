@@ -9,8 +9,10 @@ import entidades.Doctor;
 import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
 import implementacionesDAO.DAOSFactory;
+import implementacionesDAO.Persistencia;
 import interfacesBO.IDoctoresBO;
 import interfacesDAO.IDoctoresDAO;
+import interfacesDAO.IPersistencia;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -20,51 +22,51 @@ import org.bson.types.ObjectId;
  */
 public class DoctoresBO implements IDoctoresBO {
 
-    IDoctoresDAO doctoresDAO = DAOSFactory.crearDoctoresDAO();
+    IPersistencia persistencia = new Persistencia();
     
     @Override
     public boolean agregar(Doctor doctor) {
-        return doctoresDAO.agregar(doctor);
+        return persistencia.agregar(doctor);
     }
 
     @Override
     public boolean actualizar(Doctor doctor) {
-        return doctoresDAO.actualizar(doctor);
+        return persistencia.actualizar(doctor);
     }
 
     @Override
     public boolean agregarInvestigadorDoctor(InvestigadorDoctor investigadorDoctor) {
-        return doctoresDAO.agregarInvestigadorDoctor(investigadorDoctor);
+        return persistencia.agregarInvestigadorDoctor(investigadorDoctor);
     }
 
     @Override
     public boolean eliminar(ObjectId idDoctor) {
-        return doctoresDAO.eliminar(idDoctor);
+        return persistencia.eliminarDoctor(idDoctor);
     }
 
     @Override
     public Doctor consultar(ObjectId idDoctor) {
-        return doctoresDAO.consultar(idDoctor);
+        return persistencia.consultarDoctor(idDoctor);
     }
 
     @Override
     public List<Doctor> consultarTodos() {
-        return doctoresDAO.consultarTodos();
+        return persistencia.consultarTodosDoctor();
     }
 
     @Override
     public List<LineaInvestigacion> consultarLineasInvestigacion(ObjectId idDoctor) {
-        return doctoresDAO.consultarLineasInvestigacion(idDoctor);
+        return persistencia.consultarLineasInvestigacionDoctor(idDoctor);
     }
 
     @Override
     public InvestigadorDoctor consultarInvestigador(ObjectId idInvestigador) {
-        return doctoresDAO.consultarInvestigador(idInvestigador);
+        return persistencia.consultarInvestigadorDoctor(idInvestigador);
     }
 
     @Override
     public List<InvestigadorDoctor> consultarTodosInvestigadores() {
-        return doctoresDAO.consultarTodosInvestigadores();
+        return persistencia.consultarTodosInvestigadoresDoctor();
     }
     
 }

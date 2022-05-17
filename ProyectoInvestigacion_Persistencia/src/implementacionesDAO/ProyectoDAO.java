@@ -55,7 +55,7 @@ public class ProyectoDAO implements IProyectoDAO{
                 .append("fechaFin", proyecto.getFechaFin())
                 .append("publicacionesRevista", proyecto.getPublicacionesRevista())
                 .append("publicacionesCongreso", proyecto.getPublicacionesCongreso())
-                .append("detalles", proyecto.getDetalles())
+                .append("integrantes", proyecto.getIntegrantes())
                 .append("idsLineasInvestigacion", proyecto.getIdsLineasInvestigacion())
                 .append("investigadorPrincipal", proyecto.getInvestigadorPrincipal());
         
@@ -120,7 +120,7 @@ public class ProyectoDAO implements IProyectoDAO{
     
     @Override
     public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id) {
-        this.getCollection().updateOne(new Document("_id",id), new Document("$set", new Document("detalles", integrantes)));
+        this.getCollection().updateOne(new Document("_id",id), new Document("$set", new Document("integrantes", integrantes)));
         return true;
     }
     
@@ -167,19 +167,19 @@ public class ProyectoDAO implements IProyectoDAO{
                 new Document("$lookup", 
                         new Document()
                         .append("from", "doctores")
-                        .append("localField", "detalles.idProfesor")
+                        .append("localField", "integrantes.idProfesor")
                         .append("foreignField", "_id")
-                        .append("as", "integrantes")
+                        .append("as", "participantes")
         ));
-        etapasDoctor.add(new Document("$unwind", new Document("path", "$integrantes")));
+        etapasDoctor.add(new Document("$unwind", new Document("path", "$participantes")));
         etapasDoctor.add(new Document("$project", 
                 new Document()
                 .append("_id", 0)
-                .append("idProfesor", "$integrantes._id")
-                .append("nombreProfesor", "$integrantes.nombre")
-                .append("apellidoPaternoProfesor", "$integrantes.apellidoPaterno")
-                .append("fechaInicioParticipacion", "$detalles.fechaInicio")
-                .append("fechaFinParticipacion", "$detalles.fechaFin")
+                .append("idProfesor", "$participantes._id")
+                .append("nombreProfesor", "$participantes.nombre")
+                .append("apellidoPaternoProfesor", "$participantes.apellidoPaterno")
+                .append("fechaInicioParticipacion", "$integrantes.fechaInicio")
+                .append("fechaFinParticipacion", "$integrantes.fechaFin")
         ));
         
         List<ProfesorProyectoDTO> integrantesDoctores = baseDatos.getCollection("proyectos", ProfesorProyectoDTO.class).aggregate(etapasDoctor).into(new ArrayList());
@@ -191,19 +191,19 @@ public class ProyectoDAO implements IProyectoDAO{
                 new Document("$lookup", 
                         new Document()
                         .append("from", "noDoctores")
-                        .append("localField", "detalles.idProfesor")
+                        .append("localField", "integrantes.idProfesor")
                         .append("foreignField", "_id")
-                        .append("as", "integrantes")
+                        .append("as", "participantes")
         ));
         etapasNoDoctor.add(new Document("$unwind", new Document("path", "$integrantes")));
         etapasNoDoctor.add(new Document("$project", 
                 new Document()
                 .append("_id", 0)
-                .append("idProfesor", "$integrantes._id")
-                .append("nombreProfesor", "$integrantes.nombre")
-                .append("apellidoPaternoProfesor", "$integrantes.apellidoPaterno")
-                .append("fechaInicioParticipacion", "$detalles.fechaInicio")
-                .append("fechaFinParticipacion", "$detalles.fechaFin")
+                .append("idProfesor", "$participantes._id")
+                .append("nombreProfesor", "$participantes.nombre")
+                .append("apellidoPaternoProfesor", "$participantes.apellidoPaterno")
+                .append("fechaInicioParticipacion", "$integrantes.fechaInicio")
+                .append("fechaFinParticipacion", "$integrantes.fechaFin")
         ));
         
        List<ProfesorProyectoDTO> integrantesNoDoctores = baseDatos.getCollection("proyectos", ProfesorProyectoDTO.class).aggregate(etapasNoDoctor).into(new ArrayList());
@@ -219,7 +219,9 @@ public class ProyectoDAO implements IProyectoDAO{
 
     @Override
     public Proyecto consultarPorNombre(String nombre) {
-        List<Proyecto> resultados = this.getCollection().find(new Document("nombre", nombre)).into(new ArrayList());
+        List<Proyecto> resultados = this.getCollection().find(new Document("nombre",  new Document()
+                                            .append("$regex", nombre)
+                                            .append("$options", "i"))).into(new ArrayList());
         if(resultados.isEmpty()){
             return null;
         }
@@ -228,7 +230,9 @@ public class ProyectoDAO implements IProyectoDAO{
  
     @Override
     public Proyecto consultarPorCodigo(String codigo) {
-        List<Proyecto> resultados = this.getCollection().find(new Document("codigoReferencia", codigo)).into(new ArrayList());
+        List<Proyecto> resultados = this.getCollection().find(new Document("codigoReferencia",  new Document()
+                                            .append("$regex", codigo)
+                                            .append("$options", "i"))).into(new ArrayList());
         if(resultados.isEmpty()){
             return null;
         }
@@ -237,7 +241,9 @@ public class ProyectoDAO implements IProyectoDAO{
 
     @Override
     public Proyecto consultarPorAcronimo(String acronimo) {
-        List<Proyecto> resultados = this.getCollection().find(new Document("acronimo", acronimo)).into(new ArrayList());
+        List<Proyecto> resultados = this.getCollection().find(new Document("acronimo",  new Document()
+                                            .append("$regex", acronimo)
+                                            .append("$options", "i"))).into(new ArrayList());
         if(resultados.isEmpty()){
             return null;
         }
@@ -289,7 +295,9 @@ public class ProyectoDAO implements IProyectoDAO{
             filtro.append("investigadorPrincipal", investigador);
         }
         if(patrocinador != null){
-            filtro.append("patrocinador", patrocinador);
+            filtro.append("patrocinador", new Document()
+                                            .append("$regex", patrocinador)
+                                            .append("$options", "i"));
         }
         List<Proyecto> resultados = this.getCollection().find(filtro).into(new ArrayList());
          if(resultados.isEmpty()){

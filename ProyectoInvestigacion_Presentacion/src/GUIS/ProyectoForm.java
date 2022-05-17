@@ -11,10 +11,8 @@ import entidades.PeriodoParticipacion;
 import entidades.Profesor;
 import entidades.Programa;
 import entidades.Proyecto;
-import implementacionesBO.BOSFactory;
-import interfacesBO.ILineaInvestigacionBO;
-import interfacesBO.IProfesoresBO;
-import interfacesBO.IProgramasBO;
+import implementacionesBO.FacadeBO;
+import interfacesBO.IFacadeBO;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -30,7 +28,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import org.bson.types.ObjectId;
 import utils.ButtonColumn;
-import interfacesBO.IProyectosBO;
 import java.time.ZoneId;
 
 /**
@@ -39,10 +36,7 @@ import java.time.ZoneId;
  */
 public class ProyectoForm extends javax.swing.JFrame {
 
-    private IProfesoresBO profesoresBO;
-    private ILineaInvestigacionBO lineaInvestigacion;
-    private IProgramasBO programasBO;
-    private IProyectosBO proyectoBO;
+    IFacadeBO fachadaBO;
 
     private Integer editarIntegrante;
     private List<PeriodoParticipacion> periodosIntegrantes;
@@ -54,9 +48,7 @@ public class ProyectoForm extends javax.swing.JFrame {
      */
     public ProyectoForm() {
         initComponents();
-        this.profesoresBO = BOSFactory.crearProfesoresBO();
-        
-        //Ocultar Ids
+        this.fachadaBO = new FacadeBO();
         
         //Proyectos
         TableColumnModel modeloColumnasProyecto = this.tablaProyectos.getColumnModel();
@@ -70,9 +62,6 @@ public class ProyectoForm extends javax.swing.JFrame {
         TableColumnModel modeloColumnasIntegrantes = this.tablaIntegrantes.getColumnModel();
         tablaIntegrantes.removeColumn( modeloColumnasIntegrantes.getColumn(0));
         
-        this.lineaInvestigacion = BOSFactory.crearLineaInvestigacionBO();
-        this.proyectoBO = BOSFactory.crearProyectoBO();
-        this.programasBO = BOSFactory.crearProgramaBO();
         this.periodosIntegrantes = new ArrayList();
         this.editarIntegrante = null;
         this.llenarComboBoxIntegrantes();
@@ -86,7 +75,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     private void llenarComboBoxIntegrantes(){
         List<Object> profesores = new ArrayList();
         profesores.add("-Selecciona-");
-        profesores.addAll(profesoresBO.consultarTodosProfesores());
+        profesores.addAll(fachadaBO.consultarTodosProfesores());
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(profesores.toArray());
         integrantesComboBox.setModel(modeloComboBox);
     }
@@ -94,18 +83,16 @@ public class ProyectoForm extends javax.swing.JFrame {
     private void llenarComboBoxProgramas(){
         List<Object> programas = new ArrayList();
         programas.add("-Selecciona-");
-        programas.addAll(programasBO.consultarTodos());
+        programas.addAll(fachadaBO.consultarTodosProgramas());
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(programas.toArray());
         
         programaComboBox.setModel(modeloComboBox);
-        
-        
     }
     
     private void llenarComboBoxInvestigadorDoctor(){
         List<Object> investigadoresDoctores = new ArrayList();
         investigadoresDoctores.add("-Selecciona-");
-        investigadoresDoctores.addAll(profesoresBO.consultarTodosInvestigadorDoctores());
+        investigadoresDoctores.addAll(fachadaBO.consultarTodosInvestigadorDoctores());
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(investigadoresDoctores.toArray());
         investigadorDoctorComboBox.setModel(modeloComboBox);
     }
@@ -119,10 +106,6 @@ public class ProyectoForm extends javax.swing.JFrame {
         return !(inicioSPicker.getDate().compareTo(finSPicker.getDate()) < 0);
     }
     
-//    private boolean validarFechasProyecto(){
-//        return !(fechaInicioPicker.getDate().compareTo(fechaFinPicker.getDate()) >= 0);
-//    }
-    
     private boolean validarLineasSeleccionadas(){
         return this.lineaInvestigacionTabla.getSelectedRows().length > 0;
     }
@@ -133,18 +116,15 @@ public class ProyectoForm extends javax.swing.JFrame {
         
     }
     
-    private boolean validarIntegrantesSeleccionados(){
-        return this.tablaIntegrantes.getRowCount() >= 2;
-    }
     
     private boolean validarSeleccionIntegrante(){
         return this.integrantesComboBox.getSelectedIndex() != 0;
     }
     
-    private boolean validarPresupuesto(){
+    private boolean validarFormatoPresupuesto(){
         try{
             Float presupuesto = Float.parseFloat(this.presupuestoTxt.getText());
-            return presupuesto > 0;
+            return true;
             
         } catch(NumberFormatException nfe){
             return false;
@@ -185,10 +165,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     }
 
     private void editarParticipacion() {
-        Profesor profesorSeleccionado = profesoresBO.consultarDoctor(this.getIdIntegranteSeleccionado());
-        if(profesorSeleccionado == null){
-            profesorSeleccionado = profesoresBO.consultarNoDoctor(this.getIdIntegranteSeleccionado());
-        }
+        Profesor profesorSeleccionado = fachadaBO.consultarProfesor(this.getIdIntegranteSeleccionado());
         this.integrantesComboBox.setSelectedItem(profesorSeleccionado);
 
         int indiceFilaSeleccionada = this.tablaIntegrantes.getSelectedRow();
@@ -238,10 +215,7 @@ public class ProyectoForm extends javax.swing.JFrame {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
         this.periodosIntegrantes.forEach(periodo -> {
-           Profesor integrante = profesoresBO.consultarDoctor(periodo.getIdProfesor());
-           if(integrante == null){
-               integrante = profesoresBO.consultarNoDoctor(periodo.getIdProfesor());
-           }
+           Profesor integrante = fachadaBO.consultarProfesor(periodo.getIdProfesor());
             Object[] fila = new Object[7];
             fila[0] = periodo.getIdProfesor();
             fila[1] = integrante.getNombre();
@@ -257,7 +231,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     }
 
     private void llenarTablaLineasInvestigacion() {
-        List<LineaInvestigacion> lineasInvestigacion = lineaInvestigacion.consultarTodos();
+        List<LineaInvestigacion> lineasInvestigacion = fachadaBO.consultarTodosLineas();
         DefaultTableModel modeloTabla = (DefaultTableModel) this.lineaInvestigacionTabla.getModel();
         modeloTabla.setRowCount(0);
         lineasInvestigacion.forEach(linea -> {
@@ -272,7 +246,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     }
     
     private void llenarTablaProyectos(){
-        List<Proyecto> proyectos = proyectoBO.consultarTodos();
+        List<Proyecto> proyectos = fachadaBO.consultarTodosProyectos();
         DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaProyectos.getModel();
         modeloTabla.setRowCount(0);
         
@@ -323,17 +297,17 @@ public class ProyectoForm extends javax.swing.JFrame {
             return;
         }
 //        int indiceFilaSeleccionada = this.tablaProyectos.getSelectedRow();
-        this.proyectoBO.eliminar(this.getIdProyectoSeleccionado());
+        this.fachadaBO.eliminarProyecto(this.getIdProyectoSeleccionado());
         this.llenarTablaProyectos();
     }
     
     private void editarProyecto(){
-        Proyecto proyectoSeleccionado = proyectoBO.consultar(this.getIdProyectoSeleccionado());
+        Proyecto proyectoSeleccionado = fachadaBO.consultarProyecto(this.getIdProyectoSeleccionado());
         
         this.codigoTxt.setText(proyectoSeleccionado.getCodigoReferencia());
         this.nombreTxt.setText(proyectoSeleccionado.getNombre());
         this.acronimoTxt.setText(proyectoSeleccionado.getAcronimo());
-        this.programaComboBox.setSelectedItem(programasBO.consultar(proyectoSeleccionado.getIdPrograma()));
+        this.programaComboBox.setSelectedItem(fachadaBO.consultarPrograma(proyectoSeleccionado.getIdPrograma()));
         this.presupuestoTxt.setText(proyectoSeleccionado.getPresupuestoTotal().toString());
         this.patrocinadorTxt.setText(proyectoSeleccionado.getPatrocinador());
         this.investigadorDoctorComboBox.setSelectedItem(proyectoSeleccionado.getInvestigadorPrincipal());
@@ -344,9 +318,9 @@ public class ProyectoForm extends javax.swing.JFrame {
         descripcionTxt.setText(proyectoSeleccionado.getDescripcion());
         
 //        this.llenarTablaIntegrantes(proyectoBO.consultarIntegrantes(proyectoSeleccionado.getId()));
-        this.periodosIntegrantes = proyectoSeleccionado.getDetalles();
+        this.periodosIntegrantes = proyectoSeleccionado.getIntegrantes();
         this.llenarTablaIntegrantes();
-        this.mostrarLineasInvestigacionSeleccionadas(proyectoBO.consultarLineasInvestigacion(proyectoSeleccionado.getId()));
+        this.mostrarLineasInvestigacionSeleccionadas(fachadaBO.consultarLineasInvestigacion(proyectoSeleccionado.getId()));
         editar = proyectoSeleccionado.getId();
         btnGuardarProyecto.setText("Editar Proyecto");
         
@@ -387,17 +361,7 @@ public class ProyectoForm extends javax.swing.JFrame {
             return;
         }
         
-//        if (!this.validarFechasProyecto()) {
-//            JOptionPane.showMessageDialog(this, "Las fechas colcadas no son válidas", "información", JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-        
-        if(!this.validarIntegrantesSeleccionados()){
-            JOptionPane.showMessageDialog(this, "Deben seleccionarse al menos 2 integrantes", "información", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if(!this.validarPresupuesto()){
+        if(!this.validarFormatoPresupuesto()){
             JOptionPane.showMessageDialog(this, "Presupuesto inválido", "información", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -430,44 +394,31 @@ public class ProyectoForm extends javax.swing.JFrame {
         
         
         List<ObjectId> lineasSeleccionadas = this.getLineasInvestigacionSeleccionadas();
-//        List<DetalleProyectoProfesor> integrantesSeleccionados = this.getIntegrantesSeleccionados();
         if(editar != null){
             proyecto = new Proyecto(editar, codigoReferencia, nombreProyecto, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicio, fechaFin, descripcion, investigadorDoctor, this.periodosIntegrantes, lineasSeleccionadas);
-            boolean seEditoProyecto = proyectoBO.actualizar(proyecto);
-            if(seEditoProyecto){
-                JOptionPane.showMessageDialog(this, "Se modificó el proyecto correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
-                this.llenarTablaProyectos();
-            } else{
-                JOptionPane.showMessageDialog(this, "No se pudo modificar el Proyecto", "información", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                fachadaBO.actualizarProyecto(proyecto);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            JOptionPane.showMessageDialog(this, "Se modificó el proyecto correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
+            this.llenarTablaProyectos();
+   
             
         } else{
-            if(proyectoBO.estaRepetidoCodigo(codigoReferencia)){
-                JOptionPane.showMessageDialog(this, "El código ya está en uso", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if(proyectoBO.estaRepetidoAcronimo(acronimo)){
-                JOptionPane.showMessageDialog(this, "El acronimo ya está en uso", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            if(proyectoBO.estaRepetidoNombre(nombreProyecto)){
-                JOptionPane.showMessageDialog(this, "El nombre ya está en uso", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
             
             proyecto = new Proyecto(codigoReferencia, nombreProyecto, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicio, fechaFin, descripcion, investigadorDoctor, this.periodosIntegrantes, lineasSeleccionadas);
-            if(!proyectoBO.validarFechasReales(proyecto)){
-                JOptionPane.showMessageDialog(this, "Las fechas colcadas no son válidas", "información", JOptionPane.ERROR_MESSAGE);
+            try {
+                fachadaBO.agregarProyecto(proyecto);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            boolean seAgregoProyecto = proyectoBO.agregar(proyecto);
                  
-            if (seAgregoProyecto) {
-                JOptionPane.showMessageDialog(this, "Se agregó el proyecto correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
-                this.llenarTablaProyectos();
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo agregar el Proyecto", "información", JOptionPane.INFORMATION_MESSAGE);
-            }
+
+            JOptionPane.showMessageDialog(this, "Se agregó el proyecto correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
+            this.llenarTablaProyectos();
         }
         
         vaciarForm();
@@ -799,7 +750,7 @@ public class ProyectoForm extends javax.swing.JFrame {
                                     .addComponent(patrocinadorLbl1)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(investigadorDoctorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 430, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 427, Short.MAX_VALUE)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(356, 356, 356))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()

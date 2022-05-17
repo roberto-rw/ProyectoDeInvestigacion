@@ -18,6 +18,7 @@ public class PublicacionRevista extends Publicacion {
     private String numero;
     private String pagInicio;
     private String pagFin;
+    private String tipoPublicacion;
 
     public PublicacionRevista() {
     }
@@ -30,6 +31,7 @@ public class PublicacionRevista extends Publicacion {
         this.numero = numero;
         this.pagInicio = pagInicio;
         this.pagFin = pagFin;
+        this.tipoPublicacion = "Revista";
     }
 
     public PublicacionRevista(String nombreRevista, String editorial, String volumen, String numero, String pagInicio, String pagFin, ObjectId _id, Long numeroSecuencia, String titulo, ObjectId idProyecto) {
@@ -40,6 +42,7 @@ public class PublicacionRevista extends Publicacion {
         this.numero = numero;
         this.pagInicio = pagInicio;
         this.pagFin = pagFin;
+        this.tipoPublicacion = "Revista";
     }
 
     public String getNombreRevista() {

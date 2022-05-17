@@ -6,9 +6,9 @@
 package implementacionesBO;
 
 import entidades.Programa;
-import implementacionesDAO.DAOSFactory;
+import implementacionesDAO.Persistencia;
 import interfacesBO.IProgramasBO;
-import interfacesDAO.IProgramasDAO;
+import interfacesDAO.IPersistencia;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -18,31 +18,31 @@ import org.bson.types.ObjectId;
  */
 public class ProgramasBO implements IProgramasBO{
 
-    IProgramasDAO programasDAO = DAOSFactory.crearProgramasDAO();
+    IPersistencia persistencia = new Persistencia();
 
     @Override
     public boolean agregar(Programa programa) {
-        return programasDAO.agregar(programa);
+        return persistencia.agregar(programa);
     }
 
     @Override
     public boolean actualizar(Programa programa) {
-        return programasDAO.actualizar(programa);
+        return persistencia.actualizar(programa);
     }
 
     @Override
     public boolean eliminar(ObjectId idPrograma) {
-        return programasDAO.eliminar(idPrograma);
+        return persistencia.eliminarPrograma(idPrograma);
     }
 
     @Override
     public List<Programa> consultarTodos() {
-        return programasDAO.consultarTodos();
+        return persistencia.consultarTodosPrograma();
     }
 
     @Override
     public Programa consultar(ObjectId idPrograma) {
-        return programasDAO.consultar(idPrograma);
+        return persistencia.consultarPrograma(idPrograma);
     }
 
     

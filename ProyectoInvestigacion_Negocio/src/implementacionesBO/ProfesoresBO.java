@@ -10,10 +10,9 @@ import entidades.InvestigadorDoctor;
 import entidades.InvestigadorNoDoctor;
 import entidades.NoDoctor;
 import entidades.Profesor;
-import implementacionesDAO.DAOSFactory;
+import implementacionesDAO.Persistencia;
 import interfacesBO.IProfesoresBO;
-import interfacesDAO.IDoctoresDAO;
-import interfacesDAO.INoDoctoresDAO;
+import interfacesDAO.IPersistencia;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -23,14 +22,13 @@ import org.bson.types.ObjectId;
  * @author jegav
  */
 public class ProfesoresBO implements IProfesoresBO{
-    private IDoctoresDAO doctoresDAO = DAOSFactory.crearDoctoresDAO();
-    private INoDoctoresDAO noDoctoresDAO = DAOSFactory.crearNoDoctoresDAO();
+    IPersistencia persistencia = new Persistencia();
 
     @Override
     public List<Profesor> consultarTodosProfesores() {
         List<Profesor> profesores = new ArrayList();
-        profesores.addAll(doctoresDAO.consultarTodos());
-        profesores.addAll(noDoctoresDAO.consultarTodos());
+        profesores.addAll(persistencia.consultarTodosDoctor());
+        profesores.addAll(persistencia.consultarTodosNoDoctor());
         return profesores;
     }
 
@@ -40,45 +38,45 @@ public class ProfesoresBO implements IProfesoresBO{
         
         if(profesor.getClass() == Doctor.class){
             Doctor doctor = (Doctor) profesor;
-            return doctoresDAO.agregar(doctor);
+            return persistencia.agregar(doctor);
         } else if(profesor.getClass() == InvestigadorDoctor.class){
             InvestigadorDoctor doctor = (InvestigadorDoctor) profesor;
-            return doctoresDAO.agregarInvestigadorDoctor(doctor);
+            return persistencia.agregarInvestigadorDoctor(doctor);
         } else if(profesor.getClass() == NoDoctor.class){
             NoDoctor noDoctor = (NoDoctor) profesor;
-            return noDoctoresDAO.agregar(noDoctor);
+            return persistencia.agregar(noDoctor);
         } else{
             InvestigadorNoDoctor noDoctor = (InvestigadorNoDoctor) profesor;
-            return noDoctoresDAO.agregarInvestigadorNoDoctor(noDoctor);
+            return persistencia.agregarInvestigadorNoDoctor(noDoctor);
         }
         
     }
 
     @Override
     public boolean eliminar(ObjectId idProfesor) {
-        if(doctoresDAO.consultar(idProfesor) != null){
-            return doctoresDAO.eliminar(idProfesor);
+        if(persistencia.consultarDoctor(idProfesor) != null){
+            return persistencia.eliminarDoctor(idProfesor);
         } else{
-            return noDoctoresDAO.eliminar(idProfesor);
+            return persistencia.eliminarNoDoctor(idProfesor);
         }
     }
 
     @Override
     public NoDoctor consultarNoDoctor(ObjectId idNoDoctor) {
-        return noDoctoresDAO.consultar(idNoDoctor);
+        return persistencia.consultarNoDoctor(idNoDoctor);
     }
 
     @Override
     public Doctor consultarDoctor(ObjectId idDoctor) {
-        return doctoresDAO.consultar(idDoctor);
+        return persistencia.consultarDoctor(idDoctor);
     }
 
     @Override
     public boolean esInvestigador(ObjectId idProfesor) {
-        if(doctoresDAO.consultarInvestigador(idProfesor) != null){
+        if(persistencia.consultarInvestigadorDoctor(idProfesor) != null){
             return true;
         }
-        if(noDoctoresDAO.consultarInvestigador(idProfesor) != null){
+        if(persistencia.consultarInvestigadorNoDoctor(idProfesor) != null){
             return true;
         }
         return false;
@@ -86,24 +84,24 @@ public class ProfesoresBO implements IProfesoresBO{
 
     @Override
     public List<Doctor> consultarTodosDoctores() {
-        return doctoresDAO.consultarTodos();
+        return persistencia.consultarTodosDoctor();
     }
 
     @Override
     public List<InvestigadorDoctor> consultarTodosInvestigadorDoctores() {
-        return doctoresDAO.consultarTodosInvestigadores();
+        return persistencia.consultarTodosInvestigadoresDoctor();
     }
 
     @Override
     public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigador) {
-        return doctoresDAO.consultarInvestigador(idInvestigador);
+        return persistencia.consultarInvestigadorDoctor(idInvestigador);
     }
 
     @Override
     public Profesor consultar(ObjectId idProfesor) {
-        Profesor profesor = doctoresDAO.consultar(idProfesor);
+        Profesor profesor = persistencia.consultarDoctor(idProfesor);
         if(profesor == null){
-            return noDoctoresDAO.consultar(idProfesor);
+            return persistencia.consultarNoDoctor(idProfesor);
         } 
         return profesor;
     }

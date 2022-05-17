@@ -71,30 +71,14 @@ public interface IPersistencia {
     public Proyecto consultarProyecto(ObjectId idProyecto);
     public List<LineaInvestigacion> consultarLineasInvestigacionProyecto(ObjectId idProyecto);
     public List<ProfesorProyectoDTO> consultarIntegrantes(ObjectId idProyecto); 
-    public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion);
+    public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion);
+    public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion);
     public Proyecto consultarProyectoPorNombre(String nombre);
     public Proyecto consultarProyectoPorCodigo(String codigo);
     public Proyecto consultarProyectoPorAcronimo(String acronimo);
     public List<Proyecto> consultarProyectoPorFechas(Date fechaInicio, Date fechaFin);
     public List<Proyecto> consultarPorCaracteristicas(ObjectId idPrograma, Float presupuesto, Integer filtroPresupuesto, InvestigadorDoctor investigador, String patrocinador);
-    
-    //PublicacionesCongresoDAO
-    public boolean agregar(PublicacionCongreso publicacionCongreso);
-    public boolean actualizar(PublicacionCongreso publicacionCongreso);
-    public boolean eliminarPublicacionCongreso(ObjectId idPublicacionCongreso);
-    public PublicacionCongreso consultarPublicacionCongreso(ObjectId idPublicacionCongreso);
-    public List<PublicacionCongreso> consultarTodosPublicacionCongreso();
-    public Proyecto consultarProyectoPublicacionCongreso(ObjectId idPublicacionCongreso);
-    public List<AutorDTO> consultarAutoresPublicacionCongreso(ObjectId idPublicacionCongreso);
-    
-    //PublicacionesRevistaDAO
-    public boolean agregar(PublicacionRevista publicacionRevista);
-    public boolean actualizar(PublicacionRevista publicacionRevista);
-    public boolean eliminarPublicacionRevista(ObjectId idPublicacionRevista);
-    public PublicacionRevista consultarPublicacionRevista(ObjectId idPublicacionRevista);
-    public List<PublicacionRevista> consultarTodosPublicacionRevista();
-    public Proyecto consultarProyectoPublicacionRevista(ObjectId idPublicacionRevista);
-    public List<AutorDTO> consultarAutoresPublicacionRevista(ObjectId idPublicacionRevista);
+
     
     
 }

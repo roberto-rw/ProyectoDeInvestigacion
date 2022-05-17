@@ -5,7 +5,6 @@
  */
 package implementacionesDAO;
 
-import dtos.AutorDTO;
 import dtos.PeriodoSupervisionDTO;
 import dtos.ProfesorProyectoDTO;
 import entidades.Doctor;
@@ -24,8 +23,6 @@ import interfacesDAO.INoDoctoresDAO;
 import interfacesDAO.IPersistencia;
 import interfacesDAO.IProgramasDAO;
 import interfacesDAO.IProyectoDAO;
-import interfacesDAO.IPublicacionesCongresoDAO;
-import interfacesDAO.IPublicacionesRevistaDAO;
 import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -40,8 +37,6 @@ public class Persistencia implements IPersistencia{
     ILineaInvestigacionDAO lineasInvestigacionDAO;
     IProgramasDAO programasDAO;
     IProyectoDAO proyectoDAO;
-    IPublicacionesCongresoDAO publicacionesCongresoDAO;
-    IPublicacionesRevistaDAO publicacionesRevistaDAO;
     
     public Persistencia(){
         doctoresDAO = DAOSFactory.crearDoctoresDAO();
@@ -49,8 +44,6 @@ public class Persistencia implements IPersistencia{
         lineasInvestigacionDAO = DAOSFactory.crearLineaInvestigacionDAO();
         programasDAO = DAOSFactory.crearProgramasDAO();
         proyectoDAO = DAOSFactory.crearProyectoDAO();
-        publicacionesCongresoDAO = DAOSFactory.crearPublicacionesCongresoDAO();
-        publicacionesRevistaDAO = DAOSFactory.crearPublicacionesRevistaDAO();
     }
 
     
@@ -236,11 +229,6 @@ public class Persistencia implements IPersistencia{
     }
 
     @Override
-    public boolean agregarPublicacion(ObjectId idProyecto, Publicacion publicacion) {
-        return true;
-    }
-
-    @Override
     public Proyecto consultarProyectoPorNombre(String nombre) {
         return proyectoDAO.consultarPorNombre(nombre);
     }
@@ -264,79 +252,15 @@ public class Persistencia implements IPersistencia{
     public List<Proyecto> consultarPorCaracteristicas(ObjectId idPrograma, Float presupuesto, Integer filtroPresupuesto, InvestigadorDoctor investigador, String patrocinador) {
         return proyectoDAO.consultarPorCaracteristicas(idPrograma, presupuesto, filtroPresupuesto, investigador, patrocinador);
     }
-    
-    //PublicacionCongresoDAO
 
     @Override
-    public boolean agregar(PublicacionCongreso publicacionCongreso) {
-        return this.publicacionesCongresoDAO.agregar(publicacionCongreso);
+    public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion) {
+        return proyectoDAO.agregarPublicacionCongreso(idProyecto, publicacion);
     }
 
     @Override
-    public boolean actualizar(PublicacionCongreso publicacionCongreso) {
-        return this.publicacionesCongresoDAO.actualizar(publicacionCongreso);
+    public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion) {
+        return proyectoDAO.agregarPublicacionRevista(idProyecto, publicacion);
     }
 
-    @Override
-    public boolean eliminarPublicacionCongreso(ObjectId idPublicacionCongreso) {
-        return this.publicacionesCongresoDAO.eliminar(idPublicacionCongreso);
-    }
-
-    @Override
-    public PublicacionCongreso consultarPublicacionCongreso(ObjectId idPublicacionCongreso) {
-        return this.publicacionesCongresoDAO.consultar(idPublicacionCongreso);
-    }
-
-    @Override
-    public List<PublicacionCongreso> consultarTodosPublicacionCongreso() {
-        return this.publicacionesCongresoDAO.consultarTodos();
-    }
-
-    @Override
-    public Proyecto consultarProyectoPublicacionCongreso(ObjectId idPublicacionCongreso) {
-        return this.publicacionesCongresoDAO.consultarProyecto(idPublicacionCongreso);
-    }
-
-    @Override
-    public List<AutorDTO> consultarAutoresPublicacionCongreso(ObjectId idPublicacionCongreso) {
-        return this.publicacionesCongresoDAO.consultarAutores(idPublicacionCongreso);
-    }
-    
-    //PublicacionRevistaDAO
-
-    @Override
-    public boolean agregar(PublicacionRevista publicacionRevista) {
-        return this.publicacionesRevistaDAO.agregar(publicacionRevista);
-    }
-
-    @Override
-    public boolean actualizar(PublicacionRevista publicacionRevista) {
-        return this.publicacionesRevistaDAO.actualizar(publicacionRevista);
-    }
-
-    @Override
-    public boolean eliminarPublicacionRevista(ObjectId idPublicacionRevista) {
-        return this.publicacionesRevistaDAO.eliminar(idPublicacionRevista);
-    }
-
-    @Override
-    public PublicacionRevista consultarPublicacionRevista(ObjectId idPublicacionRevista) {
-        return this.publicacionesRevistaDAO.consultar(idPublicacionRevista);
-    }
-
-    @Override
-    public List<PublicacionRevista> consultarTodosPublicacionRevista() {
-        return this.publicacionesRevistaDAO.consultarTodos();
-    }
-
-    @Override
-    public Proyecto consultarProyectoPublicacionRevista(ObjectId idPublicacionRevista) {
-        return this.publicacionesRevistaDAO.consultarProyecto(idPublicacionRevista);
-    }
-
-    @Override
-    public List<AutorDTO> consultarAutoresPublicacionRevista(ObjectId idPublicacionRevista) {
-        return this.publicacionesRevistaDAO.consultarAutores(idPublicacionRevista);
-    }
-    
 }

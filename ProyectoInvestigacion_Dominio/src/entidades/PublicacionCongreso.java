@@ -21,6 +21,7 @@ public class PublicacionCongreso extends Publicacion {
     private String lugarCelebracion;
     private String pais;
     private String editorial;
+    private String tipoPublicacion;
 
     public PublicacionCongreso() {
     }
@@ -34,6 +35,7 @@ public class PublicacionCongreso extends Publicacion {
         this.lugarCelebracion = lugarCelebracion;
         this.pais = pais;
         this.editorial = editorial;
+        this.tipoPublicacion = "Congreso";
     }
 
     public PublicacionCongreso(String nombreCongreso, TipoPublicacionCongreso tipo, Date fechaInicio, Date fechaFin, String lugarCelebracion, String pais, String editorial, ObjectId _id, Long numeroSecuencia, String titulo, ObjectId idProyecto) {
@@ -45,6 +47,7 @@ public class PublicacionCongreso extends Publicacion {
         this.lugarCelebracion = lugarCelebracion;
         this.pais = pais;
         this.editorial = editorial;
+        this.tipoPublicacion = "Congreso";
     }
 
     public String getNombreCongreso() {

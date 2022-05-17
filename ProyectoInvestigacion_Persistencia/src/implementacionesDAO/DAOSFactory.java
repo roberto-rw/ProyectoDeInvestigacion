@@ -11,8 +11,6 @@ import interfacesDAO.ILineaInvestigacionDAO;
 import interfacesDAO.INoDoctoresDAO;
 import interfacesDAO.IProgramasDAO;
 import interfacesDAO.IProyectoDAO;
-import interfacesDAO.IPublicacionesRevistaDAO;
-import interfacesDAO.IPublicacionesCongresoDAO;
 /**
  *
  * @author jegav
@@ -40,11 +38,4 @@ public class DAOSFactory {
         return new ProyectoDAO(conexionBD);
     }
     
-    public static IPublicacionesCongresoDAO crearPublicacionesCongresoDAO(){
-        return new PublicacionesCongresoDAO(conexionBD);
-    }
-    
-    public static IPublicacionesRevistaDAO crearPublicacionesRevistaDAO(){
-        return new PublicacionesRevistaDAO(conexionBD);
-    }
 }

@@ -11,16 +11,15 @@ import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
 import entidades.PeriodoParticipacion;
 import entidades.Proyecto;
-import entidades.Publicacion;
 import entidades.PublicacionCongreso;
 import entidades.PublicacionRevista;
-import implementacionesDAO.DAOSFactory;
-import interfacesDAO.IProyectoDAO;
+import implementacionesDAO.Persistencia;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
 import interfacesBO.IProyectosBO;
+import interfacesDAO.IPersistencia;
 
 /**
  *
@@ -28,49 +27,84 @@ import interfacesBO.IProyectosBO;
  */
 public class ProyectoBO implements IProyectosBO{
     
-    IProyectoDAO proyectoDAO = DAOSFactory.crearProyectoDAO();
+    IPersistencia persistencia = new Persistencia();
 
     @Override
-    public boolean agregar(Proyecto proyecto) {
+    public boolean agregar(Proyecto proyecto) throws Exception {
+        if(this.estaRepetidoCodigo(proyecto.getCodigoReferencia())){
+            throw new Exception("No se permiten codigos repetidos");
+        }
+        if(this.estaRepetidoNombre(proyecto.getNombre())){
+            throw new Exception("No se permiten nombres repetidos");
+        }
+        if(this.estaRepetidoAcronimo(proyecto.getAcronimo())){
+            throw new Exception("No se permiten acronimos repetidos");
+        }
+        if(!this.validarFechasReales(proyecto)){
+            throw new Exception("Las fechas no son reales");
+        }
+        if(!this.validarNumeroIntegrantes(proyecto)){
+            throw new Exception("El Proyecto debe tener al menos 2 integrantes");
+        }
+        if(!this.validarValorPresupuesto(proyecto)){
+            throw new Exception("El Presupuesto del proyecto debe ser un número positivo");
+        }
         
-        
-        
-        return proyectoDAO.agregar(proyecto);
+        return persistencia.agregar(proyecto);
     }
 
     @Override
-    public boolean actualizar(Proyecto proyecto) {
-        return proyectoDAO.actualizar(proyecto);
+    public boolean actualizar(Proyecto proyecto) throws Exception {
+        if(this.consultarPorCodigo(proyecto.getCodigoReferencia()) != null){
+            if(!proyecto.equals(this.consultarPorCodigo(proyecto.getCodigoReferencia()))){ //Si el código se repite pero no es el mismo que ya se tiene, se lanza una excepción
+                throw new Exception("No se permiten codigos repetidos");
+            }
+        }
+        if(this.consultarPorNombre(proyecto.getNombre()) != null){
+            if(!proyecto.equals(this.consultarPorNombre(proyecto.getNombre()))){
+                throw new Exception("No se permiten nombres repetidos");
+            }
+        }
+       if(this.consultarPorAcronimo(proyecto.getAcronimo()) != null){
+            if(!proyecto.equals(this.consultarPorAcronimo(proyecto.getAcronimo()))){
+                throw new Exception("No se permiten acronimos repetidos");
+            }
+        }
+        if(!this.validarFechasReales(proyecto)){
+            throw new Exception("Las fechas no son reales");
+        }
+        if(!this.validarNumeroIntegrantes(proyecto)){
+            throw new Exception("El Proyecto debe tener al menos 2 integrantes");
+        }
+        if(!this.validarValorPresupuesto(proyecto)){
+            throw new Exception("El Presupuesto del proyecto debe ser un número positivo");
+        }
+        return persistencia.actualizar(proyecto);
     }
 
     @Override
     public boolean eliminar(ObjectId idProyecto) {
-        return proyectoDAO.eliminar(idProyecto);
+        return persistencia.eliminarProyecto(idProyecto);
     }
 
     @Override
     public List<Proyecto> consultarTodos() {
-        return proyectoDAO.consultarTodos();
+        return persistencia.consultarTodosProyecto();
     }
 
     @Override
     public Proyecto consultar(ObjectId idProyecto) {
-        return proyectoDAO.consultar(idProyecto);
+        return persistencia.consultarProyecto(idProyecto);
     }
 
     @Override
     public List<LineaInvestigacion> consultarLineasInvestigacion(ObjectId idProyecto) {
-        return proyectoDAO.consultarLineasInvestigacion(idProyecto);
+        return persistencia.consultarLineasInvestigacionProyecto(idProyecto);
     }
 
     @Override
     public List<ProfesorProyectoDTO> consultarIntegrantes(ObjectId idProyecto) {
-        return proyectoDAO.consultarIntegrantes(idProyecto);
-    }
-
-    @Override
-    public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id) {
-        return proyectoDAO.actualizarIntegrantes(integrantes, id);
+        return persistencia.consultarIntegrantes(idProyecto);
     }
 
     @Override
@@ -90,17 +124,17 @@ public class ProyectoBO implements IProyectosBO{
 
     @Override
     public List<Proyecto> consultarPorFechas(Date fechaInicio, Date fechaFin) {
-        return proyectoDAO.consultarPorFechas(fechaInicio, fechaFin);
+        return persistencia.consultarProyectoPorFechas(fechaInicio, fechaFin);
     }
 
     @Override
     public List<Proyecto> consultarPorCaracteristicas(ObjectId idPrograma, Float presupuesto, Integer filtroPresupuesto, InvestigadorDoctor investigador, String patrocinador) {
-        return proyectoDAO.consultarPorCaracteristicas(idPrograma, presupuesto, filtroPresupuesto, investigador, patrocinador);
+        return persistencia.consultarPorCaracteristicas(idPrograma, presupuesto, filtroPresupuesto, investigador, patrocinador);
     }
 
     @Override
     public List<String> consultarCodigos() {
-        List<Proyecto> proyectos = proyectoDAO.consultarTodos();
+        List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
         List<String> resultado = new ArrayList();
         proyectos.forEach(proyecto ->{
             resultado.add(proyecto.getCodigoReferencia());
@@ -110,7 +144,7 @@ public class ProyectoBO implements IProyectosBO{
 
     @Override
     public List<String> consultarNombres() {
-        List<Proyecto> proyectos = proyectoDAO.consultarTodos();
+        List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
         List<String> resultado = new ArrayList();
         proyectos.forEach(proyecto ->{
             resultado.add(proyecto.getNombre());
@@ -120,7 +154,7 @@ public class ProyectoBO implements IProyectosBO{
 
     @Override
     public List<String> consultarAcronimos() {
-        List<Proyecto> proyectos = proyectoDAO.consultarTodos();
+        List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
         List<String> resultado = new ArrayList();
         proyectos.forEach(proyecto ->{
             resultado.add(proyecto.getAcronimo());
@@ -135,17 +169,17 @@ public class ProyectoBO implements IProyectosBO{
 
     @Override
     public Proyecto consultarPorCodigo(String codigo) {
-        return proyectoDAO.consultarPorCodigo(codigo);
+        return persistencia.consultarProyectoPorCodigo(codigo);
     }
 
     @Override
     public Proyecto consultarPorNombre(String nombre) {
-        return proyectoDAO.consultarPorNombre(nombre);
+        return persistencia.consultarProyectoPorNombre(nombre);
     }
 
     @Override
     public Proyecto consultarPorAcronimo(String acronimo) {
-        return proyectoDAO.consultarPorAcronimo(acronimo);
+        return persistencia.consultarProyectoPorAcronimo(acronimo);
     }
 
     @Override
@@ -154,7 +188,7 @@ public class ProyectoBO implements IProyectosBO{
     } 
     
     public List<Proyecto> consultarVigentes() {
-        List<Proyecto> proyectos = proyectoDAO.consultarTodos();
+        List<Proyecto> proyectos = persistencia.consultarTodosProyecto();
         List<Proyecto> proyectosVigentes = new ArrayList();
         
         Date fechaActual = new Date();
@@ -171,14 +205,22 @@ public class ProyectoBO implements IProyectosBO{
 
     @Override
     public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion) {
-        return proyectoDAO.agregarPublicacionCongreso(idProyecto, publicacion);
+        return persistencia.agregarPublicacionCongreso(idProyecto, publicacion);
     }
 
     @Override
     public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion) {
-        return proyectoDAO.agregarPublicacionRevista(idProyecto, publicacion);
+        return persistencia.agregarPublicacionRevista(idProyecto, publicacion);
     }
 
+    @Override
+    public boolean validarNumeroIntegrantes(Proyecto proyecto) {
+        return proyecto.getIntegrantes().size() >= 2;
+    }
 
+    @Override
+    public boolean validarValorPresupuesto(Proyecto proyecto) {
+        return proyecto.getPresupuestoTotal() > 0;
+    }
 
 }

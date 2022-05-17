@@ -22,14 +22,13 @@ import org.bson.types.ObjectId;
  * @author pc
  */
 public interface IProyectosBO {
-    public boolean agregar(Proyecto proyecto);
-    public boolean actualizar(Proyecto proyecto);
+    public boolean agregar(Proyecto proyecto) throws Exception;
+    public boolean actualizar(Proyecto proyecto) throws Exception;
     public boolean eliminar(ObjectId idProyecto);
     public List<Proyecto> consultarTodos();
     public Proyecto consultar(ObjectId idProyecto);
     public List<LineaInvestigacion> consultarLineasInvestigacion(ObjectId idProyecto);
     public List<ProfesorProyectoDTO> consultarIntegrantes(ObjectId idProyecto); 
-    public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id);
     public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion);
     public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion);
     public boolean estaRepetidoNombre(String nombre);
@@ -46,4 +45,6 @@ public interface IProyectosBO {
     public List<Proyecto> consultarVigentes();
     public boolean validarFechasReales(Proyecto proyecto);
     public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo);
+    public boolean validarNumeroIntegrantes(Proyecto proyecto);
+    public boolean validarValorPresupuesto(Proyecto proyecto);
 }

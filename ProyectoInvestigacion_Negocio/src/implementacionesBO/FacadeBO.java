@@ -1,9 +1,11 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package implementacionesBO;
 
-import dtos.AutorDTO;
 import dtos.ProfesorProyectoDTO;
-import entidades.DetalleProyectoProfesor;
 import entidades.Doctor;
 import entidades.InvestigadorDoctor;
 import entidades.LineaInvestigacion;
@@ -12,7 +14,6 @@ import entidades.PeriodoParticipacion;
 import entidades.Profesor;
 import entidades.Programa;
 import entidades.Proyecto;
-import entidades.Publicacion;
 import entidades.PublicacionCongreso;
 import entidades.PublicacionRevista;
 import interfacesBO.IFacadeBO;
@@ -20,20 +21,18 @@ import interfacesBO.ILineaInvestigacionBO;
 import interfacesBO.IProfesoresBO;
 import interfacesBO.IProgramasBO;
 import interfacesBO.IProyectosBO;
-import interfacesBO.IPublicacionesCongresoBO;
-import interfacesBO.IPublicacionesRevistaBO;
 import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
 
-
+/**
+ *
+ * @author jegav
+ */
 public class FacadeBO implements IFacadeBO{
-
     ILineaInvestigacionBO lineasInvestigacionBO;
     IProgramasBO programasBO;
     IProyectosBO proyectosBO;
-    IPublicacionesCongresoBO publicacionesCongresoBO;
-    IPublicacionesRevistaBO publicacionesRevistaBO;
     IProfesoresBO profesoresBO;
     
     
@@ -42,8 +41,6 @@ public class FacadeBO implements IFacadeBO{
         lineasInvestigacionBO = BOSFactory.crearLineaInvestigacionBO();
         programasBO = BOSFactory.crearProgramaBO();
         proyectosBO = BOSFactory.crearProyectoBO();
-        publicacionesCongresoBO = BOSFactory.crearPublicacionesCongresoBO();
-        publicacionesRevistaBO = BOSFactory.crearPublicacionesRevistaBO();
         profesoresBO = BOSFactory.crearProfesoresBO();
     }
 
@@ -114,17 +111,14 @@ public class FacadeBO implements IFacadeBO{
     public boolean esInvestigador(ObjectId idProfesor) {
         return profesoresBO.esInvestigador(idProfesor);
     }
-    
-       @Override
-    public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigador) {
-        return profesoresBO.consultarInvestigadorDoctor(idInvestigador);
-    }
 
     @Override
     public Profesor consultarProfesor(ObjectId idProfesor) {
         return profesoresBO.consultar(idProfesor);
     }
 
+    
+    
     
     //ProgramasBO
     @Override
@@ -156,12 +150,12 @@ public class FacadeBO implements IFacadeBO{
     
     //ProyectosBO
     @Override
-    public boolean agregarProyecto(Proyecto proyecto) {
+    public boolean agregarProyecto(Proyecto proyecto) throws Exception{
         return proyectosBO.agregar(proyecto);
     }
 
     @Override
-    public boolean actualizarProyecto(Proyecto proyecto) {
+    public boolean actualizarProyecto(Proyecto proyecto) throws Exception{
         return proyectosBO.actualizar(proyecto);
     }
 
@@ -190,10 +184,10 @@ public class FacadeBO implements IFacadeBO{
         return proyectosBO.consultarIntegrantes(idProyecto);
     }
 
-    @Override
-    public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id) {
-        return proyectosBO.actualizarIntegrantes(integrantes, id);
-    }
+//    @Override
+//    public boolean actualizarIntegrantes(List<DetalleProyectoProfesor> integrantes, ObjectId id) {
+//        return proyectosBO.actualizarIntegrantes(integrantes, id);
+//    }
 
     @Override
     public boolean estaRepetidoNombre(String nombre) {
@@ -256,10 +250,6 @@ public class FacadeBO implements IFacadeBO{
     }
     
     @Override
-    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo) {
-        return proyectosBO.validarFechasRealesIntegrante(periodo);
-    }
-
     public List<Proyecto> consultarVigentes() {
         return proyectosBO.consultarVigentes();
     }
@@ -274,82 +264,13 @@ public class FacadeBO implements IFacadeBO{
     }
     
     
-    
-    //PublicacionesCongresoBO
-
     @Override
-    public boolean agregarPublicacionCongreso(PublicacionCongreso publicacionCongreso) {
-        return publicacionesCongresoBO.agregar(publicacionCongreso);
+    public InvestigadorDoctor consultarInvestigadorDoctor(ObjectId idInvestigador) {
+        return profesoresBO.consultarInvestigadorDoctor(idInvestigador);
     }
 
     @Override
-    public boolean actualizarPublicacionCongreso(PublicacionCongreso publicacionCongreso) {
-        return publicacionesCongresoBO.actualizar(publicacionCongreso);
+    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo) {
+        return proyectosBO.validarFechasRealesIntegrante(periodo);
     }
-
-    @Override
-    public boolean eliminarPublicacionCongreso(ObjectId idPublicacionCongreso) {
-        return publicacionesCongresoBO.eliminar(idPublicacionCongreso);
-    }
-
-    @Override
-    public PublicacionCongreso consultar(ObjectId idPublicacionCongreso) {
-        return publicacionesCongresoBO.consultar(idPublicacionCongreso);
-    }
-
-    @Override
-    public List<PublicacionCongreso> consultarTodos() {
-        return publicacionesCongresoBO.consultarTodos();
-    }
-
-    @Override
-    public Proyecto consultarProyectoPublicacionCongreso(ObjectId idPublicacionCongreso) {
-        return publicacionesCongresoBO.consultarProyecto(idPublicacionCongreso);
-    }
-
-    @Override
-    public List<AutorDTO> consultarAutoresPublicacionCongreso(ObjectId idPublicacionCongreso) {
-        return publicacionesCongresoBO.consultarAutores(idPublicacionCongreso);
-    }
-
-    
-    //PublicacionesRevistaBO
-    
-    @Override
-    public boolean agregarPublicacionRevista(PublicacionRevista publicacionRevista) {
-        return publicacionesRevistaBO.agregar(publicacionRevista);
-    }
-
-    @Override
-    public boolean actualizarPublicacionRevista(PublicacionRevista publicacionRevista) {
-        return publicacionesRevistaBO.actualizar(publicacionRevista);
-    }
-
-    @Override
-    public boolean eliminarPublicacionRevista(ObjectId idPublicacionRevista) {
-        return publicacionesRevistaBO.eliminar(idPublicacionRevista);
-    }
-
-    @Override
-    public PublicacionRevista consultarPublicacionRevista(ObjectId idPublicacionRevista) {
-        return publicacionesRevistaBO.consultar(idPublicacionRevista);
-    }
-
-    @Override
-    public List<PublicacionRevista> consultarTodosPublicacionRevista() {
-        return publicacionesRevistaBO.consultarTodos();
-    }
-
-    @Override
-    public Proyecto consultarProyectoPublicacionRevista(ObjectId idPublicacionRevista) {
-        return publicacionesRevistaBO.consultarProyecto(idPublicacionRevista);
-    }
-
-    @Override
-    public List<AutorDTO> consultarAutoresPublicacionRevista(ObjectId idPublicacionRevista) {
-        return publicacionesRevistaBO.consultarAutores(idPublicacionRevista);
-    }
-
-    
-
 }

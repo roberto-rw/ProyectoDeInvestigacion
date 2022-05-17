@@ -53,7 +53,7 @@ public class EditarProyectoForm extends javax.swing.JFrame {
         this.frameProveniente = frameProveniente;
         this.proyectoSeleccionado = facadeBO.consultarProyecto(idProyecto);
         this.lineasInvestigacion = proyectoSeleccionado.getIdsLineasInvestigacion();
-        this.integrantesSeleccionados = proyectoSeleccionado.getDetalles();
+        this.integrantesSeleccionados = proyectoSeleccionado.getIntegrantes();
         this.llenarComboBoxInvestigadores();
         this.llenarComboBoxProgramas();
         
@@ -357,10 +357,6 @@ public class EditarProyectoForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna Linea de Investigación", "información", JOptionPane.ERROR_MESSAGE);
             return;
         }
-         if(!this.validarIntegrantesSeleccionados()){
-            JOptionPane.showMessageDialog(this, "Deben seleccionarse al menos 2 integrantes", "información", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
         if(!this.validarPresupuesto()){
             JOptionPane.showMessageDialog(this, "Presupuesto inválido", "información", JOptionPane.ERROR_MESSAGE);
             return;
@@ -391,35 +387,16 @@ public class EditarProyectoForm extends javax.swing.JFrame {
         
         
         proyecto = new Proyecto(proyectoSeleccionado.getId(), codigoReferencia, nombreProyecto, acronimo, presupuesto, programa.getId(), patrocinador, fechaInicio, fechaFin, descripcion, investigadorDoctor, this.integrantesSeleccionados, this.lineasInvestigacion);
-        if(!facadeBO.validarFechasReales(proyecto)){
-            JOptionPane.showMessageDialog(this, "Las fechas colcadas no son válidas", "información", JOptionPane.ERROR_MESSAGE);
+
+        try {
+            facadeBO.actualizarProyecto(proyecto);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "información", JOptionPane.ERROR_MESSAGE);
             return;
-       }
-        if(!codigoReferencia.equalsIgnoreCase(proyectoSeleccionado.getCodigoReferencia())){
-            if(facadeBO.estaRepetidoCodigo(codigoReferencia)){
-                JOptionPane.showMessageDialog(this, "El código ya está en uso", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
         }
-        if(!acronimo.equalsIgnoreCase(proyectoSeleccionado.getAcronimo())){
-            if(facadeBO.estaRepetidoAcronimo(acronimo)){
-                JOptionPane.showMessageDialog(this, "El acronimo ya está en uso", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-        if(!nombreProyecto.equalsIgnoreCase(proyectoSeleccionado.getNombre())){
-            if(facadeBO.estaRepetidoNombre(nombreProyecto)){
-                JOptionPane.showMessageDialog(this, "El nombre ya está en uso", "información", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-        boolean seEditoProyecto = facadeBO.actualizarProyecto(proyecto);
-        if(seEditoProyecto){
             JOptionPane.showMessageDialog(this, "Se modificó el proyecto correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-        } else{
-           JOptionPane.showMessageDialog(this, "No se pudo modificar el Proyecto", "información", JOptionPane.INFORMATION_MESSAGE);
-        }
+
         this.frameProveniente.llenarAcronimoComboBox();
         this.frameProveniente.llenarCodigoComboBox();
         this.frameProveniente.llenarNombreComboBox();
@@ -436,10 +413,6 @@ public class EditarProyectoForm extends javax.swing.JFrame {
         return !this.lineasInvestigacion.isEmpty();
     }
     
-    
-    private boolean validarIntegrantesSeleccionados(){
-        return this.integrantesSeleccionados.size() >= 2;
-    }
     
     private boolean validarPresupuesto(){
         try{

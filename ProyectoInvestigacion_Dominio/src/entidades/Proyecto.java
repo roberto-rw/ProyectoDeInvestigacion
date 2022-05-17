@@ -6,7 +6,6 @@
 package entidades;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +28,7 @@ public class Proyecto {
     private String descripcion;
     private InvestigadorDoctor investigadorPrincipal;
     private List<ObjectId> idsLineasInvestigacion; //Representa ProyectoLineadeInvestigacion
-    private List<PeriodoParticipacion> detalles;
+    private List<PeriodoParticipacion> integrantes;
     private List<PublicacionRevista> publicacionesRevista;
     private List<PublicacionCongreso> publicacionesCongreso;
 
@@ -50,7 +49,7 @@ public class Proyecto {
         this.fechaFin = fechaFin;
         this.descripcion = descripcion;
         this.investigadorPrincipal = investigadorPrincipal;
-        this.detalles = detalles;
+        this.integrantes = detalles;
         this.idsLineasInvestigacion = idsLineasInvestigacion;
     }
 
@@ -65,7 +64,7 @@ public class Proyecto {
         this.fechaFin = fechaFin;
         this.descripcion = descripcion;
         this.investigadorPrincipal = investigadorPrincipal;
-        this.detalles = detalles;
+        this.integrantes = detalles;
         this.idsLineasInvestigacion = idsLineasInvestigacion;   
     }
 
@@ -197,12 +196,12 @@ public class Proyecto {
         this.publicacionesCongreso = publicacionesCongreso;
     }
 
-    public List<PeriodoParticipacion> getDetalles() {
-        return detalles;
+    public List<PeriodoParticipacion> getIntegrantes() {
+        return integrantes;
     }
 
-    public void setDetalles(List<PeriodoParticipacion> detalles) {
-        this.detalles = detalles;
+    public void setIntegrantes(List<PeriodoParticipacion> integrantes) {
+        this.integrantes = integrantes;
     }
 
     @Override

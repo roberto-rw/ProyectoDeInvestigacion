@@ -8,9 +8,8 @@ package GUIS;
 import entidades.InvestigadorDoctor;
 import entidades.Programa;
 import entidades.Proyecto;
-import implementacionesBO.BOSFactory;
-import interfacesBO.IProfesoresBO;
-import interfacesBO.IProgramasBO;
+import implementacionesBO.FacadeBO;
+import interfacesBO.IFacadeBO;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -25,7 +24,6 @@ import javax.swing.table.DefaultTableModel;
 import org.bson.types.ObjectId;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import utils.ButtonColumn;
-import interfacesBO.IProyectosBO;
 import javax.swing.table.TableColumnModel;
 
 /**
@@ -34,9 +32,7 @@ import javax.swing.table.TableColumnModel;
  */
 public class BuscarProyecto extends javax.swing.JFrame {
 
-    IProyectosBO proyectoBO;
-    IProfesoresBO profesoresBO;
-    IProgramasBO programasBO;
+    IFacadeBO fachadaBO;
     
     /**
      * Creates new form BuscarProyecto
@@ -44,14 +40,11 @@ public class BuscarProyecto extends javax.swing.JFrame {
     public BuscarProyecto() {
         initComponents();
         this.demasSeleccionado();
-        
+        this.fachadaBO = new FacadeBO();
          TableColumnModel modeloColumnasLineasInvestigacion = this.tablaProyectos.getColumnModel();
         tablaProyectos.removeColumn( modeloColumnasLineasInvestigacion.getColumn(0));
         
         
-        proyectoBO = BOSFactory.crearProyectoBO();
-        profesoresBO = BOSFactory.crearProfesoresBO();
-        programasBO = BOSFactory.crearProgramaBO();
         this.llenarCodigoComboBox();
         this.llenarNombreComboBox();
         this.llenarAcronimoComboBox();
@@ -66,18 +59,18 @@ public class BuscarProyecto extends javax.swing.JFrame {
     
     
     protected void llenarCodigoComboBox(){
-        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(proyectoBO.consultarCodigos().toArray());
+        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(fachadaBO.consultarCodigos().toArray());
         codigoComboBox.setModel(modeloComboBox);
     }
     
     protected void llenarNombreComboBox(){
-        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(proyectoBO.consultarNombres().toArray());
+        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(fachadaBO.consultarNombres().toArray());
         
         nombreComboBox.setModel(modeloComboBox);
     }
     
     protected void llenarAcronimoComboBox(){
-        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(proyectoBO.consultarAcronimos().toArray());
+        DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(fachadaBO.consultarAcronimos().toArray());
         
         acronimoComboBox.setModel(modeloComboBox);
     }
@@ -86,7 +79,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
     private void llenarProgramasComboBox(){
         List<Object> programas = new ArrayList();
         programas.add("-Selecciona-");
-        programas.addAll(programasBO.consultarTodos());
+        programas.addAll(fachadaBO.consultarTodosProgramas());
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(programas.toArray());
         
         programasComboBox.setModel(modeloComboBox);
@@ -96,7 +89,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
     private void llenarComboBoxInvestigadorDoctor(){
         List<Object> investigadoresDoctores = new ArrayList();
         investigadoresDoctores.add("-Selecciona-");
-        investigadoresDoctores.addAll(profesoresBO.consultarTodosInvestigadorDoctores());
+        investigadoresDoctores.addAll(fachadaBO.consultarTodosInvestigadorDoctores());
         DefaultComboBoxModel modeloComboBox = new DefaultComboBoxModel(investigadoresDoctores.toArray());
         investigadorComboBox.setModel(modeloComboBox);
     }
@@ -135,7 +128,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
             fila[3] = proyecto.getAcronimo();
             fila[4] = formatter.format(proyecto.getFechaInicio());
             fila[5] = formatter.format(proyecto.getFechaFin());
-            fila[6] = programasBO.consultar(proyecto.getIdPrograma());
+            fila[6] = fachadaBO.consultarPrograma(proyecto.getIdPrograma());
             fila[7] = proyecto.getPresupuestoTotal();
             fila[8] = proyecto.getInvestigadorPrincipal();
             fila[9] = proyecto.getPatrocinador();
@@ -221,20 +214,20 @@ public class BuscarProyecto extends javax.swing.JFrame {
         if(porCodigo.isSelected()){ //Por Cógigo
             
             resultados = new ArrayList();
-            Proyecto proyecto = proyectoBO.consultarPorCodigo((String) codigoComboBox.getSelectedItem());
+            Proyecto proyecto = fachadaBO.consultarPorCodigo((String) codigoComboBox.getSelectedItem());
             
             resultados.add(proyecto);
             
         } else if(porNombre.isSelected()){ //Por Nombre
             
             resultados = new ArrayList();
-            Proyecto proyecto = proyectoBO.consultarPorNombre((String) nombreComboBox.getSelectedItem());
+            Proyecto proyecto = fachadaBO.consultarPorNombre((String) nombreComboBox.getSelectedItem());
             resultados.add(proyecto);
             
         } else if(porAcronimo.isSelected()){ //Por Acrónimo
             
             resultados = new ArrayList();
-            Proyecto proyecto = proyectoBO.consultarPorAcronimo((String) acronimoComboBox.getSelectedItem());
+            Proyecto proyecto = fachadaBO.consultarPorAcronimo((String) acronimoComboBox.getSelectedItem());
             resultados.add(proyecto);
             
         } else if(porFecha.isSelected()){ //Por Fecha
@@ -250,7 +243,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
             Date fechaFin = Date.from(fechaFTxt.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
             
              
-            resultados = proyectoBO.consultarPorFechas(fechaInicio, fechaFin);
+            resultados = fachadaBO.consultarPorFechas(fechaInicio, fechaFin);
             
         } else{ //Por Demas
             if(!validarCamposVaciosDemas()){
@@ -275,7 +268,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
             if(!patrocinadorTxt.getText().equals("")){
                 patrocinador = patrocinadorTxt.getText();
             }
-            resultados = proyectoBO.consultarPorCaracteristicas(idPrograma, presupuesto, presupuestoComboBox.getSelectedIndex(), this.getInvestigador(), patrocinador);
+            resultados = fachadaBO.consultarPorCaracteristicas(idPrograma, presupuesto, presupuestoComboBox.getSelectedIndex(), this.getInvestigador(), patrocinador);
             
         }
         

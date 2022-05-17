@@ -7,8 +7,10 @@ package implementacionesBO;
 
 import entidades.LineaInvestigacion;
 import implementacionesDAO.DAOSFactory;
+import implementacionesDAO.Persistencia;
 import interfacesBO.ILineaInvestigacionBO;
 import interfacesDAO.ILineaInvestigacionDAO;
+import interfacesDAO.IPersistencia;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -18,31 +20,31 @@ import org.bson.types.ObjectId;
  */
 public class LineaInvestigacionBO implements ILineaInvestigacionBO{
     
-    ILineaInvestigacionDAO lineaInvestigacionDAO = DAOSFactory.crearLineaInvestigacionDAO();
+    IPersistencia persistencia = new Persistencia();
 
     @Override
     public boolean agregar(LineaInvestigacion lineaInvestigacion) {
-        return lineaInvestigacionDAO.agregar(lineaInvestigacion);
+        return persistencia.agregar(lineaInvestigacion);
     }
 
     @Override
     public boolean actualizar(LineaInvestigacion lineaInvestigacion) {
-        return lineaInvestigacionDAO.actualizar(lineaInvestigacion);
+        return persistencia.actualizar(lineaInvestigacion);
     }
 
     @Override
     public boolean eliminar(ObjectId idLineaInvestigacion) {
-        return lineaInvestigacionDAO.eliminar(idLineaInvestigacion);
+        return persistencia.eliminarLineaInvestigacion(idLineaInvestigacion);
     }
 
     @Override
     public LineaInvestigacion consultar(ObjectId idLineaInvestigacion) {
-        return lineaInvestigacionDAO.consultar(idLineaInvestigacion);
+        return persistencia.consultarLineaInvestigacion(idLineaInvestigacion);
     }
 
     @Override
     public List<LineaInvestigacion> consultarTodos() {
-        return lineaInvestigacionDAO.consultarTodos();
+        return persistencia.consultarTodosLineaInvestigacion();
     }
     
 }
