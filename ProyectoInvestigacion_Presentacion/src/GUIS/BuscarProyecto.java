@@ -41,7 +41,8 @@ public class BuscarProyecto extends javax.swing.JFrame {
         initComponents();
         this.demasSeleccionado();
         this.fachadaBO = new FacadeBO();
-         TableColumnModel modeloColumnasLineasInvestigacion = this.tablaProyectos.getColumnModel();
+        
+        TableColumnModel modeloColumnasLineasInvestigacion = this.tablaProyectos.getColumnModel();
         tablaProyectos.removeColumn( modeloColumnasLineasInvestigacion.getColumn(0));
         
         

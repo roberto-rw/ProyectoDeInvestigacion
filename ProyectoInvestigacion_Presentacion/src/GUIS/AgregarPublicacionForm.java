@@ -109,7 +109,7 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
             modeloTabla.addRow(fila);
         });
         
-        ButtonColumn buttonColumnEliminar = new ButtonColumn(this.tablaAutoresAgregados, eliminar, 3);
+        ButtonColumn buttonColumnEliminar = new ButtonColumn(this.tablaAutoresAgregados, eliminar, 2);
     }
     
     

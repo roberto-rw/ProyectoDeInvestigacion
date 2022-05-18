@@ -28,6 +28,7 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
 
     IFacadeBO fachadaBO;
     PrincipalForm pantallaPrincipal;
+    AgregarPublicacionForm agregarPublicacionForm;
        
     public RegistrarPublicacionForm() {
         initComponents();
@@ -85,8 +86,8 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
     }
     
     public void mostrarPantallaAgregarPublicacion(){
-        AgregarPublicacionForm pantallaAgregarPublicacion = new AgregarPublicacionForm(this.getIdProyectoSeleccionado());
-        pantallaAgregarPublicacion.setVisible(true);
+        agregarPublicacionForm = new AgregarPublicacionForm(this.getIdProyectoSeleccionado());
+        agregarPublicacionForm.setVisible(true);
         this.dispose();
     }
     
@@ -182,12 +183,7 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-//        if(pantallaPrincipal==null){
-//           pantallaPrincipal = new PrincipalForm();
-//        }else{
-//            pantallaPrincipal.setVisible(true);
-//        }
-//        pantallaPrincipal.setVisible(true);
+
     }//GEN-LAST:event_formWindowClosed
 
 
