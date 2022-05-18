@@ -186,7 +186,7 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="opcionesBusqueda"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Buscar por Codigo de Referencia"/>
+            <Property name="text" type="java.lang.String" value="Buscar por C&#xf3;digo de Referencia"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="porCodigoActionPerformed"/>
@@ -400,7 +400,7 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="opcionesBusqueda"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Buscar por Acronimo"/>
+            <Property name="text" type="java.lang.String" value="Buscar por Acr&#xf3;nimo"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="porAcronimoActionPerformed"/>
@@ -410,7 +410,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Coloque el Acronimo del Proyecto">
+                <TitledBorder title="Coloque el Acr&#xf3;nimo del Proyecto">
                   <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                     <EtchetBorder/>
                   </Border>
@@ -454,6 +454,9 @@
                   <Font name="Arial" size="14" style="1"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="acronimoComboBoxActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -474,7 +477,7 @@
               <ComponentRef name="opcionesBusqueda"/>
             </Property>
             <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="Buscar por Demas Caracter&#xed;sticas"/>
+            <Property name="text" type="java.lang.String" value="Buscar por otras caracter&#xed;sticas"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="porDemasActionPerformed"/>

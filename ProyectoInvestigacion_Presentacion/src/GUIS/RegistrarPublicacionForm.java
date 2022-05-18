@@ -26,6 +26,7 @@ import utils.ButtonColumn;
 public class RegistrarPublicacionForm extends javax.swing.JFrame {
 
     IFacadeBO fachadaBO;
+    PrincipalForm pantallaPrincipal;
        
     public RegistrarPublicacionForm() {
         initComponents();
@@ -81,6 +82,7 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
     public void mostrarPantallaAgregarPublicacion(){
         AgregarPublicacionForm pantallaAgregarPublicacion = new AgregarPublicacionForm(this.getIdProyectoSeleccionado());
         pantallaAgregarPublicacion.setVisible(true);
+        this.dispose();
     }
     
     
@@ -92,9 +94,15 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
         scrollPanelProyectos = new javax.swing.JScrollPane();
         tablaProyectosVigentes = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Agregar Publicación");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         tablaProyectosVigentes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -104,7 +112,7 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Codigo", "Nombre", "Acrónimo", "Fecha Inicio", "Fecha Fin", "Programa", "Presupuesto", "Investigador Principal", "Patrocinador", "Agregar Publicación"
+                "Id", "Código", "Nombre", "Acrónimo", "Fecha Inicio", "Fecha Fin", "Programa", "Presupuesto", "Investigador Principal", "Patrocinador", "Agregar Publicación"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -121,6 +129,13 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel1.setText("Proyectos Vigentes");
 
+        jButton1.setText("Volver al menú");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -132,8 +147,12 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(scrollPanelProyectos, javax.swing.GroupLayout.PREFERRED_SIZE, 1093, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(14, Short.MAX_VALUE))
+                        .addComponent(scrollPanelProyectos, javax.swing.GroupLayout.PREFERRED_SIZE, 1091, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(23, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(57, 57, 57))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,16 +160,34 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrollPanelProyectos, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
-                .addGap(14, 14, 14))
+                .addComponent(scrollPanelProyectos, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(30, 30, 30))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.dispose();
+        pantallaPrincipal = new PrincipalForm();
+        pantallaPrincipal.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+//        if(pantallaPrincipal==null){
+//           pantallaPrincipal = new PrincipalForm();
+//        }else{
+//            pantallaPrincipal.setVisible(true);
+//        }
+//        pantallaPrincipal.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane scrollPanelProyectos;
     private javax.swing.JTable tablaProyectosVigentes;

@@ -21,6 +21,26 @@ public class Publicacion {
     private ObjectId idProyecto;
     private List<Autor> autores;
 
+    public void setId(ObjectId _id) {
+        this._id = _id;
+    }
+
+    public void setNumeroSecuencia(Long numeroSecuencia) {
+        this.numeroSecuencia = numeroSecuencia;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setIdProyecto(ObjectId idProyecto) {
+        this.idProyecto = idProyecto;
+    }
+
+    public void setAutores(List<Autor> autores) {
+        this.autores = autores;
+    }
+
     public Publicacion() {
     }
 

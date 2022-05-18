@@ -172,7 +172,6 @@ public class ProyectoBO implements IProyectosBO{
         List<PublicacionCongreso> publicacionesCongreso;
         List<PublicacionRevista> publicacionesRevista;
         List<String> titulos = new ArrayList();
-        System.out.println(proyectos);
         for (Proyecto p: proyectos) {
             publicacionesCongreso = p.getPublicacionesCongreso();
             if(publicacionesCongreso != null){

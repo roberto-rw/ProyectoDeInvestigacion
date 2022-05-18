@@ -128,16 +128,17 @@ public class ProyectoDAO implements IProyectoDAO{
     @Override
     public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion) {
         Proyecto proyecto = this.consultar(idProyecto);
-        if(proyecto != null){
-            
-            if(proyecto.getPublicacionesCongreso()==null){
-                List<PublicacionCongreso> publicaciones = new ArrayList();
+        List<PublicacionCongreso> publicaciones = new ArrayList();
+        if(proyecto != null){  
+            if(proyecto.getPublicacionesCongreso()==null){               
                 publicaciones.add(publicacion);
                 proyecto.setPublicacionesCongreso(publicaciones);
                 this.actualizar(proyecto);                
                 return true;
             }else{
-                 proyecto.getPublicacionesCongreso().add(publicacion);
+                publicaciones = proyecto.getPublicacionesCongreso();
+                publicaciones.add(publicacion);
+                proyecto.setPublicacionesCongreso(publicaciones);
                 this.actualizar(proyecto);
                 return true;
             }           
@@ -148,10 +149,20 @@ public class ProyectoDAO implements IProyectoDAO{
     @Override
     public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion) {
         Proyecto proyecto = this.consultar(idProyecto);
+        List<PublicacionRevista> publicaciones = new ArrayList();
         if (proyecto != null) {
-            proyecto.addPublicacionRevista(publicacion);
-            this.actualizar(proyecto);
-            return true;
+            if(proyecto.getPublicacionesRevista()==null){
+                publicaciones.add(publicacion);
+                proyecto.setPublicacionesRevista(publicaciones);
+                this.actualizar(proyecto);
+                return true;
+            }
+            else{
+                publicaciones = proyecto.getPublicacionesRevista();
+                publicaciones.add(publicacion);
+                proyecto.setPublicacionesRevista(publicaciones);
+                this.actualizar(proyecto);
+            }
         }
         return false;
     }

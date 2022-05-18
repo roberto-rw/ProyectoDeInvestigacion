@@ -102,8 +102,8 @@ public class PrincipalForm extends javax.swing.JFrame {
 
     private void botonRegistrarProfesorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonRegistrarProfesorActionPerformed
         this.dispose();
-        ProyectoForm pantallaProyecto = new ProyectoForm();
-        pantallaProyecto.setVisible(true);
+        ProfesorForm pantallaProfesor = new ProfesorForm();
+        pantallaProfesor.setVisible(true);
     }//GEN-LAST:event_botonRegistrarProfesorActionPerformed
 
     private void botonAgregarPublicacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAgregarPublicacionActionPerformed

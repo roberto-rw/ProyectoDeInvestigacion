@@ -540,7 +540,7 @@ public class ProfesorForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Nombre", "Apellido Mat", "Apellido Pat", "Despacho", "Telefono", "Doctor?", "Investigador?", "Editar", "Eliminar"
+                "Id", "Nombre", "Apellido Mat", "Apellido Pat", "Despacho", "Teléfono", "Doctor?", "Investigador?", "Editar", "Eliminar"
             }
         ) {
             Class[] types = new Class [] {
@@ -584,7 +584,7 @@ public class ProfesorForm extends javax.swing.JFrame {
         despachoLbl.setText("Despacho:");
         despachoLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        jLabel2.setText("Telefono:");
+        jLabel2.setText("Teléfono:");
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         telefonoTxt.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -600,7 +600,7 @@ public class ProfesorForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Nombre", "Telefono", "Fecha Inicio", "Fecha Fin", "Editar", "Eliminar"
+                "Id", "Nombre", "Teléfono", "Fecha Inicio", "Fecha Fin", "Editar", "Eliminar"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -616,10 +616,10 @@ public class ProfesorForm extends javax.swing.JFrame {
 
         jLabel4.setText("Supervisores");
 
-        inicioSLbl.setText("InicioSupervision:");
+        inicioSLbl.setText("Inicio Supervisión:");
         inicioSLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        finSLbl.setText("Fin Supervision:");
+        finSLbl.setText("Fin Supervisión:");
         finSLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         supervisoresComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -793,7 +793,7 @@ public class ProfesorForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Codigo", "Nombre", "Descriptores"
+                "Id", "Código", "Nombre", "Descriptores"
             }
         ));
         jScrollPane1.setViewportView(lineaInvestigacionTabla);

@@ -390,7 +390,7 @@ public class ProyectoForm extends javax.swing.JFrame {
         Programa programa = (Programa) programaComboBox.getSelectedItem();
         InvestigadorDoctor investigadorDoctor = (InvestigadorDoctor) investigadorDoctorComboBox.getSelectedItem();
         Date fechaInicio = Date.from(this.fechaInicioPicker.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-       Date fechaFin = Date.from(this.fechaFinPicker.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date fechaFin = Date.from(this.fechaFinPicker.getDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
         String descripcion = descripcionTxt.getText();
         
         
@@ -464,54 +464,6 @@ public class ProyectoForm extends javax.swing.JFrame {
    
     
     
-    public void agregarParticipacion(){
-        if (!this.validarSeleccionIntegrante()) {
-            JOptionPane.showMessageDialog(this, "No hay ningun integrante seleccionado", "información", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if(this.validarCamposVaciosIntegrantes()){
-            JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (this.validarFechasIntegrantes()) {
-            JOptionPane.showMessageDialog(this, "Las fechas colcadas no son válidas", "información", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        
-
-        Profesor profesor = (Profesor) this.integrantesComboBox.getSelectedItem();
-        Calendar fechaInicioCalendar = Calendar.getInstance();
-        fechaInicioCalendar.set(inicioSPicker.getDate().getYear(), inicioSPicker.getDate().getMonthValue() - 1, inicioSPicker.getDate().getDayOfMonth(), 0, 0, 0);
-        Calendar fechaFinCalendar = Calendar.getInstance();
-        fechaFinCalendar.set(finSPicker.getDate().getYear(), finSPicker.getDate().getMonthValue() - 1, finSPicker.getDate().getDayOfMonth(), 0, 0, 0);
-
-        ObjectId idIntegranteSeleccionado = profesor.getId();
-        Date fechaInicioSeleccionada = fechaInicioCalendar.getTime();
-        Date fechaFinSeleccionada = fechaFinCalendar.getTime();
-
-        if (editarIntegrante != null) {
-
-            PeriodoParticipacion pParticipacionEditar = this.periodosIntegrantes.get(editarIntegrante);
-            pParticipacionEditar.setIdProfesor(idIntegranteSeleccionado);
-            pParticipacionEditar.setFechaInicio(fechaInicioSeleccionada);
-            pParticipacionEditar.setFechaFin(fechaFinSeleccionada);
-            this.periodosIntegrantes.set(editarIntegrante, pParticipacionEditar);
-            this.editarIntegrante = null;
-            this.agregarParticipacionBtn.setText("Agregar Integrante");
-            JOptionPane.showMessageDialog(this, "Se realizaron los cambios correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            PeriodoParticipacion pParticipacion = new PeriodoParticipacion(idIntegranteSeleccionado, fechaInicioSeleccionada, fechaFinSeleccionada);
-            this.periodosIntegrantes.add(pParticipacion);
-            JOptionPane.showMessageDialog(this, "Se agregó el integrante", "información", JOptionPane.INFORMATION_MESSAGE);
-        }
-        
-        vaciarIntegrantesPanel();
-        llenarTablaIntegrantes();
-    }
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -575,6 +527,11 @@ public class ProyectoForm extends javax.swing.JFrame {
 
         programaComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        presupuestoTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                presupuestoTxtActionPerformed(evt);
+            }
+        });
         presupuestoTxt.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 presupuestoTxtKeyPressed(evt);
@@ -633,7 +590,7 @@ public class ProyectoForm extends javax.swing.JFrame {
         patrocinadorLbl.setText("Patrocinador:");
         patrocinadorLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
-        descripcionLbl.setText("Descripcion:");
+        descripcionLbl.setText("Descripción:");
         descripcionLbl.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
         jLabel2.setText("Registrar Proyecto");
@@ -750,7 +707,7 @@ public class ProyectoForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Codigo", "Nombre", "Descriptores"
+                "Id", "Código", "Nombre", "Descriptores"
             }
         ));
         lineaInvestigacionTabla.setRowHeight(30);
@@ -765,7 +722,7 @@ public class ProyectoForm extends javax.swing.JFrame {
 
         jLabel8.setText("Proyectos:");
 
-        botonInicio.setText("Inicio");
+        botonInicio.setText("Volver al menú");
         botonInicio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botonInicioActionPerformed(evt);
@@ -783,63 +740,6 @@ public class ProyectoForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(56, 56, 56)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(botonCancelar)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(descripcionLbl)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(fechaInicioLbl)
-                                        .addComponent(fechaFinLbl))
-                                    .addGap(18, 18, 18)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(fechaInicioPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(fechaFinPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(presupuestoLbl)
-                                        .addComponent(patrocinadorLbl))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGap(18, 18, 18)
-                                            .addComponent(patrocinadorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGap(18, 18, 18)
-                                            .addComponent(presupuestoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(patrocinadorLbl1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(investigadorDoctorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(146, 146, 146)
-                        .addComponent(botonInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(356, 356, 356))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(programaLbl)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(programaComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(acronimoLbl)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(acronimoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 290, Short.MAX_VALUE)
-                                .addComponent(jLabel8)
-                                .addGap(628, 628, 628)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
-                        .addGap(37, 37, 37))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
@@ -854,8 +754,73 @@ public class ProyectoForm extends javax.swing.JFrame {
                                 .addComponent(btnGuardarProyecto)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(21, 21, 21)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 687, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(570, 570, 570))))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(53, 53, 53))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(botonCancelar)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(descripcionLbl)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(fechaInicioLbl)
+                                                .addComponent(fechaFinLbl))
+                                            .addGap(18, 18, 18)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(fechaInicioPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(fechaFinPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(presupuestoLbl)
+                                                .addComponent(patrocinadorLbl))
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(patrocinadorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addGap(18, 18, 18)
+                                                    .addComponent(presupuestoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(patrocinadorLbl1)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(investigadorDoctorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(programaLbl)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(programaComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(acronimoLbl)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(acronimoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addGap(1148, 1148, 1148))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addGap(300, 300, 300)
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(28, 28, 28)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addGap(17, 17, 17)
+                                                        .addComponent(jLabel7)))
+                                                .addGap(42, 42, 42))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(botonInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(71, 71, 71)))))))
+                        .addGap(37, 37, 37))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -885,14 +850,10 @@ public class ProyectoForm extends javax.swing.JFrame {
                         .addGap(25, 25, 25)
                         .addComponent(jLabel2)
                         .addGap(23, 23, 23)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel8))
+                        .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(25, 25, 25)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -903,7 +864,7 @@ public class ProyectoForm extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(patrocinadorLbl)
                             .addComponent(patrocinadorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(patrocinadorLbl1)
                             .addComponent(investigadorDoctorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -917,23 +878,23 @@ public class ProyectoForm extends javax.swing.JFrame {
                             .addComponent(fechaFinPicker, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(27, 27, 27)
                         .addComponent(descripcionLbl)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(btnGuardarProyecto)
-                                    .addComponent(botonCancelar))
-                                .addGap(19, 19, 19))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(botonInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(21, 21, 21))))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnGuardarProyecto)
+                            .addComponent(botonCancelar))
+                        .addGap(19, 19, 19))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(201, 201, 201)
+                                .addComponent(botonInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         pack();
@@ -945,7 +906,53 @@ public class ProyectoForm extends javax.swing.JFrame {
     }//GEN-LAST:event_presupuestoTxtKeyPressed
 
     private void agregarParticipacionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarParticipacionBtnActionPerformed
-        this.agregarParticipacion();
+
+        
+        if (!this.validarSeleccionIntegrante()) {
+            JOptionPane.showMessageDialog(this, "No hay ningun integrante seleccionado", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(this.validarCamposVaciosIntegrantes()){
+            JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (this.validarFechasIntegrantes()) {
+            JOptionPane.showMessageDialog(this, "Las fechas colcadas no son válidas", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        
+
+        Profesor profesor = (Profesor) this.integrantesComboBox.getSelectedItem();
+        Calendar fechaInicioCalendar = Calendar.getInstance();
+        fechaInicioCalendar.set(inicioSPicker.getDate().getYear(), inicioSPicker.getDate().getMonthValue() - 1, inicioSPicker.getDate().getDayOfMonth(), 0, 0, 0);
+        Calendar fechaFinCalendar = Calendar.getInstance();
+        fechaFinCalendar.set(finSPicker.getDate().getYear(), finSPicker.getDate().getMonthValue() - 1, finSPicker.getDate().getDayOfMonth(), 0, 0, 0);
+
+        ObjectId idIntegranteSeleccionado = profesor.getId();
+        Date fechaInicioSeleccionada = fechaInicioCalendar.getTime();
+        Date fechaFinSeleccionada = fechaFinCalendar.getTime();
+
+        if (editarIntegrante != null) {
+
+            PeriodoParticipacion pParticipacionEditar = this.periodosIntegrantes.get(editarIntegrante);
+            pParticipacionEditar.setIdProfesor(idIntegranteSeleccionado);
+            pParticipacionEditar.setFechaInicio(fechaInicioSeleccionada);
+            pParticipacionEditar.setFechaFin(fechaFinSeleccionada);
+            this.periodosIntegrantes.set(editarIntegrante, pParticipacionEditar);
+            this.editarIntegrante = null;
+            this.agregarParticipacionBtn.setText("Agregar Integrante");
+            JOptionPane.showMessageDialog(this, "Se realizaron los cambios correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            PeriodoParticipacion pParticipacion = new PeriodoParticipacion(idIntegranteSeleccionado, fechaInicioSeleccionada, fechaFinSeleccionada);
+            this.periodosIntegrantes.add(pParticipacion);
+            JOptionPane.showMessageDialog(this, "Se agregó el integrante", "información", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+        vaciarIntegrantesPanel();
+        llenarTablaIntegrantes();
     }//GEN-LAST:event_agregarParticipacionBtnActionPerformed
 
     private void btnGuardarProyectoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProyectoActionPerformed
@@ -981,6 +988,45 @@ public class ProyectoForm extends javax.swing.JFrame {
         
         pantallaPrincipal.setVisible(true);
     }//GEN-LAST:event_formWindowClosed
+
+    private void presupuestoTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_presupuestoTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_presupuestoTxtActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ProyectoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ProyectoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ProyectoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ProyectoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ProyectoForm().setVisible(true);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel acronimoLbl;

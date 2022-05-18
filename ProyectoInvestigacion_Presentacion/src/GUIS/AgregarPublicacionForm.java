@@ -23,7 +23,7 @@ import utils.ButtonColumn;
 
 
 public class AgregarPublicacionForm extends javax.swing.JFrame {
-    PrincipalForm pantallaPrincipal;
+    RegistrarPublicacionForm pantallaRegistrarPublicacion;
     IFacadeBO fachadaBO;
     List<Profesor> autoresAgregados;
     ObjectId idProyecto;
@@ -236,6 +236,12 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
         jLabel2.setText("Titulo:");
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
+        campoNumeroSecuencia.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                campoNumeroSecuenciaKeyTyped(evt);
+            }
+        });
+
         jLabel3.setText("Número en Secuencia:");
         jLabel3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
@@ -436,9 +442,32 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
         jLabel17.setText("Página de Fin:");
         jLabel17.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
 
+        campoVolumen.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                campoVolumenKeyTyped(evt);
+            }
+        });
+
         campoNumero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 campoNumeroActionPerformed(evt);
+            }
+        });
+        campoNumero.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                campoNumeroKeyTyped(evt);
+            }
+        });
+
+        campoPagInicio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                campoPagInicioKeyTyped(evt);
+            }
+        });
+
+        campoPagFin.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                campoPagFinKeyTyped(evt);
             }
         });
 
@@ -711,15 +740,14 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
             this.botonGuardar.setEnabled(true);
     }//GEN-LAST:event_radioRevistaActionPerformed
 
-    private void botonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGuardarActionPerformed
-        
+    private void guardarPublicacion(){
         if(this.radioCongreso.isSelected()){
             
             if(!(this.validarCamposVaciosCongreso())){
                 JOptionPane.showMessageDialog(this, "No dejes campos vacíos", "información", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            System.out.println(fachadaBO.estaRepetidoTituloPublicacion(this.campoTitulo.getText()));
+            //System.out.println(fachadaBO.estaRepetidoTituloPublicacion(this.campoTitulo.getText()));
             if(fachadaBO.estaRepetidoTituloPublicacion(this.campoTitulo.getText())){
                 JOptionPane.showMessageDialog(this, "El titulo de la publicación ya existe", "información", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -801,27 +829,68 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "No se pudo agregar la publicación", "Error", JOptionPane.ERROR);
             }
             
-        }
-     
-
+        }     
+    }
+    
+    private void botonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGuardarActionPerformed
+        this.guardarPublicacion();
         
     }//GEN-LAST:event_botonGuardarActionPerformed
 
     private void botonInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonInicioActionPerformed
         this.dispose();
-        pantallaPrincipal = new PrincipalForm();
-        pantallaPrincipal.setVisible(true);
+        pantallaRegistrarPublicacion = new RegistrarPublicacionForm();
+        pantallaRegistrarPublicacion.setVisible(true);
     }//GEN-LAST:event_botonInicioActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        if(pantallaPrincipal==null){
-           pantallaPrincipal = new PrincipalForm();
+        if(pantallaRegistrarPublicacion==null){
+           pantallaRegistrarPublicacion = new RegistrarPublicacionForm();
         }else{
-            pantallaPrincipal.setVisible(true);
+            pantallaRegistrarPublicacion.setVisible(true);
         }
-        
-        pantallaPrincipal.setVisible(true);
+        pantallaRegistrarPublicacion.setVisible(true);
     }//GEN-LAST:event_formWindowClosed
+
+    private void campoNumeroSecuenciaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campoNumeroSecuenciaKeyTyped
+       char c = evt.getKeyChar();
+       
+       if((c < '0' || c>'9')){
+           evt.consume();
+       }
+    }//GEN-LAST:event_campoNumeroSecuenciaKeyTyped
+
+    private void campoVolumenKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campoVolumenKeyTyped
+        char c = evt.getKeyChar();
+
+        if ((c < '0' || c > '9')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_campoVolumenKeyTyped
+
+    private void campoNumeroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campoNumeroKeyTyped
+        char c = evt.getKeyChar();
+
+        if ((c < '0' || c > '9')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_campoNumeroKeyTyped
+
+    private void campoPagInicioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campoPagInicioKeyTyped
+        char c = evt.getKeyChar();
+
+        if ((c < '0' || c > '9')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_campoPagInicioKeyTyped
+
+    private void campoPagFinKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_campoPagFinKeyTyped
+        char c = evt.getKeyChar();
+
+        if ((c < '0' || c > '9')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_campoPagFinKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonAgregarAutor;

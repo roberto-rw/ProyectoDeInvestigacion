@@ -571,7 +571,7 @@ public class EditarProyectoForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Codigo", "Nombre", "Descriptores", "Agregar"
+                "Id", "Código", "Nombre", "Descriptores", "Agregar"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -673,8 +673,8 @@ public class EditarProyectoForm extends javax.swing.JFrame {
             }
         });
 
-        cancelaIBtn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         cancelaIBtn.setText("Cancelar");
+        cancelaIBtn.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         cancelaIBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelaIBtnActionPerformed(evt);
@@ -747,14 +747,14 @@ public class EditarProyectoForm extends javax.swing.JFrame {
             }
         });
 
-        programasComboBox.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         programasComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        programasComboBox.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
 
         investigadoresComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         investigadoresComboBox.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
 
-        jLabel14.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel14.setText("Investigador Principal:");
+        jLabel14.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

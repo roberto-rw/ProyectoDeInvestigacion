@@ -31,9 +31,7 @@ public class Proyecto {
     private List<PeriodoParticipacion> integrantes;
     private List<PublicacionRevista> publicacionesRevista;
     private List<PublicacionCongreso> publicacionesCongreso;
-
-    
-
+  
     public Proyecto() {
     }
 
@@ -178,6 +176,10 @@ public class Proyecto {
 
     public void setIdsLineasInvestigacion(List<ObjectId> idsLineasInvestigacion) {
         this.idsLineasInvestigacion = idsLineasInvestigacion;
+    }
+
+    public void setPublicacionesRevista(List<PublicacionRevista> publicacionesRevista) {
+        this.publicacionesRevista = publicacionesRevista;
     }
 
     public List<PublicacionRevista> getPublicacionesRevista() {

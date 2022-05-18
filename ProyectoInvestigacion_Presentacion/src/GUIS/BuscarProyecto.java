@@ -332,7 +332,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
         });
 
         opcionesBusqueda.add(porCodigo);
-        porCodigo.setText("Buscar por Codigo de Referencia");
+        porCodigo.setText("Buscar por Código de Referencia");
         porCodigo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 porCodigoActionPerformed(evt);
@@ -438,17 +438,22 @@ public class BuscarProyecto extends javax.swing.JFrame {
         );
 
         opcionesBusqueda.add(porAcronimo);
-        porAcronimo.setText("Buscar por Acronimo");
+        porAcronimo.setText("Buscar por Acrónimo");
         porAcronimo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 porAcronimoActionPerformed(evt);
             }
         });
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Coloque el Acronimo del Proyecto"));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Coloque el Acrónimo del Proyecto"));
 
         acronimoComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         acronimoComboBox.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        acronimoComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                acronimoComboBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -472,7 +477,7 @@ public class BuscarProyecto extends javax.swing.JFrame {
 
         opcionesBusqueda.add(porDemas);
         porDemas.setSelected(true);
-        porDemas.setText("Buscar por Demas Características");
+        porDemas.setText("Buscar por otras características");
         porDemas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 porDemasActionPerformed(evt);
@@ -720,6 +725,10 @@ public class BuscarProyecto extends javax.swing.JFrame {
         
         pantallaPrincipal.setVisible(true);
     }//GEN-LAST:event_formWindowClosed
+
+    private void acronimoComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acronimoComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_acronimoComboBoxActionPerformed
 
     
     private void vaciarForm(){
