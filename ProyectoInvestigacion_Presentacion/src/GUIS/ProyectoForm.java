@@ -464,6 +464,54 @@ public class ProyectoForm extends javax.swing.JFrame {
    
     
     
+    public void agregarParticipacion(){
+        if (!this.validarSeleccionIntegrante()) {
+            JOptionPane.showMessageDialog(this, "No hay ningun integrante seleccionado", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if(this.validarCamposVaciosIntegrantes()){
+            JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (this.validarFechasIntegrantes()) {
+            JOptionPane.showMessageDialog(this, "Las fechas colcadas no son válidas", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        
+
+        Profesor profesor = (Profesor) this.integrantesComboBox.getSelectedItem();
+        Calendar fechaInicioCalendar = Calendar.getInstance();
+        fechaInicioCalendar.set(inicioSPicker.getDate().getYear(), inicioSPicker.getDate().getMonthValue() - 1, inicioSPicker.getDate().getDayOfMonth(), 0, 0, 0);
+        Calendar fechaFinCalendar = Calendar.getInstance();
+        fechaFinCalendar.set(finSPicker.getDate().getYear(), finSPicker.getDate().getMonthValue() - 1, finSPicker.getDate().getDayOfMonth(), 0, 0, 0);
+
+        ObjectId idIntegranteSeleccionado = profesor.getId();
+        Date fechaInicioSeleccionada = fechaInicioCalendar.getTime();
+        Date fechaFinSeleccionada = fechaFinCalendar.getTime();
+
+        if (editarIntegrante != null) {
+
+            PeriodoParticipacion pParticipacionEditar = this.periodosIntegrantes.get(editarIntegrante);
+            pParticipacionEditar.setIdProfesor(idIntegranteSeleccionado);
+            pParticipacionEditar.setFechaInicio(fechaInicioSeleccionada);
+            pParticipacionEditar.setFechaFin(fechaFinSeleccionada);
+            this.periodosIntegrantes.set(editarIntegrante, pParticipacionEditar);
+            this.editarIntegrante = null;
+            this.agregarParticipacionBtn.setText("Agregar Integrante");
+            JOptionPane.showMessageDialog(this, "Se realizaron los cambios correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            PeriodoParticipacion pParticipacion = new PeriodoParticipacion(idIntegranteSeleccionado, fechaInicioSeleccionada, fechaFinSeleccionada);
+            this.periodosIntegrantes.add(pParticipacion);
+            JOptionPane.showMessageDialog(this, "Se agregó el integrante", "información", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
+        vaciarIntegrantesPanel();
+        llenarTablaIntegrantes();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -897,53 +945,7 @@ public class ProyectoForm extends javax.swing.JFrame {
     }//GEN-LAST:event_presupuestoTxtKeyPressed
 
     private void agregarParticipacionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarParticipacionBtnActionPerformed
-
-        
-        if (!this.validarSeleccionIntegrante()) {
-            JOptionPane.showMessageDialog(this, "No hay ningun integrante seleccionado", "información", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if(this.validarCamposVaciosIntegrantes()){
-            JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (this.validarFechasIntegrantes()) {
-            JOptionPane.showMessageDialog(this, "Las fechas colcadas no son válidas", "información", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        
-
-        Profesor profesor = (Profesor) this.integrantesComboBox.getSelectedItem();
-        Calendar fechaInicioCalendar = Calendar.getInstance();
-        fechaInicioCalendar.set(inicioSPicker.getDate().getYear(), inicioSPicker.getDate().getMonthValue() - 1, inicioSPicker.getDate().getDayOfMonth(), 0, 0, 0);
-        Calendar fechaFinCalendar = Calendar.getInstance();
-        fechaFinCalendar.set(finSPicker.getDate().getYear(), finSPicker.getDate().getMonthValue() - 1, finSPicker.getDate().getDayOfMonth(), 0, 0, 0);
-
-        ObjectId idIntegranteSeleccionado = profesor.getId();
-        Date fechaInicioSeleccionada = fechaInicioCalendar.getTime();
-        Date fechaFinSeleccionada = fechaFinCalendar.getTime();
-
-        if (editarIntegrante != null) {
-
-            PeriodoParticipacion pParticipacionEditar = this.periodosIntegrantes.get(editarIntegrante);
-            pParticipacionEditar.setIdProfesor(idIntegranteSeleccionado);
-            pParticipacionEditar.setFechaInicio(fechaInicioSeleccionada);
-            pParticipacionEditar.setFechaFin(fechaFinSeleccionada);
-            this.periodosIntegrantes.set(editarIntegrante, pParticipacionEditar);
-            this.editarIntegrante = null;
-            this.agregarParticipacionBtn.setText("Agregar Integrante");
-            JOptionPane.showMessageDialog(this, "Se realizaron los cambios correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            PeriodoParticipacion pParticipacion = new PeriodoParticipacion(idIntegranteSeleccionado, fechaInicioSeleccionada, fechaFinSeleccionada);
-            this.periodosIntegrantes.add(pParticipacion);
-            JOptionPane.showMessageDialog(this, "Se agregó el integrante", "información", JOptionPane.INFORMATION_MESSAGE);
-        }
-        
-        vaciarIntegrantesPanel();
-        llenarTablaIntegrantes();
+        this.agregarParticipacion();
     }//GEN-LAST:event_agregarParticipacionBtnActionPerformed
 
     private void btnGuardarProyectoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarProyectoActionPerformed
@@ -979,41 +981,6 @@ public class ProyectoForm extends javax.swing.JFrame {
         
         pantallaPrincipal.setVisible(true);
     }//GEN-LAST:event_formWindowClosed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ProyectoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ProyectoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ProyectoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ProyectoForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ProyectoForm().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel acronimoLbl;

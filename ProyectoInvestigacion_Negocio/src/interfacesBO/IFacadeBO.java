@@ -67,8 +67,8 @@ public interface IFacadeBO {
     public List<String> consultarNombres();
     public List<String> consultarAcronimos();
     public List<Proyecto> consultarVigentes();
-    public boolean validarFechasReales(Proyecto proyecto);
-    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo);
+    public boolean validarPeriodoFechas(Proyecto proyecto);
+    public boolean validarPeriodoFechasIntegrante(PeriodoParticipacion periodo);
     public boolean agregarPublicacionCongreso(ObjectId idProyecto, PublicacionCongreso publicacion);
     public boolean agregarPublicacionRevista(ObjectId idProyecto, PublicacionRevista publicacion);
 

@@ -39,8 +39,8 @@ public class ProyectoBO implements IProyectosBO{
         if(this.estaRepetidoAcronimo(proyecto.getAcronimo())){
             throw new Exception("No se permiten acronimos repetidos");
         }
-        if(!this.validarFechasReales(proyecto)){
-            throw new Exception("Las fechas no son reales");
+        if(!this.validarPeriodoFechas(proyecto)){
+            throw new Exception("El periodo de fechas no es válida");
         }
         if(!this.validarNumeroIntegrantes(proyecto)){
             throw new Exception("El Proyecto debe tener al menos 2 integrantes");
@@ -69,7 +69,7 @@ public class ProyectoBO implements IProyectosBO{
                 throw new Exception("No se permiten acronimos repetidos");
             }
         }
-        if(!this.validarFechasReales(proyecto)){
+        if(!this.validarPeriodoFechas(proyecto)){
             throw new Exception("Las fechas no son reales");
         }
         if(!this.validarNumeroIntegrantes(proyecto)){
@@ -195,7 +195,7 @@ public class ProyectoBO implements IProyectosBO{
     }
     
     @Override
-    public boolean validarFechasReales(Proyecto proyecto) {
+    public boolean validarPeriodoFechas(Proyecto proyecto) {
         return !(proyecto.getFechaInicio().compareTo(proyecto.getFechaFin()) >= 0);
     }
 
@@ -215,7 +215,7 @@ public class ProyectoBO implements IProyectosBO{
     }
 
     @Override
-    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo) {
+    public boolean validarPeriodoFechasIntegrante(PeriodoParticipacion periodo) {
         return !(periodo.getFechaInicio().compareTo(periodo.getFechaFin()) >= 0);
     } 
     

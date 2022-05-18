@@ -45,8 +45,8 @@ public interface IProyectosBO {
     public List<String> consultarAcronimos();
     public List<Proyecto> consultarVigentes();
     public List<String> consultarTitulosPublicaciones();
-    public boolean validarFechasReales(Proyecto proyecto);
-    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo);
+    public boolean validarPeriodoFechas(Proyecto proyecto);
+    public boolean validarPeriodoFechasIntegrante(PeriodoParticipacion periodo);
     public boolean validarNumeroIntegrantes(Proyecto proyecto);
     public boolean validarValorPresupuesto(Proyecto proyecto);
 }

@@ -250,8 +250,8 @@ public class FacadeBO implements IFacadeBO{
     }
 
     @Override
-    public boolean validarFechasReales(Proyecto proyecto) {
-        return proyectosBO.validarFechasReales(proyecto);
+    public boolean validarPeriodoFechas(Proyecto proyecto) {
+        return proyectosBO.validarPeriodoFechas(proyecto);
     }
     
     @Override
@@ -275,8 +275,8 @@ public class FacadeBO implements IFacadeBO{
     }
 
     @Override
-    public boolean validarFechasRealesIntegrante(PeriodoParticipacion periodo) {
-        return proyectosBO.validarFechasRealesIntegrante(periodo);
+    public boolean validarPeriodoFechasIntegrante(PeriodoParticipacion periodo) {
+        return proyectosBO.validarPeriodoFechasIntegrante(periodo);
     }
 
     

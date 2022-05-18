@@ -231,8 +231,10 @@ public class Proyecto {
         }
         return true;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "Proyecto{" + "codigoReferencia=" + codigoReferencia + ", nombre=" + nombre + ", acronimo=" + acronimo + ", presupuestoTotal=" + presupuestoTotal + ", idPrograma=" + idPrograma + ", patrocinador=" + patrocinador + ", fechaInicio=" + fechaInicio + ", fechaFin=" + fechaFin + ", descripcion=" + descripcion + ", investigadorPrincipal=" + investigadorPrincipal + ", idsLineasInvestigacion=" + idsLineasInvestigacion + ", integrantes=" + integrantes + ", publicacionesRevista=" + publicacionesRevista + ", publicacionesCongreso=" + publicacionesCongreso + '}';
+    }
     
 }
