@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import org.bson.types.ObjectId;
 import utils.ButtonColumn;
 
@@ -32,6 +33,10 @@ public class RegistrarPublicacionForm extends javax.swing.JFrame {
         initComponents();
         fachadaBO = new FacadeBO();
         this.llenarTablaProyectosVigentes();
+        
+        //Tabla Proyectos vigentes
+        TableColumnModel modeloColumnasProyectosVigentes = this.tablaProyectosVigentes.getColumnModel();
+        modeloColumnasProyectosVigentes.removeColumn(modeloColumnasProyectosVigentes.getColumn(0));
     }
 
 

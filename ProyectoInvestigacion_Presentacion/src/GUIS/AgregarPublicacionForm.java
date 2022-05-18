@@ -18,6 +18,7 @@ import javax.swing.Action;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import org.bson.types.ObjectId;
 import utils.ButtonColumn;
 
@@ -36,6 +37,11 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
         this.llenarComboBoxAutores();
         this.bloquearTodo();
         this.llenarComboBoxTipo();
+        
+        //Tabla Autores
+        TableColumnModel modeloColumnasAutores = this.tablaAutoresAgregados.getColumnModel();
+        modeloColumnasAutores.removeColumn(modeloColumnasAutores.getColumn(0));
+        
     }
     
 
