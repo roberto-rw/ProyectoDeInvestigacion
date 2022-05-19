@@ -124,11 +124,9 @@ public class DoctoresDAO implements IDoctoresDAO {
 
     @Override
     public List<InvestigadorDoctor> consultarTodosInvestigadores() {
-        List<InvestigadorDoctor> doctores = baseDatos.getCollection("doctores", InvestigadorDoctor.class).find(new Document()
+        List<InvestigadorDoctor> doctores = new ArrayList();
+        doctores = baseDatos.getCollection("doctores", InvestigadorDoctor.class).find(new Document()
                 .append("tipo", "InvestigadorDoctor")).into(new ArrayList());
-        if (doctores.isEmpty()) {
-            return null;
-        }
         return doctores;
     }
 

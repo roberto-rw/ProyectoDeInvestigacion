@@ -27,6 +27,7 @@ import utils.ButtonColumn;
 public class LineaInvestigacionForm extends javax.swing.JFrame {
 
     IFacadeBO fachadaBO;
+    PrincipalForm pantallaPrincipal;
     private List<String> descriptores;
     
     /**
@@ -155,9 +156,15 @@ public class LineaInvestigacionForm extends javax.swing.JFrame {
         agregarLineaBtn = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         lineaInvestigacionTabla = new javax.swing.JTable();
+        inicioBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Linea Investigación");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         jLabel1.setText("Lineas de Investigación");
@@ -206,6 +213,13 @@ public class LineaInvestigacionForm extends javax.swing.JFrame {
         lineaInvestigacionTabla.setRowHeight(30);
         jScrollPane2.setViewportView(lineaInvestigacionTabla);
 
+        inicioBtn.setText("Inicio");
+        inicioBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inicioBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -217,7 +231,10 @@ public class LineaInvestigacionForm extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(40, 40, 40)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(agregarLineaBtn)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(agregarLineaBtn)
+                        .addGap(50, 50, 50)
+                        .addComponent(inicioBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -264,7 +281,9 @@ public class LineaInvestigacionForm extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
-                .addComponent(agregarLineaBtn)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(agregarLineaBtn)
+                    .addComponent(inicioBtn))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
 
@@ -293,6 +312,22 @@ public class LineaInvestigacionForm extends javax.swing.JFrame {
         this.agregarLinea();
     }//GEN-LAST:event_agregarLineaBtnActionPerformed
 
+    private void inicioBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inicioBtnActionPerformed
+        this.dispose();
+        pantallaPrincipal = new PrincipalForm();
+        pantallaPrincipal.setVisible(true);
+    }//GEN-LAST:event_inicioBtnActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        if(pantallaPrincipal==null){
+           pantallaPrincipal = new PrincipalForm();
+        }else{
+            pantallaPrincipal.setVisible(true);
+        }
+        
+        pantallaPrincipal.setVisible(true);
+    }//GEN-LAST:event_formWindowClosed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton agregarDescriptorBtn;
@@ -300,6 +335,7 @@ public class LineaInvestigacionForm extends javax.swing.JFrame {
     private javax.swing.JTextField codigoTxt;
     private javax.swing.JList<String> descriptoresLista;
     private javax.swing.JTextField descriptoresTxt;
+    private javax.swing.JButton inicioBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

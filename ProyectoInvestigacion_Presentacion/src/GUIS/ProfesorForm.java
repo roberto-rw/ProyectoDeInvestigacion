@@ -42,7 +42,6 @@ public class ProfesorForm extends javax.swing.JFrame {
     IFacadeBO fachadaBO;
     private List<PeriodoSupervision> periodosSupervision;
     private Integer editarSupervisor;
-    private ObjectId editar;
 
     /**
      * Creates new form ProfesorForm
@@ -51,9 +50,14 @@ public class ProfesorForm extends javax.swing.JFrame {
         initComponents();
         this.fachadaBO = new FacadeBO();
         this.editarSupervisor = null;
-        this.editar = null;
         this.periodosSupervision = new ArrayList();
-        this.llenarComboBoxSupervisores();
+        
+        agregarSupervisorBtn.setEnabled(false);
+        supervisoresComboBox.setEnabled(false);
+        finSPicker.setEnabled(false);
+        inicioSPicker.setEnabled(false);
+        tablaSupervisores.setEnabled(false);
+        this.cancelarSupervisionBtn.setEnabled(false);
         
         //Profesores
         TableColumnModel modeloColumnasProfesor = this.profesoresTabla.getColumnModel();
@@ -77,14 +81,6 @@ public class ProfesorForm extends javax.swing.JFrame {
     }
     
     private void llenarTablaProfesores(){
-        
-        Action editar = new AbstractAction(){
-            public void actionPerformed(ActionEvent e)
-            {
-                editar();
-            }
-        };
-        
         Action eliminar = new AbstractAction(){
             public void actionPerformed(ActionEvent e)
             {
@@ -115,13 +111,10 @@ public class ProfesorForm extends javax.swing.JFrame {
                 fila[7] = false; 
             }
             
-            fila[8] = "Editar";
-            fila[9] = "Eliminar";
+            fila[8] = "Eliminar";
             modeloTabla.addRow(fila); 
         });
-
-        ButtonColumn buttonColumnEditar = new ButtonColumn(profesoresTabla, editar, 7);
-        ButtonColumn buttonColumnEliminar = new ButtonColumn(profesoresTabla, eliminar, 8);
+        ButtonColumn buttonColumnEliminar = new ButtonColumn(profesoresTabla, eliminar, 7);
     }
     
      private void llenarTablaLineasInvestigacion(){
@@ -256,6 +249,7 @@ public class ProfesorForm extends javax.swing.JFrame {
         }
         JOptionPane.showMessageDialog(this, "Se eliminó el profesor correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
         this.llenarTablaProfesores();
+        this.llenarComboBoxSupervisores();
      }
      
      
@@ -278,70 +272,22 @@ public class ProfesorForm extends javax.swing.JFrame {
          
      }
      
-     private void editar(){
-         this.vaciarForm();
-         int indiceFilaSeleccionada = this.profesoresTabla.getSelectedRow();
-         DefaultTableModel modelo = (DefaultTableModel)this.profesoresTabla.getModel();
-         boolean esDoctorSeleccionado = (Boolean)modelo.getValueAt(indiceFilaSeleccionada, 6);
-         boolean esInvestigadorSeleccionado = (Boolean)modelo.getValueAt(indiceFilaSeleccionada, 7);
-         ObjectId idSeleccionado = this.getIdProfesorSeleccionado();
-         if(esDoctorSeleccionado){
-  
-                Doctor profesorSeleccionado = fachadaBO.consultarDoctorProfesor(idSeleccionado);
-                nombreTxt.setText(profesorSeleccionado.getNombre());
-                maternoTxt.setText(profesorSeleccionado.getApellidoMaterno());
-                paternoTxt.setText(profesorSeleccionado.getApellidoPaterno());
-                telefonoTxt.setText(profesorSeleccionado.getTelefono());
-                despachoTxt.setText(profesorSeleccionado.getDespacho());
-                esDoctor.setSelected(true);
-                this.mostrarLineasInvestigacionSeleccionadas(profesorSeleccionado.getIdsLineasInvestigacion());
-                 
-         } else{
-              NoDoctor profesorSeleccionado = fachadaBO.consultarNoDoctor(idSeleccionado);
-              nombreTxt.setText(profesorSeleccionado.getNombre());
-              maternoTxt.setText(profesorSeleccionado.getApellidoMaterno());
-              paternoTxt.setText(profesorSeleccionado.getApellidoPaterno());
-              telefonoTxt.setText(profesorSeleccionado.getTelefono());
-              despachoTxt.setText(profesorSeleccionado.getDespacho());
-              periodosSupervision = profesorSeleccionado.getSupervisiones();
-              this.llenarTablaSupervisores();
-              this.mostrarLineasInvestigacionSeleccionadas(profesorSeleccionado.getIdsLineasInvestigacion());
-             
-         }
-         
-         if(esInvestigadorSeleccionado) esInvestigador.setSelected(true);
-         botonGuardar.setText("Editar Proyecto");
-         this.editar = this.getIdProfesorSeleccionado();
-         esDoctor.setEnabled(false);
-         esInvestigador.setEnabled(false);
-     }
-     
-     
-     private void mostrarLineasInvestigacionSeleccionadas(List<ObjectId> lineasInvestigacion){
-         DefaultTableModel modelo = (DefaultTableModel)this.lineaInvestigacionTabla.getModel();
-            int indiceColumnaId = 0;
-            //ObjectId idProfesorSeleccionado = (ObjectId)modelo.getValueAt(indiceFilaSeleccionada, indiceColumnaId);
-            
-            for (int i = 0; i < modelo.getRowCount(); i++) {
-                ObjectId idProfesorSeleccionado = (ObjectId)modelo.getValueAt(i, indiceColumnaId);
-                if(lineasInvestigacion.contains(idProfesorSeleccionado)) this.lineaInvestigacionTabla.getSelectionModel().addSelectionInterval(i, i);
-            }
-     }
-     
-     
      private void vaciarSupervisionesForm(){
          this.supervisoresComboBox.setSelectedIndex(0);
          inicioSPicker.setDate(null);
          finSPicker.setDate(null);
          this.editarSupervisor = null;
          this.agregarSupervisorBtn.setText("Agregar Supervisor");
-         
      }
+     
+     
+     private boolean validarLineasSeleccionadas(){
+        return this.lineaInvestigacionTabla.getSelectedRows().length > 0;
+    }
      
      private void vaciarForm(){
          this.vaciarSupervisionesForm();
          periodosSupervision = new ArrayList();
-         esDoctor.setSelected(false);
          esInvestigador.setSelected(false);
          esDoctor.setEnabled(true);
          esInvestigador.setEnabled(true);
@@ -352,9 +298,6 @@ public class ProfesorForm extends javax.swing.JFrame {
          despachoTxt.setText("");
          this.llenarTablaLineasInvestigacion();
          this.llenarTablaSupervisores();
-         botonGuardar.setText("Guardar Proyecto");
-         this.editar = null;
-         
      }
      
      
@@ -363,6 +306,11 @@ public class ProfesorForm extends javax.swing.JFrame {
              JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
              return;
          }
+         
+         if(!this.validarLineasSeleccionadas()){
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna linea de investigación", "información", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
          
          
          String nombreProfesor = nombreTxt.getText();
@@ -382,6 +330,7 @@ public class ProfesorForm extends javax.swing.JFrame {
                  doctor.setIdsLineasInvestigacion(lineasSeleccionadas);
                  seAgregoProfesor = fachadaBO.agregarProfesor(doctor);
              }
+             this.llenarComboBoxSupervisores();
          } else{
              if(esInvestigador.isSelected()){
                  InvestigadorNoDoctor iNoDoctor = new InvestigadorNoDoctor(nombreProfesor, aMaterno, aPaterno, despacho, telefono);
@@ -404,53 +353,6 @@ public class ProfesorForm extends javax.swing.JFrame {
          vaciarForm();
 
      }
-     
-     private void actualizar(){
-         if(validarCamposVacios()){
-             JOptionPane.showMessageDialog(this, "No se permiten campos vacios", "información", JOptionPane.ERROR_MESSAGE);
-             return;
-         }
-         
-         String nombreProfesor = nombreTxt.getText();
-         String aPaterno = paternoTxt.getText();
-         String aMaterno = maternoTxt.getText();
-         String despacho = despachoTxt.getText();
-         String telefono = telefonoTxt.getText();
-         List<ObjectId> lineasSeleccionadas  = this.getLineasInvestigacionSeleccionadas();
-         boolean seAgregoProfesor = false;
-         if(esDoctor.isSelected()){
-             if(esInvestigador.isSelected()){
-                 InvestigadorDoctor iDoctor = new InvestigadorDoctor(editar, nombreProfesor, aMaterno, aPaterno, despacho, telefono);
-                 iDoctor.setIdsLineasInvestigacion(lineasSeleccionadas);
-                 seAgregoProfesor = fachadaBO.agregarProfesor(iDoctor);
-             } else{
-                 Doctor doctor = new Doctor(editar, nombreProfesor, aMaterno, aPaterno, despacho, telefono);
-                 doctor.setIdsLineasInvestigacion(lineasSeleccionadas);
-                 seAgregoProfesor = fachadaBO.agregarProfesor(doctor);
-             }
-         } else{
-             if(esInvestigador.isSelected()){
-                 InvestigadorNoDoctor iNoDoctor = new InvestigadorNoDoctor(editar, nombreProfesor, aMaterno, aPaterno, despacho, telefono);
-                 iNoDoctor.setSupervisiones(periodosSupervision);
-                 iNoDoctor.setIdsLineasInvestigacion(lineasSeleccionadas);
-                 seAgregoProfesor = fachadaBO.agregarProfesor(iNoDoctor);
-             } else{
-                 NoDoctor noDoctor = new NoDoctor(editar, nombreProfesor, aMaterno, aPaterno, despacho, telefono);
-                 noDoctor.setSupervisiones(periodosSupervision);
-                 noDoctor.setIdsLineasInvestigacion(lineasSeleccionadas);
-                 seAgregoProfesor = fachadaBO.agregarProfesor(noDoctor);
-             }
-         }
-         if(seAgregoProfesor){
-             JOptionPane.showMessageDialog(this, "Se modificó el Profesor correctamente", "información", JOptionPane.INFORMATION_MESSAGE);
-             this.llenarTablaProfesores();
-         } else{
-             JOptionPane.showMessageDialog(this, "No se pudo modificar el Profesor", "información", JOptionPane.INFORMATION_MESSAGE);
-         }
-         vaciarForm();
-
-     }
-     
      
      private List<ObjectId> getLineasInvestigacionSeleccionadas(){
          List<ObjectId> lineasSeleccionadas = new ArrayList();
@@ -540,14 +442,14 @@ public class ProfesorForm extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Id", "Nombre", "Apellido Mat", "Apellido Pat", "Despacho", "Teléfono", "Doctor?", "Investigador?", "Editar", "Eliminar"
+                "Id", "Nombre", "Apellido Mat", "Apellido Pat", "Despacho", "Teléfono", "Doctor?", "Investigador?", "Eliminar"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, true, true
+                false, false, false, false, false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -699,6 +601,7 @@ public class ProfesorForm extends javax.swing.JFrame {
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
+        esDoctor.setSelected(true);
         esDoctor.setText("Doctor?");
         esDoctor.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -879,12 +782,20 @@ public class ProfesorForm extends javax.swing.JFrame {
            this.cancelarSupervisionBtn.setEnabled(false);
         } else{
 //            this.noDoctorPnl.setVisible(true);
-            agregarSupervisorBtn.setEnabled(true);
+
+            if(fachadaBO.consultarTodosDoctores().isEmpty()){
+                JOptionPane.showMessageDialog(this, "No se puede registrar un No Doctor si no hay ningun doctor registrado", "información", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+
+           agregarSupervisorBtn.setEnabled(true);
            supervisoresComboBox.setEnabled(true);
            finSPicker.setEnabled(true);
            inicioSPicker.setEnabled(true);
            tablaSupervisores.setEnabled(true);
            this.cancelarSupervisionBtn.setEnabled(true);
+           this.llenarComboBoxSupervisores();
         }
     }//GEN-LAST:event_esDoctorStateChanged
 
@@ -919,11 +830,8 @@ public class ProfesorForm extends javax.swing.JFrame {
     }//GEN-LAST:event_maternoTxtKeyTyped
 
     private void botonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGuardarActionPerformed
-        if(this.editar != null){
-            actualizar();
-        } else{
-            agregar();
-        }
+        agregar();
+        
     }//GEN-LAST:event_botonGuardarActionPerformed
 
     private void agregarSupervisorBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarSupervisorBtnActionPerformed

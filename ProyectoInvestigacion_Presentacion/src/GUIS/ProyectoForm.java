@@ -357,7 +357,7 @@ public class ProyectoForm extends javax.swing.JFrame {
             return;
         }
         
-         if(!this.validarLineasSeleccionadas()){
+        if(!this.validarLineasSeleccionadas()){
             JOptionPane.showMessageDialog(this, "No se ha seleccionado ninguna linea", "información", JOptionPane.ERROR_MESSAGE);
             return;
         }

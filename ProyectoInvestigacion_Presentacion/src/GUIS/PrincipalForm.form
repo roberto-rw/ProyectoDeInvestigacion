@@ -25,17 +25,32 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="botonAgregarPublicacion" pref="189" max="32767" attributes="0"/>
-                  <Component id="botonRegistrarProyecto" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
+                      <Component id="botonRegistrarProyecto" min="-2" pref="200" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="botonAgregarPublicacion" min="-2" pref="200" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="botonRegistrarLinea" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
               </Group>
-              <EmptySpace pref="61" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="botonRegistrarProfesor" pref="190" max="32767" attributes="0"/>
                   <Component id="botonBuscarProyecto" max="32767" attributes="0"/>
+                  <Component id="botonRegistrarProfesor" pref="200" max="32767" attributes="0"/>
+                  <Component id="registrarProgramaBtn" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="71" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -43,16 +58,21 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="botonRegistrarProfesor" min="-2" pref="70" max="-2" attributes="0"/>
-                  <Component id="botonRegistrarProyecto" min="-2" pref="73" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="botonRegistrarProyecto" alignment="3" min="-2" pref="73" max="-2" attributes="0"/>
+                  <Component id="botonRegistrarProfesor" alignment="3" min="-2" pref="70" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="botonBuscarProyecto" alignment="3" min="-2" pref="73" max="-2" attributes="0"/>
                   <Component id="botonAgregarPublicacion" alignment="3" min="-2" pref="73" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="92" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="botonRegistrarLinea" pref="73" max="32767" attributes="0"/>
+                  <Component id="registrarProgramaBtn" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace pref="80" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -84,10 +104,26 @@
     </Component>
     <Component class="javax.swing.JButton" name="botonBuscarProyecto">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Buscar proyecto"/>
+        <Property name="text" type="java.lang.String" value="Buscar Proyecto"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonBuscarProyectoActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="botonRegistrarLinea">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Registrar Linea Investigacion"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonRegistrarLineaActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="registrarProgramaBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Registrar Programa"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="registrarProgramaBtnActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
