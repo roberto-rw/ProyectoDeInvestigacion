@@ -831,11 +831,32 @@ public class AgregarPublicacionForm extends javax.swing.JFrame {
             
             if(fachadaBO.agregarPublicacionRevista(this.idProyecto, publicacionRevista)){
                 JOptionPane.showMessageDialog(this, "Se agregó la publicación", "información", JOptionPane.INFORMATION_MESSAGE);
+                this.vaciarForm();
             }else{
                 JOptionPane.showMessageDialog(this, "No se pudo agregar la publicación", "Error", JOptionPane.ERROR);
             }
             
         }     
+    }
+    
+    private void vaciarForm(){
+        campoNumeroSecuencia.setText("");
+        campoTitulo.setText("");
+        textAreaAutores.setText("");
+        comboBoxProfesores.setSelectedIndex(0);
+        campoNombreCongreso.setText("");
+        comboBoxTipoCongreso.setSelectedIndex(0);
+        campoFechaInicio.setDate(null);
+        campoFechaFin.setDate(null);
+        campoLugarCelebracion.setText("");
+        campoPais.setText("");
+        campoEditorialCongreso.setText("");
+        campoNombreRevista.setText("");
+        campoEditorialRevista.setText("");
+        campoVolumen.setText("");
+        campoNumero.setText("");
+        campoPagInicio.setText("");
+        campoPagFin.setText("");
     }
     
     private void botonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGuardarActionPerformed

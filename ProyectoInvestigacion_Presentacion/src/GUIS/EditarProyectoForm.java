@@ -900,7 +900,8 @@ public class EditarProyectoForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
-        // TODO add your handling code here:
+        this.vaciarIntegrantesForm();
+        this.desplegarProyecto();
     }//GEN-LAST:event_cancelarBtnActionPerformed
 
     private void agregarIntegranteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarIntegranteBtnActionPerformed
